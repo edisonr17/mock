@@ -66,6 +66,16 @@
             color: #2c3e50;
         }
 
+        .status-badge {
+            display: inline-block;
+            font-size: 12px;
+            padding: 4px 12px;
+            margin-left: 15px;
+            border-radius: 12px;
+            background: #d5f4e6;
+            color: #186a3b;
+        }
+
         .content {
             padding: 30px;
             min-height: 600px;
@@ -94,6 +104,18 @@
             border-bottom: 2px solid #3498db;
         }
 
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .status-counter {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
         .form-group {
             margin-bottom: 20px;
             display: grid;
@@ -109,6 +131,10 @@
             grid-template-columns: 1fr 1fr 1fr;
         }
 
+        .form-item {
+            position: relative;
+        }
+
         label {
             display: block;
             font-size: 13px;
@@ -117,10 +143,19 @@
             margin-bottom: 5px;
         }
 
+        .label-note {
+            font-size: 11px;
+            font-weight: 400;
+            color: #7f8c8d;
+            display: block;
+            margin-top: 2px;
+        }
+
         input[type="text"],
         input[type="number"],
         input[type="date"],
         input[type="email"],
+        input[type="time"],
         select,
         textarea {
             width: 100%;
@@ -136,6 +171,7 @@
         input[type="number"]:focus,
         input[type="date"]:focus,
         input[type="email"]:focus,
+        input[type="time"]:focus,
         select:focus,
         textarea:focus {
             outline: none;
@@ -189,6 +225,32 @@
             font-weight: 400;
             cursor: pointer;
             user-select: none;
+        }
+
+        /* Badge de validación inline */
+        .validation-badge {
+            display: inline-block;
+            font-size: 11px;
+            padding: 3px 8px;
+            margin-left: 8px;
+            border-radius: 3px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-success {
+            background: #d5f4e6;
+            color: #186a3b;
+        }
+
+        .badge-warning {
+            background: #fef5e7;
+            color: #c77e1e;
+        }
+
+        .badge-danger {
+            background: #fadbd8;
+            color: #a93226;
         }
 
         /* Alertas */
@@ -389,11 +451,6 @@
             color: #f39c12;
         }
 
-        .drift-critical {
-            color: #e74c3c;
-            font-weight: 600;
-        }
-
         /* Info box */
         .info-box {
             background: #ecf0f1;
@@ -403,6 +460,22 @@
             border-radius: 4px;
             font-size: 13px;
             color: #2c3e50;
+        }
+
+        .dynamic-field {
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+                overflow: hidden;
+            }
+            to {
+                opacity: 1;
+                max-height: 200px;
+            }
         }
     </style>
 </head>
@@ -419,6 +492,7 @@
 
         <div class="progress-indicator">
             <span id="progressText">Sección 1 de 7: Información General</span>
+            <span class="status-badge" id="statusBadge">0 errores · 0 advertencias</span>
         </div>
 
         <div class="content">
@@ -519,6 +593,13 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <div>
+                        <label>Hora de Inicio de Medición</label>
+                        <input type="time" class="input-manual" id="horaInicio" oninput="actualizarPeriodoAutomatico()">
+                    </div>
+                </div>
             </div>
 
             <!-- SECCIÓN 2: Equipos y Calibración -->
@@ -556,6 +637,15 @@
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <div>
+                        <label>Fecha Vencimiento Certificado Sonómetro</label>
+                        <input type="date" class="input-manual" id="fechaVencSonometro" oninput="validarVigenciaCertificados()">
+                    </div>
+                </div>
+
+                <div id="certificadoSonoStatus"></div>
+
                 <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
 
                 <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Calibrador Acústico</h3>
@@ -587,10 +677,12 @@
 
                 <div class="form-group">
                     <div>
-                        <label>Fecha Vencimiento Certificado</label>
-                        <input type="date" class="input-manual" id="fechaVencimiento">
+                        <label>Fecha Vencimiento Certificado Calibrador</label>
+                        <input type="date" class="input-manual" id="fechaVencCalibrador" oninput="validarVigenciaCertificados()">
                     </div>
                 </div>
+
+                <div id="certificadoCalibStatus"></div>
 
                 <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
 
@@ -625,6 +717,18 @@
                         <label>Diferencia Pre/Post (Drift) (dB)</label>
                         <input type="number" class="input-calculated" id="drift" disabled step="0.1">
                     </div>
+                    <div id="driftStatus"></div>
+                </div>
+
+                <div id="alertJustificacion" class="alert alert-warning" style="display:none;">
+                    <strong>⚠ Advertencia:</strong> El drift está entre 0.5 y 1.0 dB. Se requiere justificación.
+                </div>
+
+                <div id="justificacionDriftContainer" style="display:none;" class="dynamic-field">
+                    <div class="form-group full">
+                        <label>Justificación del Drift (requerido)</label>
+                        <textarea class="input-manual" id="justificacionDrift" placeholder="Explique los motivos de la desviación..."></textarea>
+                    </div>
                 </div>
 
                 <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
@@ -644,7 +748,6 @@
 
                 <div id="alertViento" class="alert alert-warning"></div>
                 <div id="alertLluvia" class="alert alert-danger"></div>
-                <div id="alertCertificado" class="alert alert-warning"></div>
 
                 <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Meteorología</h3>
 
@@ -689,6 +792,37 @@
 
                 <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
 
+                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Posicionamiento del Micrófono</h3>
+
+                <div class="form-group">
+                    <div>
+                        <label>Altura del Micrófono (m)
+                            <span class="label-note">Res. 0627 Art. 20: mínimo 1.2 m sobre el suelo</span>
+                        </label>
+                        <input type="number" class="input-manual" id="alturaM" step="0.1" min="0.1" placeholder="1.2 - 4.0" oninput="validarAlturaMicrófono()">
+                    </div>
+                    <div id="alturaStatus"></div>
+                </div>
+
+                <div class="form-group">
+                    <div>
+                        <label>Distancia a Superficies Reflectantes (m)
+                            <span class="label-note">Mínimo recomendado: 3.5 m</span>
+                        </label>
+                        <input type="number" class="input-manual" id="distSuperficies" step="0.1" min="0.1" placeholder="3.5+" oninput="validarDistanciaSuperficies()">
+                    </div>
+                    <div id="distSuperficiesStatus"></div>
+                </div>
+
+                <div class="form-group">
+                    <div>
+                        <label>Distancia a la Fuente (m)</label>
+                        <input type="number" class="input-manual" id="distFuente" step="0.1" min="0.1">
+                    </div>
+                </div>
+
+                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+
                 <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Fuente y Zona Receptora</h3>
 
                 <div class="form-group">
@@ -726,14 +860,6 @@
                             <option value="B">Sector B — Residencial/Educativo</option>
                             <option value="C">Sector C — Industrial</option>
                             <option value="D">Sector D — Suburbano/Rural</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Período</label>
-                        <select class="input-manual" id="periodo" oninput="actualizarEstandar()">
-                            <option value="">Seleccionar...</option>
-                            <option value="Diurno">Diurno (7:00 - 21:00)</option>
-                            <option value="Nocturno">Nocturno (21:00 - 7:00)</option>
                         </select>
                     </div>
                 </div>
@@ -1148,6 +1274,9 @@
                         <label>Sector Receptor</label>
                         <input type="text" class="input-calculated" id="sectorMostrado" disabled>
                     </div>
+                </div>
+
+                <div class="form-group">
                     <div>
                         <label>Período</label>
                         <input type="text" class="input-calculated" id="periodoMostrado" disabled>
@@ -1225,7 +1354,7 @@
 
         <div class="navigation">
             <button class="btn-secondary" id="btnPrev" onclick="prevSection()">← Anterior</button>
-            <button class="btn-primary" id="btnNext" onclick="nextSection()">Siguiente →</button>
+            <button class="btn-primary" id="btnNext" onclick="nextSection()" id="btnNextSection">Siguiente →</button>
         </div>
     </div>
 
@@ -1261,12 +1390,15 @@
 
         let currentSection = 1;
         const totalSections = 7;
+        let validationErrors = [];
+        let validationWarnings = [];
 
         // Inicializar
         window.addEventListener('load', function() {
             initializeSpectrum();
             setFechaHoy();
             showSection(1);
+            actualizarEstadoGlobal();
         });
 
         function setFechaHoy() {
@@ -1339,8 +1471,29 @@
         }
 
         // ============================================
-        // CÁLCULOS Y VALIDACIONES
+        // VALIDACIONES Y CÁLCULOS
         // ============================================
+
+        function actualizarEstadoGlobal() {
+            validationErrors = [];
+            validationWarnings = [];
+
+            // Recorrer validaciones
+            validarAlturaMicrófono();
+            validarDistanciaSuperficies();
+            calcularDrift();
+
+            // Actualizar badge
+            const badge = document.getElementById('statusBadge');
+            const errMsg = validationErrors.length > 0 ? `${validationErrors.length} errores` : '0 errores';
+            const warnMsg = validationWarnings.length > 0 ? `${validationWarnings.length} advertencias` : '0 advertencias';
+            badge.textContent = `${errMsg} · ${warnMsg}`;
+
+            // Deshabilitar botón siguiente si hay errores críticos
+            if (currentSection === 2 && validationErrors.length > 0) {
+                document.getElementById('btnNext').disabled = true;
+            }
+        }
 
         function calcularDrift() {
             const calibRef = parseFloat(document.getElementById('calibRef').value) || 0;
@@ -1355,16 +1508,114 @@
             document.getElementById('desvPost').value = desvPost.toFixed(2);
             document.getElementById('drift').value = drift.toFixed(2);
 
-            // Alerta drift
-            const alertDrift = document.getElementById('alertDrift');
-            if (drift > 0.5) {
-                alertDrift.classList.add('show');
-                alertDrift.innerHTML = '<strong>⚠ Supera tolerancia norma:</strong> Drift > 0.5 dB. Verificar calibración del equipo.';
+            // Semáforo de calibración
+            const driftStatusDiv = document.getElementById('driftStatus');
+            const alertJust = document.getElementById('alertJustificacion');
+            const justContainer = document.getElementById('justificacionDriftContainer');
+
+            if (drift <= 0.5) {
+                // Verde
+                driftStatusDiv.innerHTML = '<span class="validation-badge badge-success">✓ Dentro de tolerancia</span>';
+                alertJust.style.display = 'none';
+                justContainer.style.display = 'none';
+                validationErrors = validationErrors.filter(e => e !== 'DRIFT_CRITICAL');
+            } else if (drift > 0.5 && drift <= 1.0) {
+                // Amarillo - requiere justificación
+                driftStatusDiv.innerHTML = '<span class="validation-badge badge-warning">⚠ Advertencia: requiere justificación</span>';
+                alertJust.style.display = 'block';
+                justContainer.style.display = 'block';
+                validationWarnings = [...new Set([...validationWarnings, 'DRIFT_WARNING'])];
+                validationErrors = validationErrors.filter(e => e !== 'DRIFT_CRITICAL');
             } else {
-                alertDrift.classList.remove('show');
+                // Rojo - error crítico
+                driftStatusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Error crítico: medición inválida</span>';
+                alertJust.style.display = 'none';
+                justContainer.style.display = 'none';
+                validationErrors = [...new Set([...validationErrors, 'DRIFT_CRITICAL'])];
+                document.getElementById('btnNext').disabled = true;
             }
 
-            validarCertificado();
+            validarVigenciaCertificados();
+        }
+
+        function validarVigenciaCertificados() {
+            const fechaMedicion = document.getElementById('fechaInforme').value;
+            const fechaVencSono = document.getElementById('fechaVencSonometro').value;
+            const fechaVencCalib = document.getElementById('fechaVencCalibrador').value;
+
+            // Validar sonómetro
+            const sonoStatusDiv = document.getElementById('certificadoSonoStatus');
+            if (fechaMedicion && fechaVencSono) {
+                const diasRestantes = Math.floor((new Date(fechaVencSono) - new Date(fechaMedicion)) / (1000 * 60 * 60 * 24));
+
+                if (diasRestantes < 0) {
+                    sonoStatusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Certificado sonómetro vencido - medición inválida</span>';
+                    validationErrors = [...new Set([...validationErrors, 'CERT_SONO_VENCIDO'])];
+                } else if (diasRestantes < 30) {
+                    sonoStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Sonómetro vence pronto (${diasRestantes} días) - verificar</span>`;
+                    validationWarnings = [...new Set([...validationWarnings, 'CERT_SONO_PRONTO'])];
+                    validationErrors = validationErrors.filter(e => e !== 'CERT_SONO_VENCIDO');
+                } else if (diasRestantes <= 60) {
+                    sonoStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Próximo a vencer (${diasRestantes} días)</span>`;
+                    validationWarnings = [...new Set([...validationWarnings, 'CERT_SONO_PROXIMO'])];
+                    validationErrors = validationErrors.filter(e => e !== 'CERT_SONO_VENCIDO');
+                } else {
+                    sonoStatusDiv.innerHTML = '<span class="validation-badge badge-success">✓ Vigente</span>';
+                    validationErrors = validationErrors.filter(e => e.startsWith('CERT_SONO'));
+                    validationWarnings = validationWarnings.filter(w => !w.startsWith('CERT_SONO'));
+                }
+            }
+
+            // Validar calibrador
+            const calibStatusDiv = document.getElementById('certificadoCalibStatus');
+            if (fechaMedicion && fechaVencCalib) {
+                const diasRestantes = Math.floor((new Date(fechaVencCalib) - new Date(fechaMedicion)) / (1000 * 60 * 60 * 24));
+
+                if (diasRestantes < 0) {
+                    calibStatusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Certificado calibrador vencido - medición inválida</span>';
+                    validationErrors = [...new Set([...validationErrors, 'CERT_CALIB_VENCIDO'])];
+                } else if (diasRestantes < 30) {
+                    calibStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Calibrador vence pronto (${diasRestantes} días) - verificar</span>`;
+                    validationWarnings = [...new Set([...validationWarnings, 'CERT_CALIB_PRONTO'])];
+                    validationErrors = validationErrors.filter(e => e !== 'CERT_CALIB_VENCIDO');
+                } else if (diasRestantes <= 60) {
+                    calibStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Próximo a vencer (${diasRestantes} días)</span>`;
+                    validationWarnings = [...new Set([...validationWarnings, 'CERT_CALIB_PROXIMO'])];
+                    validationErrors = validationErrors.filter(e => e !== 'CERT_CALIB_VENCIDO');
+                } else {
+                    calibStatusDiv.innerHTML = '<span class="validation-badge badge-success">✓ Vigente</span>';
+                    validationErrors = validationErrors.filter(e => e.startsWith('CERT_CALIB'));
+                    validationWarnings = validationWarnings.filter(w => !w.startsWith('CERT_CALIB'));
+                }
+            }
+
+            actualizarEstadoGlobal();
+        }
+
+        function validarAlturaMicrófono() {
+            const altura = parseFloat(document.getElementById('alturaM').value);
+            const statusDiv = document.getElementById('alturaStatus');
+
+            if (altura < 1.2) {
+                statusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Art. 20 Res. 0627: altura mínima es 1.2 m</span>';
+                validationErrors = [...new Set([...validationErrors, 'ALTURA_BAJA'])];
+            } else {
+                statusDiv.innerHTML = '<span class="validation-badge badge-success">✓ Altura válida</span>';
+                validationErrors = validationErrors.filter(e => e !== 'ALTURA_BAJA');
+            }
+        }
+
+        function validarDistanciaSuperficies() {
+            const distancia = parseFloat(document.getElementById('distSuperficies').value);
+            const statusDiv = document.getElementById('distSuperficiesStatus');
+
+            if (distancia < 3.5) {
+                statusDiv.innerHTML = '<span class="validation-badge badge-warning">⚠ Res. 0627: se recomienda mínimo 3.5 m de superficies reflectantes</span>';
+                validationWarnings = [...new Set([...validationWarnings, 'DIST_BAJA'])];
+            } else {
+                statusDiv.innerHTML = '<span class="validation-badge badge-success">✓ Distancia adecuada</span>';
+                validationWarnings = validationWarnings.filter(w => w !== 'DIST_BAJA');
+            }
         }
 
         function validarViento() {
@@ -1391,30 +1642,34 @@
             }
         }
 
-        function validarCertificado() {
-            const fechaMedicion = document.getElementById('fechaInforme').value;
-            const fechaVencimiento = document.getElementById('fechaVencimiento').value;
-            const alertCert = document.getElementById('alertCertificado');
+        function actualizarPeriodoAutomatico() {
+            const horaInicio = document.getElementById('horaInicio').value;
+            if (!horaInicio) return;
 
-            if (fechaMedicion && fechaVencimiento) {
-                if (new Date(fechaMedicion) > new Date(fechaVencimiento)) {
-                    alertCert.classList.add('show');
-                    alertCert.innerHTML = '<strong>⚠ Certificado vencido:</strong> Fecha de medición es posterior a vencimiento de certificado. Actualizar calibración.';
-                } else {
-                    alertCert.classList.remove('show');
-                }
+            const [horas, minutos] = horaInicio.split(':').map(Number);
+            let periodo = '';
+
+            // Diurno: 07:01 a 21:00
+            // Nocturno: 21:01 a 07:00
+            if ((horas > 7 || (horas === 7 && minutos > 0)) && horas < 21) {
+                periodo = 'Diurno';
+            } else {
+                periodo = 'Nocturno';
             }
+
+            document.getElementById('periodoMostrado').value = periodo;
+            document.getElementById('periodo').value = periodo;
+            actualizarEstandar();
         }
 
         function actualizarEstandar() {
             const sector = document.getElementById('sectorReceptor').value;
-            const periodo = document.getElementById('periodo').value;
+            const periodo = document.getElementById('periodoMostrado').value || document.getElementById('periodo').value;
 
             if (sector && periodo) {
                 const estandar = STANDARDS[sector][periodo];
                 document.getElementById('estandarPermisible').value = estandar;
                 document.getElementById('sectorMostrado').value = `Sector ${sector}`;
-                document.getElementById('periodoMostrado').value = periodo;
             }
 
             actualizarCalculos();
