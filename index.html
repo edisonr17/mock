@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/konva@9/konva.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -76,6 +77,24 @@
             align-items: center;
             gap: 8px;
             min-width: 70px;
+            transition: transform 0.2s ease;
+        }
+
+        .step.clickable {
+            cursor: pointer;
+        }
+
+        .step.clickable:hover {
+            transform: scale(1.05);
+        }
+
+        .step.clickable:hover .step-circle {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .step.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
         }
 
         .step-circle {
@@ -1122,6 +1141,227 @@
                 margin-bottom: 24px;
             }
         }
+
+        /* ============================================
+           CROQUIS DE UBICACIÓN
+           ============================================ */
+        .croquis-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .croquis-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .croquis-toolbar-title {
+            width: 100%;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 2px;
+        }
+
+        .toolbar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            background: white;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.15s ease;
+            min-width: 64px;
+        }
+
+        .toolbar-item:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(59, 130, 246, 0.15);
+        }
+
+        .toolbar-item:active {
+            cursor: grabbing;
+            transform: translateY(0);
+        }
+
+        .toolbar-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .toolbar-icon.medicion  { background: #ef4444; }
+        .toolbar-icon.fuente    { background: #f97316; border-radius: 6px; }
+        .toolbar-icon.receptor  { background: #3b82f6; }
+        .toolbar-icon.edificio  { background: #9ca3af; border-radius: 4px; width: 36px; height: 28px; }
+        .toolbar-icon.arbol     { background: #22c55e; font-size: 16px; }
+        .toolbar-icon.barrera   { background: #7c3aed; border-radius: 4px; width: 40px; height: 14px; }
+        .toolbar-icon.flecha    { background: #0ea5e9; font-size: 16px; }
+        .toolbar-icon.etiqueta  { background: #f1f5f9; border: 1.5px solid #cbd5e1; border-radius: 4px; color: #334155; font-size: 10px; font-weight: 600; }
+
+        .toolbar-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: #64748b;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .croquis-canvas-wrapper {
+            position: relative;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f9fafb;
+            transition: border-color 0.15s ease;
+        }
+
+        .croquis-canvas-wrapper.drag-over {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .croquis-canvas-wrapper #konva-container {
+            display: block;
+        }
+
+        .croquis-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .croquis-hint.hidden {
+            opacity: 0;
+        }
+
+        .croquis-hint-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .croquis-hint p {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .croquis-hint p.sub {
+            font-size: 11px;
+            color: #cbd5e1;
+            margin-top: 4px;
+        }
+
+        .croquis-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .croquis-actions-left {
+            display: flex;
+            gap: 8px;
+        }
+
+        .croquis-legend {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .legend-dot.fuente    { background: #f97316; border-radius: 2px; }
+        .legend-dot.medicion  { background: #ef4444; }
+        .legend-dot.receptor  { background: #3b82f6; }
+
+        .btn-croquis {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1.5px solid;
+            transition: all 0.15s ease;
+        }
+
+        .btn-croquis:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-croquis.secondary {
+            background: white;
+            border-color: #e2e8f0;
+            color: #64748b;
+        }
+
+        .btn-croquis.secondary:hover {
+            border-color: #94a3b8;
+            color: #374151;
+        }
+
+        .btn-croquis.danger {
+            background: white;
+            border-color: #fca5a5;
+            color: #ef4444;
+        }
+
+        .btn-croquis.danger:hover {
+            background: #fef2f2;
+        }
+
+        .btn-croquis.primary {
+            background: #1a2744;
+            border-color: #1a2744;
+            color: white;
+        }
+
+        .btn-croquis.primary:hover {
+            background: #243561;
+        }
     </style>
 </head>
 <body>
@@ -1629,16 +1869,92 @@
                 <div class="field-group">
                     <h3>Croquis de Ubicación</h3>
 
-                    <div class="info-box">
-                        <strong>Nota:</strong> En este prototipo, el croquis es un placeholder. En la versión final, sería un área para insertar imagen o SVG interactivo mostrando ubicación de fuente, receptor y puntos de medición.
+                    <div class="croquis-wrapper">
+
+                        <!-- Toolbar de símbolos -->
+                        <div class="croquis-toolbar" id="croquisToolbar">
+                            <div class="croquis-toolbar-title">Arrastrar al croquis</div>
+
+                            <div class="toolbar-item" draggable="true" data-type="medicion" title="Punto de Medición">
+                                <div class="toolbar-icon medicion">M</div>
+                                <span class="toolbar-label">Pto. Medición</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="fuente" title="Fuente de Ruido">
+                                <div class="toolbar-icon fuente">F</div>
+                                <span class="toolbar-label">Fuente</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="receptor" title="Receptor">
+                                <div class="toolbar-icon receptor">R</div>
+                                <span class="toolbar-label">Receptor</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="edificio" title="Edificio">
+                                <div class="toolbar-icon edificio">Ed</div>
+                                <span class="toolbar-label">Edificio</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="arbol" title="Árbol / Barrera natural">
+                                <div class="toolbar-icon arbol">♣</div>
+                                <span class="toolbar-label">Árbol</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="barrera" title="Barrera Acústica">
+                                <div class="toolbar-icon barrera"></div>
+                                <span class="toolbar-label">Barrera</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="flecha" title="Flecha de dirección">
+                                <div class="toolbar-icon flecha">→</div>
+                                <span class="toolbar-label">Flecha</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="etiqueta" title="Etiqueta de texto">
+                                <div class="toolbar-icon etiqueta">Aa</div>
+                                <span class="toolbar-label">Etiqueta</span>
+                            </div>
+                        </div>
+
+                        <!-- Canvas Konva -->
+                        <div class="croquis-canvas-wrapper" id="croquisCanvasWrapper">
+                            <div id="konva-container"></div>
+                            <div class="croquis-hint" id="croquisHint">
+                                <div class="croquis-hint-icon">🗺️</div>
+                                <p>Arrastra símbolos aquí para construir el croquis</p>
+                                <p class="sub">Fuente · Receptor · Puntos de Medición · Edificios</p>
+                            </div>
+                        </div>
+
+                        <!-- Acciones -->
+                        <div class="croquis-actions">
+                            <div class="croquis-legend">
+                                <div class="legend-item">
+                                    <div class="legend-dot medicion"></div> Pto. Medición
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-dot fuente"></div> Fuente
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-dot receptor"></div> Receptor
+                                </div>
+                                <span style="font-size:11px; color:#94a3b8; margin-left:4px;">
+                                    Clic para seleccionar · Supr para eliminar · Doble clic en etiqueta para editar
+                                </span>
+                            </div>
+                            <div class="croquis-actions-left">
+                                <button class="btn-croquis danger" onclick="limpiarCroquis()" title="Limpiar todos los elementos">
+                                    🗑 Limpiar
+                                </button>
+                                <button class="btn-croquis primary" onclick="exportarCroquis()" title="Exportar como imagen PNG">
+                                    ⬇ Exportar PNG
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div style="border: 2px dashed #bdc3c7; border-radius: 8px; padding: 48px; text-align: center; background: #f9fafb; margin: 20px 0;">
-                        <p style="color: #6b7280; font-size: 14px; font-weight: 500;">Área de Diagrama/Croquis</p>
-                        <p style="color: #9ca3af; font-size: 13px;">Fuente — Receptor — Puntos de Medición</p>
-                    </div>
-
-                    <div class="form-group">
+                    <div class="form-group" style="margin-top: 20px;">
                         <div class="form-item">
                             <label>Latitud Punto Medición</label>
                             <input type="number" class="input-manual" id="latitudMedicion" placeholder="4.7110" step="0.0001" aria-label="Latitud del punto de medición">
@@ -2211,6 +2527,12 @@
 
                 step.appendChild(circle);
                 step.appendChild(label);
+
+                // Agregar evento de clic para navegación entre steps
+                step.addEventListener('click', function() {
+                    goToStep(i);
+                });
+
                 container.appendChild(step);
 
                 if (i < totalSections) {
@@ -2219,6 +2541,8 @@
                     container.appendChild(connector);
                 }
             }
+
+            updateStepClickability();
         }
 
         function setFechaHoy() {
@@ -2275,6 +2599,7 @@
             btnNext.disabled = (n === totalSections);
             btnNext.textContent = n === totalSections ? 'Finalizar' : `Siguiente: ${SECTION_NAMES[n]} →`;
 
+            updateStepClickability();
             window.scrollTo(0, 0);
         }
 
@@ -2289,6 +2614,47 @@
             if (currentSection > 1) {
                 currentSection--;
                 showSection(currentSection);
+            }
+        }
+
+        function updateStepClickability() {
+            document.querySelectorAll('.step').forEach((step, idx) => {
+                const stepNumber = idx + 1;
+                step.classList.remove('clickable', 'disabled');
+
+                // Un step es clickable si:
+                // 1. Está en una sección ya visitada (completada o actual), O
+                // 2. Es el siguiente inmediato después de la sección actual
+                if (stepNumber <= currentSection + 1) {
+                    step.classList.add('clickable');
+                } else {
+                    step.classList.add('disabled');
+                }
+            });
+        }
+
+        function goToStep(stepNumber) {
+            // Solo permitir navegar a steps ya visitados o al siguiente inmediato
+            if (stepNumber > currentSection + 1) {
+                return; // Step no alcanzable
+            }
+
+            // Si el destino es hacia atrás, permitir siempre
+            if (stepNumber < currentSection) {
+                currentSection = stepNumber;
+                showSection(currentSection);
+                updateStepClickability();
+                return;
+            }
+
+            // Si es hacia adelante, permitir solo si es el siguiente inmediato
+            if (stepNumber === currentSection + 1) {
+                // Aquí se podría validar la sección actual antes de avanzar
+                // Por ahora, permitimos avanzar sin restricciones
+                // Los errores críticos ya bloquean el botón "Siguiente"
+                currentSection = stepNumber;
+                showSection(currentSection);
+                updateStepClickability();
             }
         }
 
@@ -2621,6 +2987,347 @@
         function generarPDF() {
             alert('Funcionalidad de PDF pendiente de implementación.');
         }
+
+        // ============================================
+        // CROQUIS DE UBICACIÓN — Konva.js
+        // ============================================
+        let croquisStage = null;
+        let croquisLayer = null;
+        let selectedGroup = null;
+        let medicionCounter = 0;
+        let symbolCount = 0;
+
+        const SYMBOL_DEFS = {
+            medicion: { label: () => `M${++medicionCounter}`, fill: '#ef4444', stroke: '#dc2626', shape: 'circle', r: 18, textColor: 'white' },
+            fuente:   { label: () => 'F',  fill: '#f97316', stroke: '#ea580c', shape: 'rect', w: 36, h: 36, textColor: 'white' },
+            receptor: { label: () => 'R',  fill: '#3b82f6', stroke: '#2563eb', shape: 'circle', r: 18, textColor: 'white' },
+            edificio: { label: () => 'Ed', fill: '#d1d5db', stroke: '#9ca3af', shape: 'rect', w: 56, h: 40, textColor: '#374151' },
+            arbol:    { label: () => '♣',  fill: '#4ade80', stroke: '#16a34a', shape: 'circle', r: 16, textColor: '#166534', fontSize: 18 },
+            barrera:  { label: () => '',   fill: '#7c3aed', stroke: '#5b21b6', shape: 'rect', w: 64, h: 12, textColor: 'white' },
+            flecha:   { label: () => '',   fill: '#0ea5e9', stroke: '#0284c7', shape: 'arrow' },
+            etiqueta: { label: () => 'Texto', fill: 'white', stroke: '#cbd5e1', shape: 'label', textColor: '#1e293b' },
+        };
+
+        function initCroquis() {
+            if (!window.Konva) return;
+            const wrapper = document.getElementById('croquisCanvasWrapper');
+            if (!wrapper) return;
+
+            const width  = wrapper.offsetWidth || 800;
+            const height = 380;
+
+            croquisStage = new Konva.Stage({ container: 'konva-container', width, height });
+
+            // Fondo con cuadrícula
+            const bgLayer = new Konva.Layer({ listening: false });
+            bgLayer.add(new Konva.Rect({ width, height, fill: '#f9fafb' }));
+            const gridStep = 40, gridColor = '#e5e7eb';
+            for (let x = 0; x <= width; x += gridStep) {
+                bgLayer.add(new Konva.Line({ points: [x, 0, x, height], stroke: gridColor, strokeWidth: 1 }));
+            }
+            for (let y = 0; y <= height; y += gridStep) {
+                bgLayer.add(new Konva.Line({ points: [0, y, width, y], stroke: gridColor, strokeWidth: 1 }));
+            }
+            croquisStage.add(bgLayer);
+
+            // Capa principal de símbolos
+            croquisLayer = new Konva.Layer();
+            croquisStage.add(croquisLayer);
+
+            // Deseleccionar al hacer clic en el fondo
+            croquisStage.on('click', function(e) {
+                if (e.target === croquisStage) deselectAll();
+            });
+            bgLayer.on('click', deselectAll);
+
+            // Suprimir símbolo seleccionado con Delete
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Delete' && selectedGroup) {
+                    const tag = document.activeElement.tagName;
+                    if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+                        deleteSelected();
+                    }
+                }
+            });
+
+            // Drag-and-drop desde la toolbar HTML al canvas Konva
+            wrapper.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                wrapper.classList.add('drag-over');
+            });
+            wrapper.addEventListener('dragleave', function() {
+                wrapper.classList.remove('drag-over');
+            });
+            wrapper.addEventListener('drop', function(e) {
+                e.preventDefault();
+                wrapper.classList.remove('drag-over');
+                const type = e.dataTransfer.getData('symbolType');
+                if (!type) return;
+                const rect = wrapper.getBoundingClientRect();
+                addSymbol(type, e.clientX - rect.left, e.clientY - rect.top);
+            });
+
+            // Registrar dragstart en cada toolbar-item
+            document.querySelectorAll('#croquisToolbar .toolbar-item').forEach(function(item) {
+                item.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('symbolType', this.dataset.type);
+                    e.dataTransfer.effectAllowed = 'copy';
+                });
+            });
+        }
+
+        function addSymbol(type, x, y) {
+            const def = SYMBOL_DEFS[type];
+            if (!def) return;
+
+            symbolCount++;
+            const group = new Konva.Group({ x, y, draggable: true, id: 'sym-' + symbolCount });
+
+            // Rectángulo de selección (oculto por defecto)
+            const selBox = new Konva.Rect({
+                name: 'sel-box',
+                stroke: '#3b82f6',
+                strokeWidth: 2,
+                dash: [5, 3],
+                fill: 'rgba(59,130,246,0.06)',
+                cornerRadius: 4,
+                visible: false,
+                listening: false,
+            });
+            group.add(selBox);
+
+            // Forma principal
+            if (def.shape === 'circle') {
+                group.add(new Konva.Circle({
+                    radius: def.r,
+                    fill: def.fill, stroke: def.stroke, strokeWidth: 2,
+                    shadowColor: 'black', shadowBlur: 6,
+                    shadowOffset: { x: 1, y: 2 }, shadowOpacity: 0.18,
+                }));
+                const lbl = def.label();
+                if (lbl) {
+                    group.add(new Konva.Text({
+                        text: lbl,
+                        fontSize: def.fontSize || 12, fontStyle: 'bold',
+                        fontFamily: 'Inter, sans-serif', fill: def.textColor,
+                        align: 'center', width: def.r * 2,
+                        offsetX: def.r, offsetY: (def.fontSize || 12) / 2,
+                        listening: false,
+                    }));
+                }
+                selBox.setAttrs({ x: -def.r - 6, y: -def.r - 6, width: def.r * 2 + 12, height: def.r * 2 + 12 });
+
+            } else if (def.shape === 'rect') {
+                group.add(new Konva.Rect({
+                    width: def.w, height: def.h,
+                    offsetX: def.w / 2, offsetY: def.h / 2,
+                    fill: def.fill, stroke: def.stroke, strokeWidth: 2,
+                    cornerRadius: type === 'barrera' ? 3 : 5,
+                    shadowColor: 'black', shadowBlur: 6,
+                    shadowOffset: { x: 1, y: 2 }, shadowOpacity: 0.18,
+                }));
+                const lbl = def.label();
+                if (lbl) {
+                    group.add(new Konva.Text({
+                        text: lbl,
+                        fontSize: 12, fontStyle: 'bold',
+                        fontFamily: 'Inter, sans-serif', fill: def.textColor,
+                        align: 'center', width: def.w,
+                        offsetX: def.w / 2, offsetY: 7,
+                        listening: false,
+                    }));
+                }
+                selBox.setAttrs({ x: -def.w / 2 - 6, y: -def.h / 2 - 6, width: def.w + 12, height: def.h + 12 });
+
+            } else if (def.shape === 'arrow') {
+                group.add(new Konva.Arrow({
+                    points: [-28, 0, 28, 0],
+                    pointerLength: 12, pointerWidth: 10,
+                    fill: def.fill, stroke: def.stroke, strokeWidth: 5,
+                    shadowColor: 'black', shadowBlur: 4, shadowOpacity: 0.15,
+                }));
+                selBox.setAttrs({ x: -34, y: -12, width: 68, height: 24 });
+
+            } else if (def.shape === 'label') {
+                const textNode = new Konva.Text({
+                    text: def.label(),
+                    fontSize: 13, fontFamily: 'Inter, sans-serif',
+                    fill: def.textColor, padding: 8,
+                    name: 'label-text',
+                });
+                const tw = textNode.width();
+                const th = textNode.height();
+                textNode.setAttrs({ offsetX: tw / 2, offsetY: th / 2 });
+                group.add(new Konva.Rect({
+                    width: tw, height: th,
+                    offsetX: tw / 2, offsetY: th / 2,
+                    fill: def.fill, stroke: def.stroke, strokeWidth: 1.5,
+                    cornerRadius: 4,
+                    shadowColor: 'black', shadowBlur: 4, shadowOpacity: 0.1,
+                }));
+                group.add(textNode);
+                selBox.setAttrs({ x: -tw / 2 - 6, y: -th / 2 - 6, width: tw + 12, height: th + 12 });
+
+                // Doble clic para editar texto
+                group.on('dblclick dbltap', function() {
+                    editarEtiqueta(group, textNode);
+                });
+            }
+
+            // Botón de eliminar (esquina superior derecha del selBox)
+            const deleteBtn = new Konva.Group({
+                name: 'delete-btn',
+                visible: false,
+            });
+            const bx = selBox.x() + selBox.width() - 8;
+            const by = selBox.y() - 8;
+            deleteBtn.add(new Konva.Circle({ x: bx, y: by, radius: 9, fill: '#ef4444', stroke: 'white', strokeWidth: 1.5 }));
+            deleteBtn.add(new Konva.Text({ x: bx, y: by, text: '×', fontSize: 13, fontStyle: 'bold', fill: 'white', offsetX: 4, offsetY: 7, listening: false }));
+            deleteBtn.on('click tap', function(e) { e.cancelBubble = true; deleteSelected(); });
+            group.add(deleteBtn);
+
+            // Eventos del grupo
+            group.on('click tap', function(e) {
+                e.cancelBubble = true;
+                selectSymbol(group);
+            });
+            group.on('dragstart', function() {
+                selectSymbol(group);
+                group.moveToTop();
+            });
+            group.on('dragend', function() {
+                // Snapping suave a cuadrícula de 10px
+                group.position({
+                    x: Math.round(group.x() / 10) * 10,
+                    y: Math.round(group.y() / 10) * 10,
+                });
+                croquisLayer.batchDraw();
+            });
+
+            croquisLayer.add(group);
+            croquisLayer.batchDraw();
+            selectSymbol(group);
+            updateHint();
+        }
+
+        function selectSymbol(group) {
+            deselectAll();
+            selectedGroup = group;
+            group.findOne('.sel-box').visible(true);
+            group.findOne('.delete-btn').visible(true);
+            croquisLayer.batchDraw();
+        }
+
+        function deselectAll() {
+            if (selectedGroup) {
+                selectedGroup.findOne('.sel-box').visible(false);
+                selectedGroup.findOne('.delete-btn').visible(false);
+                selectedGroup = null;
+                croquisLayer.batchDraw();
+            }
+        }
+
+        function deleteSelected() {
+            if (!selectedGroup) return;
+            selectedGroup.destroy();
+            selectedGroup = null;
+            croquisLayer.batchDraw();
+            updateHint();
+        }
+
+        function limpiarCroquis() {
+            if (!croquisLayer) return;
+            if (croquisLayer.children.length === 0) return;
+            if (!confirm('¿Limpiar todos los elementos del croquis?')) return;
+            croquisLayer.destroyChildren();
+            croquisLayer.batchDraw();
+            selectedGroup = null;
+            medicionCounter = 0;
+            updateHint();
+        }
+
+        function exportarCroquis() {
+            if (!croquisStage) return;
+            deselectAll();
+            const dataURL = croquisStage.toDataURL({ pixelRatio: 2 });
+            const link = document.createElement('a');
+            link.download = 'croquis-ubicacion.png';
+            link.href = dataURL;
+            link.click();
+        }
+
+        function editarEtiqueta(group, textNode) {
+            deselectAll();
+            const stageBox  = croquisStage.container().getBoundingClientRect();
+            const absPos    = group.getAbsolutePosition();
+            const scale     = croquisStage.scaleX();
+
+            const input = document.createElement('input');
+            input.type  = 'text';
+            input.value = textNode.text();
+            input.style.cssText = `
+                position: fixed;
+                top: ${stageBox.top + absPos.y - 16}px;
+                left: ${stageBox.left + absPos.x - 60}px;
+                width: 120px;
+                padding: 4px 8px;
+                font-size: 13px;
+                font-family: Inter, sans-serif;
+                border: 2px solid #3b82f6;
+                border-radius: 4px;
+                background: white;
+                z-index: 9999;
+                outline: none;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+
+            document.body.appendChild(input);
+            input.focus();
+            input.select();
+
+            function commit() {
+                const val = input.value.trim() || 'Texto';
+                textNode.text(val);
+                // Recentrar
+                textNode.offsetX(textNode.width() / 2);
+                textNode.offsetY(textNode.height() / 2);
+                const rect = group.findOne('Rect');
+                if (rect) {
+                    rect.width(textNode.width());
+                    rect.height(textNode.height());
+                    rect.offsetX(textNode.width() / 2);
+                    rect.offsetY(textNode.height() / 2);
+                }
+                croquisLayer.batchDraw();
+                document.body.removeChild(input);
+            }
+
+            input.addEventListener('blur', commit);
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === 'Escape') input.blur();
+            });
+        }
+
+        function updateHint() {
+            const hint = document.getElementById('croquisHint');
+            if (!hint || !croquisLayer) return;
+            const hasSymbols = croquisLayer.children.length > 0;
+            hint.classList.toggle('hidden', hasSymbols);
+        }
+
+        // Inicializar croquis cuando la sección 4 se active
+        const _origShowSection = window.showSection;
+        window.addEventListener('load', function() {
+            // Parchamos showSection para inicializar Konva al llegar a la sección 4
+            const orig = window.showSection;
+            window.showSection = function(n) {
+                orig(n);
+                if (n === 4 && !croquisStage) {
+                    setTimeout(initCroquis, 60);
+                }
+            };
+        });
     </script>
 </body>
 </html>
