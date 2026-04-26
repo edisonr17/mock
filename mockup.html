@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario 24-001-A30 — Informe Técnico Emisión de Ruido</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inconsolata:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/konva@9/konva.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,110 +16,310 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f6fa;
             padding: 20px;
             min-height: 100vh;
+            padding-bottom: 120px;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
             overflow: hidden;
         }
 
+        /* ============================================
+           HEADER
+           ============================================ */
         .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: #1a2744;
             color: white;
-            padding: 30px;
+            padding: 40px;
             text-align: center;
+            border-bottom: 4px solid #27ae60;
         }
 
         .header h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
         }
 
         .header p {
             font-size: 14px;
-            opacity: 0.9;
+            font-weight: 500;
+            color: #a8b8c8;
+            letter-spacing: 0.3px;
         }
 
+        /* ============================================
+           STEPS INDICADOR
+           ============================================ */
+        .steps-container {
+            padding: 30px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            min-width: 70px;
+            transition: transform 0.2s ease;
+        }
+
+        .step.clickable {
+            cursor: pointer;
+        }
+
+        .step.clickable:hover {
+            transform: scale(1.05);
+        }
+
+        .step.clickable:hover .step-circle {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .step.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .step-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: 2px solid #d1d5db;
+            background: white;
+            color: #6b7280;
+        }
+
+        .step.active .step-circle {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .step.completed .step-circle {
+            background: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+
+        .step-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            text-align: center;
+            max-width: 80px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .step.active .step-label {
+            color: #2563eb;
+            font-weight: 600;
+        }
+
+        .step-connector {
+            width: 30px;
+            height: 2px;
+            background: #e2e8f0;
+            margin-top: 22px;
+            flex-shrink: 0;
+        }
+
+        /* ============================================
+           STATUS BAR INFERIOR
+           ============================================ */
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            padding: 16px 20px;
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .status-bar.critical {
+            border-top-color: #dc2626;
+            border-top-width: 3px;
+        }
+
+        .status-bar.warning {
+            border-top-color: #ca8a04;
+            border-top-width: 3px;
+        }
+
+        .status-bar.success {
+            border-top-color: #16a34a;
+            border-top-width: 3px;
+        }
+
+        .status-text {
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+            flex-grow: 1;
+        }
+
+        .status-counts {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .status-count {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-count.errors {
+            color: #dc2626;
+        }
+
+        .status-count.warnings {
+            color: #ca8a04;
+        }
+
+        .status-count.ok {
+            color: #16a34a;
+        }
+
+        /* ============================================
+           PROGRESS BAR
+           ============================================ */
         .progress-bar {
             background: #ecf0f1;
-            height: 6px;
+            height: 4px;
             display: flex;
         }
 
         .progress-fill {
-            background: #3498db;
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
             height: 100%;
             transition: width 0.3s ease;
         }
 
-        .progress-indicator {
-            padding: 15px 30px;
-            background: #ecf0f1;
-            border-bottom: 1px solid #ddd;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .status-badge {
-            display: inline-block;
-            font-size: 12px;
-            padding: 4px 12px;
-            margin-left: 15px;
-            border-radius: 12px;
-            background: #d5f4e6;
-            color: #186a3b;
-        }
-
+        /* ============================================
+           CONTENIDO
+           ============================================ */
         .content {
-            padding: 30px;
+            padding: 40px;
             min-height: 600px;
         }
 
         .section {
             display: none;
+            animation: fadeIn 0.3s ease;
         }
 
         .section.active {
             display: block;
-            animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ============================================
+           SECCIONES
+           ============================================ */
         .section-title {
+            background: #1a2744;
+            color: white;
+            padding: 16px 20px;
+            margin: -40px -40px 28px -40px;
             font-size: 20px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #3498db;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .section-title-emoji {
+            font-size: 24px;
+            line-height: 1;
         }
 
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f4f8;
         }
 
         .status-counter {
             font-size: 12px;
-            color: #7f8c8d;
+            color: #9ca3af;
+            font-weight: 500;
         }
 
+        /* ============================================
+           FIELDSET CUSTOM (Agrupación de campos)
+           ============================================ */
+        .field-group {
+            margin-bottom: 32px;
+            padding: 20px;
+            background: #f8fafc;
+            border-left: 3px solid #2563eb;
+            border-radius: 8px;
+        }
+
+        .field-group h3 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .field-group h3::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: #2563eb;
+            border-radius: 2px;
+        }
+
+        /* ============================================
+           FORMULARIO
+           ============================================ */
         .form-group {
             margin-bottom: 20px;
             display: grid;
@@ -137,20 +341,25 @@
 
         label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 5px;
+            color: #374151;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
         }
 
         .label-note {
             font-size: 11px;
             font-weight: 400;
-            color: #7f8c8d;
+            color: #9ca3af;
             display: block;
-            margin-top: 2px;
+            margin-top: 3px;
+            text-transform: none;
+            letter-spacing: 0;
         }
 
+        /* Inputs: altura mínima 44px + font-size 16px (evita zoom en iOS) */
         input[type="text"],
         input[type="number"],
         input[type="date"],
@@ -159,12 +368,15 @@
         select,
         textarea {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #bdc3c7;
-            border-radius: 4px;
-            font-size: 13px;
-            font-family: inherit;
-            transition: border-color 0.2s;
+            padding: 12px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Inter', inherit;
+            transition: all 0.2s ease;
+            background: white;
+            color: #1f2937;
+            min-height: 44px;
         }
 
         input[type="text"]:focus,
@@ -175,36 +387,76 @@
         select:focus,
         textarea:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            background: white;
         }
 
-        /* Campos manuales (amarillo) */
+        /* Campos manuales (amarillo suave) */
         .input-manual {
-            background: #fffacd;
+            background: #fffbeb;
+            border-color: #fde68a;
         }
 
-        /* Campos calculados (gris claro) */
+        .input-manual:focus {
+            border-color: #2563eb;
+            background: white;
+        }
+
+        /* Campos calculados (azul muy claro) con sufijo de unidad */
         .input-calculated {
-            background: #f0f0f0;
-            color: #555;
+            background: #f0f9ff;
+            color: #1d4ed8;
+            border-color: #bfdbfe;
+            border-style: dashed;
+            cursor: default;
         }
 
         .input-calculated:disabled {
             cursor: not-allowed;
+            opacity: 1;
+        }
+
+        .input-calculated:focus {
+            border-style: dashed;
+        }
+
+        /* Wrapper para sufijo de unidad */
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding-right: 40px;
+        }
+
+        .input-unit {
+            position: absolute;
+            right: 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #9ca3af;
+            pointer-events: none;
         }
 
         textarea {
             resize: vertical;
-            min-height: 80px;
-            font-family: inherit;
+            min-height: 100px;
+            font-family: 'Inter', inherit;
         }
 
+        /* ============================================
+           RADIO Y CHECKBOX
+           ============================================ */
         .radio-group {
             display: flex;
-            gap: 30px;
+            gap: 28px;
             align-items: center;
-            margin-top: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
         }
 
         .radio-item {
@@ -215,9 +467,10 @@
 
         input[type="radio"],
         input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
+            accent-color: #2563eb;
         }
 
         .radio-item label {
@@ -225,42 +478,56 @@
             font-weight: 400;
             cursor: pointer;
             user-select: none;
+            text-transform: none;
+            letter-spacing: 0;
+            font-size: 14px;
+            color: #374151;
         }
 
-        /* Badge de validación inline */
+        /* ============================================
+           BADGES
+           ============================================ */
         .validation-badge {
             display: inline-block;
-            font-size: 11px;
-            padding: 3px 8px;
+            font-size: 12px;
+            padding: 6px 12px;
             margin-left: 8px;
-            border-radius: 3px;
+            border-radius: 20px;
             font-weight: 600;
             white-space: nowrap;
         }
 
         .badge-success {
-            background: #d5f4e6;
-            color: #186a3b;
+            background: #dcfce7;
+            color: #16a34a;
         }
 
         .badge-warning {
-            background: #fef5e7;
-            color: #c77e1e;
+            background: #fef9c3;
+            color: #ca8a04;
         }
 
         .badge-danger {
-            background: #fadbd8;
-            color: #a93226;
+            background: #fee2e2;
+            color: #dc2626;
         }
 
-        /* Alertas */
+        .badge-info {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        /* ============================================
+           ALERTAS MEJORADAS
+           ============================================ */
         .alert {
-            padding: 12px 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
+            padding: 16px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
             font-size: 13px;
             border-left: 4px solid;
             display: none;
+            line-height: 1.6;
         }
 
         .alert.show {
@@ -268,159 +535,220 @@
         }
 
         .alert-warning {
-            background: #fef5e7;
-            border-color: #f39c12;
-            color: #c77e1e;
+            background: #fef9c3;
+            border-color: #ca8a04;
+            color: #92400e;
+        }
+
+        .alert-warning strong {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
         }
 
         .alert-danger {
-            background: #fadbd8;
-            border-color: #e74c3c;
-            color: #a93226;
+            background: #fee2e2;
+            border-color: #dc2626;
+            color: #7f1d1d;
+        }
+
+        .alert-danger strong {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
         }
 
         .alert-success {
-            background: #d5f4e6;
-            border-color: #27ae60;
-            color: #186a3b;
+            background: #dcfce7;
+            border-color: #16a34a;
+            color: #15803d;
         }
 
         .alert-info {
-            background: #d6eaf8;
-            border-color: #3498db;
-            color: #154360;
+            background: #dbeafe;
+            border-color: #2563eb;
+            color: #1e40af;
         }
 
-        /* Tabla compacta de espectro */
+        /* ============================================
+           TABLA DE ESPECTRO MEJORADA
+           ============================================ */
+        .spectrum-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
         .spectrum-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
-            margin: 15px 0;
-            background: #f9f9f9;
+            font-size: 13px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            min-width: 600px;
         }
 
         .spectrum-table th {
-            background: #34495e;
+            background: #1a2744;
             color: white;
-            padding: 8px;
+            padding: 12px;
             text-align: center;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.3px;
         }
 
         .spectrum-table td {
-            padding: 8px;
-            border: 1px solid #ddd;
+            padding: 10px 12px;
+            border: 1px solid #f0f4f8;
             text-align: center;
+            background: white;
         }
 
-        .spectrum-table tr:nth-child(even) {
-            background: #f0f0f0;
+        .spectrum-table tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+
+        /* Frecuencias octava completa: resaltar (63, 125, 250, 500, 1k, 2k, 4k, 8k) */
+        .spectrum-table td.freq-octave {
+            background: #fef3c7;
+            font-weight: 700;
+        }
+
+        .spectrum-table tr:nth-child(even) td.freq-octave {
+            background: #fcd34d;
         }
 
         .spectrum-table input {
             width: 100%;
-            padding: 4px;
+            padding: 8px 6px;
             text-align: center;
+            border: none;
+            background: transparent;
+            font-family: 'Inconsolata', monospace;
+            font-weight: 500;
+            font-size: 14px;
+            min-height: 40px;
         }
 
-        /* Tabla de correcciones K */
+        .spectrum-table input:focus {
+            outline: none;
+            background: #cce5ff;
+            border-radius: 4px;
+        }
+
+        .spectrum-table tr:focus-within td {
+            background: #f0f9ff;
+        }
+
+        /* ============================================
+           CORRECCIONES K
+           ============================================ */
         .corrections-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin: 20px 0;
+            gap: 24px;
+            margin: 28px 0;
         }
 
         .correction-box {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 15px;
-            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            background: #f9fafb;
         }
 
         .correction-box h4 {
             font-size: 14px;
-            margin-bottom: 12px;
-            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1f2937;
         }
 
-        /* Navegación */
-        .navigation {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 30px;
-            border-top: 1px solid #ddd;
-            background: #f9f9f9;
+        /* ============================================
+           RESUMEN / COMPLIANCE PANEL
+           ============================================ */
+        .compliance-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin: 28px 0;
         }
 
-        button {
-            padding: 10px 25px;
-            font-size: 14px;
-            font-weight: 600;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
+        .compliance-card {
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
         }
 
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background: #2980b9;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-primary:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background: #7f8c8d;
-        }
-
-        .btn-secondary:disabled {
-            background: #bdc3c7;
-            cursor: not-allowed;
-        }
-
-        .btn-success {
+        .compliance-card.main {
+            grid-column: 1 / -1;
             background: #27ae60;
             color: white;
+            border: none;
+            padding: 32px;
+            font-size: 18px;
+            font-weight: 700;
         }
 
-        .btn-success:hover {
-            background: #229954;
+        .compliance-card.main.fail {
+            background: #dc2626;
         }
 
-        /* Resumen final */
+        .compliance-card.main.unknown {
+            background: #ca8a04;
+        }
+
+        .compliance-card h3 {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .compliance-card.main h3 {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .compliance-card-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            font-family: 'Inconsolata', monospace;
+        }
+
+        .compliance-card.main .compliance-card-value {
+            color: white;
+            font-size: 32px;
+        }
+
         .summary-box {
             border: 2px solid #27ae60;
-            border-radius: 4px;
-            padding: 15px;
-            background: #d5f4e6;
-            margin: 15px 0;
+            border-radius: 8px;
+            padding: 20px;
+            background: #dcfce7;
+            margin: 20px 0;
         }
 
         .summary-box h4 {
-            color: #186a3b;
-            margin-bottom: 10px;
+            color: #15803d;
+            margin-bottom: 16px;
+            font-weight: 700;
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            padding: 10px 0;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             font-size: 13px;
         }
@@ -431,35 +759,128 @@
 
         .summary-label {
             font-weight: 600;
-            color: #2c3e50;
+            color: #1f2937;
         }
 
         .summary-value {
-            color: #27ae60;
-            font-weight: 600;
+            color: #16a34a;
+            font-weight: 700;
+            font-family: 'Inconsolata', monospace;
         }
 
         .compliance-yes {
-            color: #27ae60;
+            color: #16a34a;
+            font-weight: 700;
         }
 
         .compliance-no {
-            color: #e74c3c;
+            color: #dc2626;
+            font-weight: 700;
         }
 
         .compliance-unknown {
-            color: #f39c12;
+            color: #ca8a04;
+            font-weight: 700;
         }
 
-        /* Info box */
+        /* ============================================
+           INFO BOX
+           ============================================ */
         .info-box {
-            background: #ecf0f1;
-            border-left: 4px solid #3498db;
-            padding: 12px 15px;
-            margin: 15px 0;
-            border-radius: 4px;
+            background: #dbeafe;
+            border-left: 4px solid #2563eb;
+            padding: 14px 16px;
+            margin: 20px 0;
+            border-radius: 6px;
             font-size: 13px;
-            color: #2c3e50;
+            color: #1e40af;
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           NAVEGACIÓN
+           ============================================ */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 40px;
+            border-top: 1px solid #e5e7eb;
+            background: white;
+            gap: 16px;
+        }
+
+        button {
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            letter-spacing: 0.3px;
+            min-height: 44px;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #1d4ed8;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #6b7280;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #f9fafb;
+            border-color: #9ca3af;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        /* ============================================
+           MICRO-INTERACCIONES
+           ============================================ */
+        @keyframes fieldFlash {
+            0% { background-color: inherit; }
+            50% { background-color: #fef3c7; }
+            100% { background-color: inherit; }
+        }
+
+        .field-updated {
+            animation: fieldFlash 0.5s ease;
         }
 
         .dynamic-field {
@@ -474,8 +895,472 @@
             }
             to {
                 opacity: 1;
-                max-height: 200px;
+                max-height: 500px;
             }
+        }
+
+        .dynamic-field.hidden {
+            display: none;
+        }
+
+        /* ============================================
+           RESUMEN COLAPSABLE
+           ============================================ */
+        .summary-accordion {
+            margin-bottom: 24px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background: #f9fafb;
+            padding: 14px 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 13px;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            transition: background 0.2s ease;
+        }
+
+        .accordion-header:hover {
+            background: #f3f4f6;
+        }
+
+        .accordion-toggle {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .summary-accordion.collapsed .accordion-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .accordion-content {
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 16px;
+            background: white;
+        }
+
+        .summary-accordion.collapsed .accordion-content {
+            max-height: 0;
+            padding: 0;
+        }
+
+        .accordion-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .accordion-row span:last-child {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 8px;
+            }
+
+            .header {
+                padding: 28px 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .steps-container {
+                padding: 20px;
+            }
+
+            .step {
+                min-width: 60px;
+            }
+
+            .step-circle {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+
+            .step-label {
+                font-size: 11px;
+            }
+
+            .step-connector {
+                width: 20px;
+                margin-top: 20px;
+            }
+
+            .content {
+                padding: 24px 20px;
+            }
+
+            .section-title {
+                margin: -24px -20px 24px -20px;
+                padding: 14px 16px;
+                font-size: 18px;
+            }
+
+            .section-title-emoji {
+                font-size: 20px;
+            }
+
+            .form-group {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .form-group.triple {
+                grid-template-columns: 1fr;
+            }
+
+            .corrections-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .compliance-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .navigation {
+                padding: 16px 20px;
+                flex-direction: column-reverse;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .status-bar {
+                flex-direction: column;
+                gap: 12px;
+                padding: 14px 16px;
+            }
+
+            .status-text {
+                text-align: center;
+                font-size: 12px;
+            }
+
+            .status-counts {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .spectrum-table {
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+
+            .header {
+                padding: 20px 16px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .header p {
+                font-size: 12px;
+            }
+
+            .steps-container {
+                padding: 16px 12px;
+                gap: 8px;
+            }
+
+            .step {
+                min-width: 50px;
+            }
+
+            .step-circle {
+                width: 36px;
+                height: 36px;
+                font-size: 12px;
+            }
+
+            .step-connector {
+                display: none;
+            }
+
+            .content {
+                padding: 20px 16px;
+            }
+
+            .section-title {
+                margin: -20px -16px 20px -16px;
+                font-size: 16px;
+            }
+
+            label {
+                font-size: 11px;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            input[type="email"],
+            input[type="time"],
+            select,
+            textarea {
+                padding: 10px 12px;
+                font-size: 16px;
+            }
+
+            .radio-group {
+                gap: 12px;
+            }
+
+            .field-group {
+                padding: 16px;
+                margin-bottom: 24px;
+            }
+        }
+
+        /* ============================================
+           CROQUIS DE UBICACIÓN
+           ============================================ */
+        .croquis-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .croquis-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+        }
+
+        .croquis-toolbar-title {
+            width: 100%;
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 2px;
+        }
+
+        .toolbar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            background: white;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.15s ease;
+            min-width: 64px;
+        }
+
+        .toolbar-item:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(59, 130, 246, 0.15);
+        }
+
+        .toolbar-item:active {
+            cursor: grabbing;
+            transform: translateY(0);
+        }
+
+        .toolbar-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .toolbar-icon.medicion  { background: #ef4444; }
+        .toolbar-icon.fuente    { background: #f97316; border-radius: 6px; }
+        .toolbar-icon.receptor  { background: #3b82f6; }
+        .toolbar-icon.edificio  { background: #9ca3af; border-radius: 4px; width: 36px; height: 28px; }
+        .toolbar-icon.arbol     { background: #22c55e; font-size: 16px; }
+        .toolbar-icon.barrera   { background: #7c3aed; border-radius: 4px; width: 40px; height: 14px; }
+        .toolbar-icon.flecha    { background: #0ea5e9; font-size: 16px; }
+        .toolbar-icon.etiqueta  { background: #f1f5f9; border: 1.5px solid #cbd5e1; border-radius: 4px; color: #334155; font-size: 10px; font-weight: 600; }
+
+        .toolbar-label {
+            font-size: 10px;
+            font-weight: 500;
+            color: #64748b;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .croquis-canvas-wrapper {
+            position: relative;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f9fafb;
+            transition: border-color 0.15s ease;
+        }
+
+        .croquis-canvas-wrapper.drag-over {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .croquis-canvas-wrapper #konva-container {
+            display: block;
+        }
+
+        .croquis-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .croquis-hint.hidden {
+            opacity: 0;
+        }
+
+        .croquis-hint-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .croquis-hint p {
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .croquis-hint p.sub {
+            font-size: 11px;
+            color: #cbd5e1;
+            margin-top: 4px;
+        }
+
+        .croquis-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .croquis-actions-left {
+            display: flex;
+            gap: 8px;
+        }
+
+        .croquis-legend {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .legend-dot.fuente    { background: #f97316; border-radius: 2px; }
+        .legend-dot.medicion  { background: #ef4444; }
+        .legend-dot.receptor  { background: #3b82f6; }
+
+        .btn-croquis {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1.5px solid;
+            transition: all 0.15s ease;
+        }
+
+        .btn-croquis:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-croquis.secondary {
+            background: white;
+            border-color: #e2e8f0;
+            color: #64748b;
+        }
+
+        .btn-croquis.secondary:hover {
+            border-color: #94a3b8;
+            color: #374151;
+        }
+
+        .btn-croquis.danger {
+            background: white;
+            border-color: #fca5a5;
+            color: #ef4444;
+        }
+
+        .btn-croquis.danger:hover {
+            background: #fef2f2;
+        }
+
+        .btn-croquis.primary {
+            background: #1a2744;
+            border-color: #1a2744;
+            color: white;
+        }
+
+        .btn-croquis.primary:hover {
+            background: #243561;
         }
     </style>
 </head>
@@ -483,909 +1368,1123 @@
     <div class="container">
         <div class="header">
             <h1>Informe Técnico Emisión de Ruido</h1>
-            <p>Formato 24-001-A30 — G-LIMA Laboratorio Acreditado IDEAM Resolución 1536/2023</p>
+            <p>Formato 24-001-A30 · Laboratorio G-LIMA Acreditado IDEAM</p>
         </div>
 
         <div class="progress-bar">
             <div class="progress-fill" id="progressFill"></div>
         </div>
 
-        <div class="progress-indicator">
-            <span id="progressText">Sección 1 de 7: Información General</span>
-            <span class="status-badge" id="statusBadge">0 errores · 0 advertencias</span>
-        </div>
+        <div class="steps-container" id="stepsContainer"></div>
 
         <div class="content">
             <!-- SECCIÓN 1: Información General -->
             <div class="section active" id="section-1">
-                <h2 class="section-title">1. Información General</h2>
+                <h2 class="section-title">
+                    <span class="section-title-emoji">📋</span>
+                    Información General
+                </h2>
 
-                <div class="form-group">
-                    <div>
-                        <label>Número de Informe</label>
-                        <input type="text" class="input-manual" value="24-001-A30-" id="numInforme">
-                    </div>
-                    <div>
-                        <label>Fecha del Informe</label>
-                        <input type="date" class="input-manual" id="fechaInforme">
+                <div class="field-group">
+                    <h3>Datos del Informe</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Número de Informe</label>
+                            <input type="text" class="input-manual" value="24-001-A30-" id="numInforme" aria-label="Número de informe">
+                        </div>
+                        <div class="form-item">
+                            <label>Fecha del Informe</label>
+                            <input type="date" class="input-manual" id="fechaInforme" aria-label="Fecha del informe">
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div>
-                        <label>Razón Social / Nombre Solicitante</label>
-                        <input type="text" class="input-manual" id="solicitante">
+                <div class="field-group">
+                    <h3>Datos del Solicitante</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Razón Social / Nombre Solicitante</label>
+                            <input type="text" class="input-manual" id="solicitante" aria-label="Nombre del solicitante">
+                        </div>
+                        <div class="form-item">
+                            <label>NIT / Cédula</label>
+                            <input type="text" class="input-manual" id="nit" aria-label="NIT o número de cédula">
+                        </div>
                     </div>
-                    <div>
-                        <label>NIT / Cédula</label>
-                        <input type="text" class="input-manual" id="nit">
+
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Dirección</label>
+                            <input type="text" class="input-manual" id="direccion" aria-label="Dirección del solicitante">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Ciudad / Municipio</label>
+                            <input type="text" class="input-manual" id="municipio" aria-label="Ciudad o municipio">
+                        </div>
+                        <div class="form-item">
+                            <label>Departamento</label>
+                            <input type="text" class="input-manual" id="departamento" aria-label="Departamento">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Teléfono / Contacto</label>
+                            <input type="text" class="input-manual" id="telefono" aria-label="Teléfono de contacto">
+                        </div>
+                        <div class="form-item">
+                            <label>Correo Electrónico</label>
+                            <input type="email" class="input-manual" id="correo" aria-label="Correo electrónico">
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group full">
-                    <label>Dirección</label>
-                    <input type="text" class="input-manual" id="direccion">
-                </div>
+                <div class="field-group">
+                    <h3>Sitio de Medición</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Latitud (grados decimales)</label>
+                            <input type="number" class="input-manual" id="latitud" placeholder="4.7110" step="0.0001" aria-label="Latitud en grados decimales">
+                        </div>
+                        <div class="form-item">
+                            <label>Longitud (grados decimales)</label>
+                            <input type="number" class="input-manual" id="longitud" placeholder="-74.0721" step="0.0001" aria-label="Longitud en grados decimales">
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <div>
-                        <label>Ciudad / Municipio</label>
-                        <input type="text" class="input-manual" id="municipio">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Autoridad Ambiental Competente</label>
+                            <select class="input-manual" id="autoridad" aria-label="Autoridad ambiental competente">
+                                <option value="">Seleccionar...</option>
+                                <option value="SDA">SDA (Bogotá)</option>
+                                <option value="CAR">CAR (Cundinamarca)</option>
+                                <option value="AMVA">AMVA (Medellín)</option>
+                                <option value="CVC">CVC (Cauca)</option>
+                                <option value="OTRA">Otra</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Propósito de la Medición</label>
+                            <input type="text" class="input-manual" id="proposito" placeholder="Línea base, Monitoreo" aria-label="Propósito de la medición">
+                        </div>
                     </div>
-                    <div>
-                        <label>Departamento</label>
-                        <input type="text" class="input-manual" id="departamento">
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <div>
-                        <label>Teléfono / Contacto</label>
-                        <input type="text" class="input-manual" id="telefono">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Norma Aplicable</label>
+                            <select class="input-manual" id="norma" aria-label="Norma aplicable">
+                                <option value="">Seleccionar...</option>
+                                <option value="Res. 0627/2006">Res. 0627/2006</option>
+                                <option value="NTC 4569-1">NTC 4569-1</option>
+                                <option value="ISO 1996-2">ISO 1996-2</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label>Correo Electrónico</label>
-                        <input type="email" class="input-manual" id="correo">
-                    </div>
-                </div>
 
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 16px; color: #2c3e50; margin-bottom: 15px;">Sitio de Medición</h3>
-
-                <div class="form-group">
-                    <div>
-                        <label>Latitud (grados decimales)</label>
-                        <input type="number" class="input-manual" id="latitud" placeholder="e.g., 4.7110" step="0.0001">
-                    </div>
-                    <div>
-                        <label>Longitud (grados decimales)</label>
-                        <input type="number" class="input-manual" id="longitud" placeholder="e.g., -74.0721" step="0.0001">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Autoridad Ambiental Competente</label>
-                        <select class="input-manual" id="autoridad">
-                            <option value="">Seleccionar...</option>
-                            <option value="SDA">SDA (Bogotá)</option>
-                            <option value="CAR">CAR (Cundinamarca)</option>
-                            <option value="AMVA">AMVA (Medellín)</option>
-                            <option value="CVC">CVC (Cauca)</option>
-                            <option value="OTRA">Otra</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label>Propósito de la Medición</label>
-                        <input type="text" class="input-manual" id="proposito" placeholder="e.g., Línea base, Monitoreo">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Norma Aplicable</label>
-                        <select class="input-manual" id="norma">
-                            <option value="">Seleccionar...</option>
-                            <option value="Res. 0627/2006">Res. 0627/2006</option>
-                            <option value="NTC 4569-1">NTC 4569-1</option>
-                            <option value="ISO 1996-2">ISO 1996-2</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Hora de Inicio de Medición</label>
-                        <input type="time" class="input-manual" id="horaInicio" oninput="actualizarPeriodoAutomatico()">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Hora de Inicio de Medición</label>
+                            <input type="time" class="input-manual" id="horaInicio" oninput="actualizarPeriodoAutomatico()" aria-label="Hora de inicio de medición">
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- SECCIÓN 2: Equipos y Calibración -->
             <div class="section" id="section-2">
-                <h2 class="section-title">2. Equipos de Medición y Calibración</h2>
+                <h2 class="section-title">
+                    <span class="section-title-emoji">⚙️</span>
+                    Equipos y Calibración
+                </h2>
 
                 <div class="info-box">
                     <strong>Sonómetro:</strong> Instrumento de clase 1 o 2 que mide niveles de presión acústica ponderada A (dB(A)) con respuesta dinámica rápida (F).
                 </div>
 
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px; margin-top: 20px;">Sonómetro</h3>
-                <div class="form-group">
-                    <div>
-                        <label>Marca</label>
-                        <input type="text" class="input-manual" id="sonoMarca">
+                <div class="field-group">
+                    <h3>Sonómetro</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Marca</label>
+                            <input type="text" class="input-manual" id="sonoMarca" aria-label="Marca del sonómetro">
+                        </div>
+                        <div class="form-item">
+                            <label>Modelo</label>
+                            <input type="text" class="input-manual" id="sonoModelo" aria-label="Modelo del sonómetro">
+                        </div>
                     </div>
-                    <div>
-                        <label>Modelo</label>
-                        <input type="text" class="input-manual" id="sonoModelo">
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Número de Serie</label>
+                            <input type="text" class="input-manual" id="sonoSerie" aria-label="Número de serie del sonómetro">
+                        </div>
+                        <div class="form-item">
+                            <label>Clase (1 o 2)</label>
+                            <select class="input-manual" id="sonoClase" aria-label="Clase del sonómetro">
+                                <option value="">Seleccionar...</option>
+                                <option value="1">Clase 1 (Laboratorio)</option>
+                                <option value="2">Clase 2 (Campo)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Fecha Vencimiento Certificado Sonómetro</label>
+                            <input type="date" class="input-manual" id="fechaVencSonometro" oninput="validarVigenciaCertificados()" aria-label="Fecha de vencimiento del certificado del sonómetro">
+                        </div>
+                    </div>
+
+                    <div id="certificadoSonoStatus"></div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Calibrador Acústico</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Marca</label>
+                            <input type="text" class="input-manual" id="calibMarca" aria-label="Marca del calibrador">
+                        </div>
+                        <div class="form-item">
+                            <label>Modelo</label>
+                            <input type="text" class="input-manual" id="calibModelo" aria-label="Modelo del calibrador">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Número de Serie</label>
+                            <input type="text" class="input-manual" id="calibSerie" aria-label="Número de serie del calibrador">
+                        </div>
+                        <div class="form-item">
+                            <label>Nivel de Referencia</label>
+                            <select class="input-manual" id="calibRef" aria-label="Nivel de referencia del calibrador">
+                                <option value="">Seleccionar...</option>
+                                <option value="94">94 dB (1000 Hz)</option>
+                                <option value="114">114 dB (1000 Hz)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Fecha Vencimiento Certificado Calibrador</label>
+                            <input type="date" class="input-manual" id="fechaVencCalibrador" oninput="validarVigenciaCertificados()" aria-label="Fecha de vencimiento del certificado del calibrador">
+                        </div>
+                    </div>
+
+                    <div id="certificadoCalibStatus"></div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Verificación de Calibración</h3>
+
+                    <div id="alertDrift" class="alert alert-danger"></div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Nivel Medido Pre-Medición</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="nivelPre" step="0.1" oninput="calcularDrift()" aria-label="Nivel medido pre-medición en dB">
+                                <span class="input-unit">dB</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>Desviación Pre-Medición</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="desvPre" disabled step="0.1" aria-label="Desviación pre-medición calculada">
+                                <span class="input-unit">dB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Nivel Medido Post-Medición</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="nivelPost" step="0.1" oninput="calcularDrift()" aria-label="Nivel medido post-medición en dB">
+                                <span class="input-unit">dB</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>Desviación Post-Medición</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="desvPost" disabled step="0.1" aria-label="Desviación post-medición calculada">
+                                <span class="input-unit">dB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Diferencia Pre/Post (Drift)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="drift" disabled step="0.1" aria-label="Diferencia drift entre mediciones">
+                                <span class="input-unit">dB</span>
+                            </div>
+                        </div>
+                        <div id="driftStatus"></div>
+                    </div>
+
+                    <div id="alertJustificacion" class="alert alert-warning" style="display:none;">
+                        <strong>Advertencia: Justificación requerida</strong>
+                        El drift está entre 0.5 y 1.0 dB. Debe justificar la desviación en el campo de abajo.
+                    </div>
+
+                    <div id="justificacionDriftContainer" style="display:none;" class="dynamic-field">
+                        <div class="form-group full">
+                            <div class="form-item">
+                                <label>Justificación del Drift (requerido)</label>
+                                <textarea class="input-manual" id="justificacionDrift" placeholder="Explique los motivos de la desviación..." aria-label="Justificación del drift"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div>
-                        <label>Número de Serie</label>
-                        <input type="text" class="input-manual" id="sonoSerie">
-                    </div>
-                    <div>
-                        <label>Clase (1 o 2)</label>
-                        <select class="input-manual" id="sonoClase">
-                            <option value="">Seleccionar...</option>
-                            <option value="1">Clase 1 (Laboratorio)</option>
-                            <option value="2">Clase 2 (Campo)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Fecha Vencimiento Certificado Sonómetro</label>
-                        <input type="date" class="input-manual" id="fechaVencSonometro" oninput="validarVigenciaCertificados()">
-                    </div>
-                </div>
-
-                <div id="certificadoSonoStatus"></div>
-
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Calibrador Acústico</h3>
-                <div class="form-group">
-                    <div>
-                        <label>Marca</label>
-                        <input type="text" class="input-manual" id="calibMarca">
-                    </div>
-                    <div>
-                        <label>Modelo</label>
-                        <input type="text" class="input-manual" id="calibModelo">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Número de Serie</label>
-                        <input type="text" class="input-manual" id="calibSerie">
-                    </div>
-                    <div>
-                        <label>Nivel de Referencia (dB)</label>
-                        <select class="input-manual" id="calibRef">
-                            <option value="">Seleccionar...</option>
-                            <option value="94">94 dB (1000 Hz)</option>
-                            <option value="114">114 dB (1000 Hz)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Fecha Vencimiento Certificado Calibrador</label>
-                        <input type="date" class="input-manual" id="fechaVencCalibrador" oninput="validarVigenciaCertificados()">
-                    </div>
-                </div>
-
-                <div id="certificadoCalibStatus"></div>
-
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Verificación de Calibración</h3>
-
-                <div id="alertDrift" class="alert alert-danger"></div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Nivel Medido Pre-Medición (dB)</label>
-                        <input type="number" class="input-manual" id="nivelPre" step="0.1" oninput="calcularDrift()">
-                    </div>
-                    <div>
-                        <label>Desviación Pre-Medición (dB)</label>
-                        <input type="number" class="input-calculated" id="desvPre" disabled step="0.1">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Nivel Medido Post-Medición (dB)</label>
-                        <input type="number" class="input-manual" id="nivelPost" step="0.1" oninput="calcularDrift()">
-                    </div>
-                    <div>
-                        <label>Desviación Post-Medición (dB)</label>
-                        <input type="number" class="input-calculated" id="desvPost" disabled step="0.1">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Diferencia Pre/Post (Drift) (dB)</label>
-                        <input type="number" class="input-calculated" id="drift" disabled step="0.1">
-                    </div>
-                    <div id="driftStatus"></div>
-                </div>
-
-                <div id="alertJustificacion" class="alert alert-warning" style="display:none;">
-                    <strong>⚠ Advertencia:</strong> El drift está entre 0.5 y 1.0 dB. Se requiere justificación.
-                </div>
-
-                <div id="justificacionDriftContainer" style="display:none;" class="dynamic-field">
-                    <div class="form-group full">
-                        <label>Justificación del Drift (requerido)</label>
-                        <textarea class="input-manual" id="justificacionDrift" placeholder="Explique los motivos de la desviación..."></textarea>
-                    </div>
-                </div>
-
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Estación Meteorológica (Opcional)</h3>
-                <div class="form-group">
-                    <div>
-                        <label>Marca / Modelo</label>
-                        <input type="text" class="input-manual" id="meteoEquipo">
+                <div class="field-group">
+                    <h3>Estación Meteorológica (Opcional)</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Marca / Modelo</label>
+                            <input type="text" class="input-manual" id="meteoEquipo" aria-label="Marca y modelo de estación meteorológica">
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- SECCIÓN 3: Condiciones de Medición -->
             <div class="section" id="section-3">
-                <h2 class="section-title">3. Condiciones de Medición</h2>
+                <h2 class="section-title">
+                    <span class="section-title-emoji">🌤️</span>
+                    Condiciones de Medición
+                </h2>
 
                 <div id="alertViento" class="alert alert-warning"></div>
                 <div id="alertLluvia" class="alert alert-danger"></div>
 
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Meteorología</h3>
+                <div class="field-group">
+                    <h3>Meteorología</h3>
 
-                <div class="form-group">
-                    <div>
-                        <label>Temperatura (°C)</label>
-                        <input type="number" class="input-manual" id="temperatura" step="0.1" min="-10" max="50">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Temperatura</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="temperatura" step="0.1" min="-10" max="50" aria-label="Temperatura en grados Celsius">
+                                <span class="input-unit">°C</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>Humedad Relativa</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="humedad" step="0.1" min="0" max="100" aria-label="Humedad relativa en porcentaje">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label>Humedad Relativa (%)</label>
-                        <input type="number" class="input-manual" id="humedad" step="0.1" min="0" max="100">
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <div>
-                        <label>Velocidad del Viento (m/s)</label>
-                        <input type="number" class="input-manual" id="viento" step="0.1" min="0" oninput="validarViento()">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Velocidad del Viento</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="viento" step="0.1" min="0" oninput="validarViento()" aria-label="Velocidad del viento en metros por segundo">
+                                <span class="input-unit">m/s</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>Dirección del Viento</label>
+                            <input type="text" class="input-manual" id="direccionViento" placeholder="N, NE, E, SE, S, SO, O, NO" aria-label="Dirección del viento">
+                        </div>
                     </div>
-                    <div>
-                        <label>Dirección del Viento</label>
-                        <input type="text" class="input-manual" id="direccionViento" placeholder="N, NE, E, ...">
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <div>
-                        <label>Presión Atmosférica (hPa)</label>
-                        <input type="number" class="input-manual" id="presion" step="0.1">
-                    </div>
-                    <div>
-                        <label>Condición del Cielo</label>
-                        <select class="input-manual" id="cielo" oninput="validarLluvia()">
-                            <option value="">Seleccionar...</option>
-                            <option value="Despejado">Despejado</option>
-                            <option value="Parcialmente Nublado">Parcialmente Nublado</option>
-                            <option value="Nublado">Nublado</option>
-                            <option value="Lluvia">Lluvia</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Posicionamiento del Micrófono</h3>
-
-                <div class="form-group">
-                    <div>
-                        <label>Altura del Micrófono (m)
-                            <span class="label-note">Res. 0627 Art. 20: mínimo 1.2 m sobre el suelo</span>
-                        </label>
-                        <input type="number" class="input-manual" id="alturaM" step="0.1" min="0.1" placeholder="1.2 - 4.0" oninput="validarAlturaMicrófono()">
-                    </div>
-                    <div id="alturaStatus"></div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Distancia a Superficies Reflectantes (m)
-                            <span class="label-note">Mínimo recomendado: 3.5 m</span>
-                        </label>
-                        <input type="number" class="input-manual" id="distSuperficies" step="0.1" min="0.1" placeholder="3.5+" oninput="validarDistanciaSuperficies()">
-                    </div>
-                    <div id="distSuperficiesStatus"></div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Distancia a la Fuente (m)</label>
-                        <input type="number" class="input-manual" id="distFuente" step="0.1" min="0.1">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Presión Atmosférica</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="presion" step="0.1" aria-label="Presión atmosférica en hectopascales">
+                                <span class="input-unit">hPa</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>Condición del Cielo</label>
+                            <select class="input-manual" id="cielo" oninput="validarLluvia()" aria-label="Condición del cielo">
+                                <option value="">Seleccionar...</option>
+                                <option value="Despejado">Despejado</option>
+                                <option value="Parcialmente Nublado">Parcialmente Nublado</option>
+                                <option value="Nublado">Nublado</option>
+                                <option value="Lluvia">Lluvia</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+                <div class="field-group">
+                    <h3>Posicionamiento del Micrófono</h3>
 
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Fuente y Zona Receptora</h3>
-
-                <div class="form-group">
-                    <div>
-                        <label>Tipo de Fuente</label>
-                        <select class="input-manual" id="tipoFuente">
-                            <option value="">Seleccionar...</option>
-                            <option value="Fija">Fija</option>
-                            <option value="Móvil">Móvil</option>
-                            <option value="Línea">Línea</option>
-                        </select>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Altura del Micrófono
+                                <span class="label-note">Res. 0627 Art. 20: mínimo 1.2 m</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="alturaM" step="0.1" min="0.1" placeholder="1.2 - 4.0" oninput="validarAlturaMicrófono()" aria-label="Altura del micrófono sobre el suelo">
+                                <span class="input-unit">m</span>
+                            </div>
+                        </div>
+                        <div id="alturaStatus"></div>
                     </div>
-                    <div>
-                        <label>Operación de Fuente</label>
-                        <select class="input-manual" id="operacionFuente">
-                            <option value="">Seleccionar...</option>
-                            <option value="Continua">Continua</option>
-                            <option value="Intermitente">Intermitente</option>
-                            <option value="Fluctuante">Fluctuante</option>
-                        </select>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Distancia a Superficies Reflectantes
+                                <span class="label-note">Mínimo recomendado: 3.5 m</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="distSuperficies" step="0.1" min="0.1" placeholder="3.5+" oninput="validarDistanciaSuperficies()" aria-label="Distancia a superficies reflectantes">
+                                <span class="input-unit">m</span>
+                            </div>
+                        </div>
+                        <div id="distSuperficiesStatus"></div>
                     </div>
-                </div>
 
-                <div class="form-group full">
-                    <label>Descripción de la Fuente Evaluada</label>
-                    <textarea class="input-manual" id="descFuente" placeholder="Describa la fuente, ubicación, equipamiento, horario de operación..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Sector Receptor (Res. 0627)</label>
-                        <select class="input-manual" id="sectorReceptor" oninput="actualizarEstandar()">
-                            <option value="">Seleccionar...</option>
-                            <option value="A">Sector A — Áreas en Recuperación Acústica</option>
-                            <option value="B">Sector B — Residencial/Educativo</option>
-                            <option value="C">Sector C — Industrial</option>
-                            <option value="D">Sector D — Suburbano/Rural</option>
-                        </select>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Distancia a la Fuente</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="distFuente" step="0.1" min="0.1" aria-label="Distancia a la fuente de ruido">
+                                <span class="input-unit">m</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div>
-                        <label>Subsector (si aplica)</label>
-                        <input type="text" class="input-manual" id="subsector" placeholder="e.g., Residencial, Industrial, Comercial">
-                    </div>
-                </div>
+                <div class="field-group">
+                    <h3>Fuente y Zona Receptora</h3>
 
-                <div class="form-group">
-                    <div>
-                        <label>Tipo de Terreno</label>
-                        <select class="input-manual" id="terreno">
-                            <option value="">Seleccionar...</option>
-                            <option value="Duro">Duro (hormigón, pavimento)</option>
-                            <option value="Poroso">Poroso (césped, tierra)</option>
-                            <option value="Mixto">Mixto</option>
-                        </select>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Tipo de Fuente</label>
+                            <select class="input-manual" id="tipoFuente" aria-label="Tipo de fuente de ruido">
+                                <option value="">Seleccionar...</option>
+                                <option value="Fija">Fija</option>
+                                <option value="Móvil">Móvil</option>
+                                <option value="Línea">Línea</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Operación de Fuente</label>
+                            <select class="input-manual" id="operacionFuente" aria-label="Tipo de operación de la fuente">
+                                <option value="">Seleccionar...</option>
+                                <option value="Continua">Continua</option>
+                                <option value="Intermitente">Intermitente</option>
+                                <option value="Fluctuante">Fluctuante</option>
+                            </select>
+                        </div>
                     </div>
-                    <div>
-                        <label>Barreras Acústicas</label>
-                        <select class="input-manual" id="barreras">
-                            <option value="">Seleccionar...</option>
-                            <option value="No">No hay barreras</option>
-                            <option value="Sí">Sí, describa:</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="form-group full">
-                    <label>Descripción de Barreras (si aplica)</label>
-                    <textarea class="input-manual" id="descBarreras" placeholder="Altura, material, ubicación..."></textarea>
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Descripción de la Fuente Evaluada</label>
+                            <textarea class="input-manual" id="descFuente" placeholder="Describa la fuente, ubicación, equipamiento, horario de operación..." aria-label="Descripción detallada de la fuente"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Sector Receptor (Res. 0627)</label>
+                            <select class="input-manual" id="sectorReceptor" oninput="actualizarEstandar()" aria-label="Sector receptor según Resolución 0627">
+                                <option value="">Seleccionar...</option>
+                                <option value="A">Sector A — Áreas en Recuperación Acústica</option>
+                                <option value="B">Sector B — Residencial/Educativo</option>
+                                <option value="C">Sector C — Industrial</option>
+                                <option value="D">Sector D — Suburbano/Rural</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Subsector (si aplica)</label>
+                            <input type="text" class="input-manual" id="subsector" placeholder="Residencial, Industrial, Comercial" aria-label="Subsector">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Tipo de Terreno</label>
+                            <select class="input-manual" id="terreno" aria-label="Tipo de terreno">
+                                <option value="">Seleccionar...</option>
+                                <option value="Duro">Duro (hormigón, pavimento)</option>
+                                <option value="Poroso">Poroso (césped, tierra)</option>
+                                <option value="Mixto">Mixto</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Barreras Acústicas</label>
+                            <select class="input-manual" id="barreras" aria-label="Presencia de barreras acústicas">
+                                <option value="">Seleccionar...</option>
+                                <option value="No">No hay barreras</option>
+                                <option value="Sí">Sí, describa:</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Descripción de Barreras (si aplica)</label>
+                            <textarea class="input-manual" id="descBarreras" placeholder="Altura, material, ubicación..." aria-label="Descripción de barreras acústicas"></textarea>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- SECCIÓN 4: Observaciones y Esquema -->
+            <!-- SECCIÓN 4: Observaciones -->
             <div class="section" id="section-4">
-                <h2 class="section-title">4. Observaciones y Esquema de Medición</h2>
+                <h2 class="section-title">
+                    <span class="section-title-emoji">📝</span>
+                    Observaciones y Esquema
+                </h2>
 
-                <div class="form-group full">
-                    <label>Observaciones Técnicas del Campo</label>
-                    <textarea class="input-manual" id="observaciones" placeholder="Descripción del entorno sonoro, fuentes observadas, eventos atípicos, variabilidad de la fuente, interferencias, etc."></textarea>
-                </div>
-
-                <div class="form-group full">
-                    <label>Condiciones Especiales de Medición</label>
-                    <textarea class="input-manual" id="condicionesEspeciales" placeholder="Restricciones de acceso, condiciones climáticas adversas, limitaciones técnicas, etc."></textarea>
-                </div>
-
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Croquis de Ubicación</h3>
-
-                <div class="info-box" style="background: #fff3cd; border-color: #ffc107;">
-                    <strong>Nota:</strong> En este prototipo, el croquis es un placeholder. En la versión final, sería un área para insertar imagen o SVG interactivo mostrando ubicación de fuente, receptor y puntos de medición.
-                </div>
-
-                <div style="border: 2px dashed #bdc3c7; border-radius: 4px; padding: 40px; text-align: center; background: #f9f9f9; margin: 20px 0;">
-                    <p style="color: #7f8c8d; font-size: 14px;">Área de Diagrama/Croquis</p>
-                    <p style="color: #95a5a6; font-size: 12px;">Fuente — Receptor — Puntos de Medición</p>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Latitud Punto Medición (grados decimales)</label>
-                        <input type="number" class="input-manual" id="latitudMedicion" placeholder="e.g., 4.7110" step="0.0001">
+                <div class="field-group">
+                    <h3>Notas Técnicas de Campo</h3>
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Observaciones Técnicas del Campo</label>
+                            <textarea class="input-manual" id="observaciones" placeholder="Descripción del entorno sonoro, fuentes observadas, eventos atípicos, variabilidad de la fuente, interferencias, etc." aria-label="Observaciones técnicas del campo"></textarea>
+                        </div>
                     </div>
-                    <div>
-                        <label>Longitud Punto Medición (grados decimales)</label>
-                        <input type="number" class="input-manual" id="longitudMedicion" placeholder="e.g., -74.0721" step="0.0001">
+
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Condiciones Especiales de Medición</label>
+                            <textarea class="input-manual" id="condicionesEspeciales" placeholder="Restricciones de acceso, condiciones climáticas adversas, limitaciones técnicas, etc." aria-label="Condiciones especiales de medición"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Croquis de Ubicación</h3>
+
+                    <div class="croquis-wrapper">
+
+                        <!-- Toolbar de símbolos -->
+                        <div class="croquis-toolbar" id="croquisToolbar">
+                            <div class="croquis-toolbar-title">Arrastrar al croquis</div>
+
+                            <div class="toolbar-item" draggable="true" data-type="medicion" title="Punto de Medición">
+                                <div class="toolbar-icon medicion">M</div>
+                                <span class="toolbar-label">Pto. Medición</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="fuente" title="Fuente de Ruido">
+                                <div class="toolbar-icon fuente">F</div>
+                                <span class="toolbar-label">Fuente</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="receptor" title="Receptor">
+                                <div class="toolbar-icon receptor">R</div>
+                                <span class="toolbar-label">Receptor</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="edificio" title="Edificio">
+                                <div class="toolbar-icon edificio">Ed</div>
+                                <span class="toolbar-label">Edificio</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="arbol" title="Árbol / Barrera natural">
+                                <div class="toolbar-icon arbol">♣</div>
+                                <span class="toolbar-label">Árbol</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="barrera" title="Barrera Acústica">
+                                <div class="toolbar-icon barrera"></div>
+                                <span class="toolbar-label">Barrera</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="flecha" title="Flecha de dirección">
+                                <div class="toolbar-icon flecha">→</div>
+                                <span class="toolbar-label">Flecha</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="etiqueta" title="Etiqueta de texto">
+                                <div class="toolbar-icon etiqueta">Aa</div>
+                                <span class="toolbar-label">Etiqueta</span>
+                            </div>
+                        </div>
+
+                        <!-- Canvas Konva -->
+                        <div class="croquis-canvas-wrapper" id="croquisCanvasWrapper">
+                            <div id="konva-container"></div>
+                            <div class="croquis-hint" id="croquisHint">
+                                <div class="croquis-hint-icon">🗺️</div>
+                                <p>Arrastra símbolos aquí para construir el croquis</p>
+                                <p class="sub">Fuente · Receptor · Puntos de Medición · Edificios</p>
+                            </div>
+                        </div>
+
+                        <!-- Acciones -->
+                        <div class="croquis-actions">
+                            <div class="croquis-legend">
+                                <div class="legend-item">
+                                    <div class="legend-dot medicion"></div> Pto. Medición
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-dot fuente"></div> Fuente
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-dot receptor"></div> Receptor
+                                </div>
+                                <span style="font-size:11px; color:#94a3b8; margin-left:4px;">
+                                    Clic para seleccionar · Supr para eliminar · Doble clic en etiqueta para editar
+                                </span>
+                            </div>
+                            <div class="croquis-actions-left">
+                                <button class="btn-croquis danger" onclick="limpiarCroquis()" title="Limpiar todos los elementos">
+                                    🗑 Limpiar
+                                </button>
+                                <button class="btn-croquis primary" onclick="exportarCroquis()" title="Exportar como imagen PNG">
+                                    ⬇ Exportar PNG
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group" style="margin-top: 20px;">
+                        <div class="form-item">
+                            <label>Latitud Punto Medición</label>
+                            <input type="number" class="input-manual" id="latitudMedicion" placeholder="4.7110" step="0.0001" aria-label="Latitud del punto de medición">
+                        </div>
+                        <div class="form-item">
+                            <label>Longitud Punto Medición</label>
+                            <input type="number" class="input-manual" id="longitudMedicion" placeholder="-74.0721" step="0.0001" aria-label="Longitud del punto de medición">
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- SECCIÓN 5: Resultados -->
             <div class="section" id="section-5">
-                <h2 class="section-title">5. Resultados de Medición</h2>
+                <h2 class="section-title">
+                    <span class="section-title-emoji">📊</span>
+                    Resultados de Medición
+                </h2>
 
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Con Fuente Activa</h3>
+                <div class="field-group">
+                    <h3>Con Fuente Activa</h3>
 
-                <div class="form-group">
-                    <div>
-                        <label>LAeq,T (nivel equivalente) (dB(A))</label>
-                        <input type="number" class="input-manual" id="laeqT" step="0.1" oninput="actualizarCalculos()">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>LAeq,T (nivel equivalente)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="laeqT" step="0.1" oninput="actualizarCalculos()" aria-label="LAeq T en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>LAmax (nivel máximo)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="lamax" step="0.1" aria-label="LAmax en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label>LAmax (nivel máximo) (dB(A))</label>
-                        <input type="number" class="input-manual" id="lamax" step="0.1">
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>LAmin (nivel mínimo)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="lamin" step="0.1" aria-label="LAmin en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>L10 (percentil 10)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="l10" step="0.1" aria-label="L10 percentil en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <div>
-                        <label>LAmin (nivel mínimo) (dB(A))</label>
-                        <input type="number" class="input-manual" id="lamin" step="0.1">
-                    </div>
-                    <div>
-                        <label>L10 (percentil 10) (dB(A))</label>
-                        <input type="number" class="input-manual" id="l10" step="0.1">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>L50 (percentil 50) (dB(A))</label>
-                        <input type="number" class="input-manual" id="l50" step="0.1">
-                    </div>
-                    <div>
-                        <label>L90 (percentil 90) (dB(A))</label>
-                        <input type="number" class="input-manual" id="l90" step="0.1">
-                    </div>
-                </div>
-
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Espectro en 1/3 Octava (34 Frecuencias) — Con Fuente Activa</h3>
-
-                <div class="info-box">
-                    <strong>Nota:</strong> Ingrese valores en dB(A) para cada banda de frecuencia. El espectro es obligatorio si se evalúa componente tonal (KT ≠ 0).
-                </div>
-
-                <table class="spectrum-table" id="spectrumTable">
-                    <thead>
-                        <tr>
-                            <th colspan="6" style="background: #34495e;">Espectro en 1/3 Octava (dB)</th>
-                        </tr>
-                        <tr>
-                            <th>Hz</th><th>dB</th><th>Hz</th><th>dB</th><th>Hz</th><th>dB</th>
-                        </tr>
-                    </thead>
-                    <tbody id="spectrumBody">
-                    </tbody>
-                </table>
-
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Residual (Sin Fuente o L90)</h3>
-
-                <div class="form-group">
-                    <div>
-                        <label>LAeq,T Residual (dB(A))</label>
-                        <input type="number" class="input-manual" id="laeqResidual" step="0.1" oninput="actualizarCalculos()">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>L50 (percentil 50)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="l50" step="0.1" aria-label="L50 percentil en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>L90 (percentil 90)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="l90" step="0.1" aria-label="L90 percentil en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div>
-                        <label>Método Determinación Residual</label>
-                        <select class="input-manual" id="metodoResidual">
-                            <option value="">Seleccionar...</option>
-                            <option value="LAeq medido">LAeq medido sin fuente</option>
-                            <option value="L90">L90 como residual</option>
-                        </select>
+                <div class="field-group">
+                    <h3>Espectro en 1/3 Octava (30 Frecuencias)</h3>
+
+                    <div class="info-box">
+                        <strong>Nota:</strong> Ingrese valores en dB(A) para cada banda de frecuencia. Las frecuencias octava (amarillo) son clave. El espectro es obligatorio si se evalúa componente tonal (KT ≠ 0).
+                    </div>
+
+                    <div class="spectrum-container">
+                        <table class="spectrum-table" id="spectrumTable">
+                            <thead>
+                                <tr>
+                                    <th colspan="6">Espectro en 1/3 Octava (dB)</th>
+                                </tr>
+                                <tr>
+                                    <th>Hz</th><th>dB</th><th>Hz</th><th>dB</th><th>Hz</th><th>dB</th>
+                                </tr>
+                            </thead>
+                            <tbody id="spectrumBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Residual (Sin Fuente o L90)</h3>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>LAeq,T Residual</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="laeqResidual" step="0.1" oninput="actualizarCalculos()" aria-label="LAeq T residual en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Método Determinación Residual</label>
+                            <select class="input-manual" id="metodoResidual" aria-label="Método para determinar el residual">
+                                <option value="">Seleccionar...</option>
+                                <option value="LAeq medido">LAeq medido sin fuente</option>
+                                <option value="L90">L90 como residual</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- SECCIÓN 6: Correcciones K y Emisión -->
+            <!-- SECCIÓN 6: Correcciones K -->
             <div class="section" id="section-6">
-                <h2 class="section-title">6. Correcciones K y Cálculo de Emisión</h2>
+                <h2 class="section-title">
+                    <span class="section-title-emoji">🔧</span>
+                    Niveles Corregidos
+                </h2>
 
                 <div class="info-box">
                     <strong>Regla de Corrección:</strong> KR = max(Ks, KT, KI) para fuente activa. Para residual: max(KT, KI) sin Ks.
                 </div>
 
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 15px; margin-top: 20px;">Con Fuente Activa</h3>
+                <div class="field-group">
+                    <h3>Con Fuente Activa</h3>
 
-                <div class="corrections-grid">
-                    <div class="correction-box">
-                        <h4>Ks (Baja Frecuencia / Ventilación)</h4>
-                        <div class="radio-group" style="flex-direction: column; gap: 10px;">
-                            <div class="radio-item">
-                                <input type="radio" name="ks" id="ks0" value="0" checked oninput="actualizarCalculos()">
-                                <label for="ks0">No Aplica (0 dB)</label>
+                    <div class="corrections-grid">
+                        <div class="correction-box">
+                            <h4>Ks (Baja Frecuencia / Ventilación)</h4>
+                            <div class="radio-group" style="flex-direction: column; gap: 12px; margin-top: 12px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="ks" id="ks0" value="0" checked oninput="actualizarCalculos()">
+                                    <label for="ks0">No Aplica (0 dB)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ks" id="ks5" value="5" oninput="actualizarCalculos()">
+                                    <label for="ks5">Diurno (5 dB)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ks" id="ks8" value="8" oninput="actualizarCalculos()">
+                                    <label for="ks8">Nocturno (8 dB)</label>
+                                </div>
                             </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ks" id="ks5" value="5" oninput="actualizarCalculos()">
-                                <label for="ks5">Diurno (5 dB)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ks" id="ks8" value="8" oninput="actualizarCalculos()">
-                                <label for="ks8">Nocturno (8 dB)</label>
+                        </div>
+
+                        <div class="correction-box">
+                            <h4>KI (Impulsivo)</h4>
+                            <div class="radio-group" style="flex-direction: column; gap: 12px; margin-top: 12px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="ki" id="ki0" value="0" checked oninput="actualizarCalculos()">
+                                    <label for="ki0">Nula (0 dB)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ki" id="ki3" value="3" oninput="actualizarCalculos()">
+                                    <label for="ki3">Neto (3 dB)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ki" id="ki6" value="6" oninput="actualizarCalculos()">
+                                    <label for="ki6">Fuerte (6 dB)</label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="correction-box">
-                        <h4>KI (Impulsivo)</h4>
-                        <div class="radio-group" style="flex-direction: column; gap: 10px;">
-                            <div class="radio-item">
-                                <input type="radio" name="ki" id="ki0" value="0" checked oninput="actualizarCalculos()">
-                                <label for="ki0">Nula (0 dB)</label>
+                    <h3 style="margin-top: 28px;">Componente Tonal (KT)</h3>
+                    <div class="info-box">
+                        Evalúe presencia de tonos puros en 3 rangos de frecuencia. KT resultante = máximo de los 3 rangos.
+                    </div>
+
+                    <div class="form-group triple">
+                        <div class="correction-box">
+                            <h4>20-125 Hz</h4>
+                            <div class="radio-group" style="flex-direction: column; gap: 10px; margin-top: 12px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="kt1" id="kt1_0" value="0" checked oninput="actualizarCalculos()">
+                                    <label for="kt1_0">Nula (0)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="kt1" id="kt1_3" value="3" oninput="actualizarCalculos()">
+                                    <label for="kt1_3">Neto (3)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="kt1" id="kt1_6" value="6" oninput="actualizarCalculos()">
+                                    <label for="kt1_6">Fuerte (6)</label>
+                                </div>
                             </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ki" id="ki3" value="3" oninput="actualizarCalculos()">
-                                <label for="ki3">Neto (3 dB)</label>
+                        </div>
+
+                        <div class="correction-box">
+                            <h4>160-400 Hz</h4>
+                            <div class="radio-group" style="flex-direction: column; gap: 10px; margin-top: 12px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="kt2" id="kt2_0" value="0" checked oninput="actualizarCalculos()">
+                                    <label for="kt2_0">Nula (0)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="kt2" id="kt2_3" value="3" oninput="actualizarCalculos()">
+                                    <label for="kt2_3">Neto (3)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="kt2" id="kt2_6" value="6" oninput="actualizarCalculos()">
+                                    <label for="kt2_6">Fuerte (6)</label>
+                                </div>
                             </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ki" id="ki6" value="6" oninput="actualizarCalculos()">
-                                <label for="ki6">Fuerte (6 dB)</label>
+                        </div>
+
+                        <div class="correction-box">
+                            <h4>≥ 500 Hz</h4>
+                            <div class="radio-group" style="flex-direction: column; gap: 10px; margin-top: 12px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="kt3" id="kt3_0" value="0" checked oninput="actualizarCalculos()">
+                                    <label for="kt3_0">Nula (0)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="kt3" id="kt3_3" value="3" oninput="actualizarCalculos()">
+                                    <label for="kt3_3">Neto (3)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="kt3" id="kt3_6" value="6" oninput="actualizarCalculos()">
+                                    <label for="kt3_6">Fuerte (6)</label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 15px; margin-top: 20px;">Componente Tonal (KT)</h3>
-                <div class="info-box">
-                    Evalúe presencia de tonos puros en 3 rangos de frecuencia. KT resultante = max de los 3 rangos.
-                </div>
+                <div class="field-group">
+                    <h3>Niveles Corregidos — Con Fuente Activa</h3>
 
-                <div class="form-group triple">
-                    <div class="correction-box">
-                        <h4>20-125 Hz</h4>
-                        <div class="radio-group" style="flex-direction: column; gap: 10px;">
-                            <div class="radio-item">
-                                <input type="radio" name="kt1" id="kt1_0" value="0" checked oninput="actualizarCalculos()">
-                                <label for="kt1_0">Nula (0)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="kt1" id="kt1_3" value="3" oninput="actualizarCalculos()">
-                                <label for="kt1_3">Neto (3)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="kt1" id="kt1_6" value="6" oninput="actualizarCalculos()">
-                                <label for="kt1_6">Fuerte (6)</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="correction-box">
-                        <h4>160-400 Hz</h4>
-                        <div class="radio-group" style="flex-direction: column; gap: 10px;">
-                            <div class="radio-item">
-                                <input type="radio" name="kt2" id="kt2_0" value="0" checked oninput="actualizarCalculos()">
-                                <label for="kt2_0">Nula (0)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="kt2" id="kt2_3" value="3" oninput="actualizarCalculos()">
-                                <label for="kt2_3">Neto (3)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="kt2" id="kt2_6" value="6" oninput="actualizarCalculos()">
-                                <label for="kt2_6">Fuerte (6)</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="correction-box">
-                        <h4>≥ 500 Hz</h4>
-                        <div class="radio-group" style="flex-direction: column; gap: 10px;">
-                            <div class="radio-item">
-                                <input type="radio" name="kt3" id="kt3_0" value="0" checked oninput="actualizarCalculos()">
-                                <label for="kt3_0">Nula (0)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="kt3" id="kt3_3" value="3" oninput="actualizarCalculos()">
-                                <label for="kt3_3">Neto (3)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="kt3" id="kt3_6" value="6" oninput="actualizarCalculos()">
-                                <label for="kt3_6">Fuerte (6)</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Niveles Corregidos — Con Fuente Activa</h3>
-
-                <div class="form-group">
-                    <div>
-                        <label>KT Resultante (máximo)</label>
-                        <input type="number" class="input-calculated" id="ktResultante" disabled>
-                    </div>
-                    <div>
-                        <label>KR Resultante (máximo de todos)</label>
-                        <input type="number" class="input-calculated" id="krResultante" disabled>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>LRAeq,T Corregido (dB(A))</label>
-                        <input type="number" class="input-calculated" id="lraeqCorregido" disabled step="0.1">
-                    </div>
-                    <div>
-                        <label>LRAeq,T Residual Corregido (dB(A))</label>
-                        <input type="number" class="input-calculated" id="lraeqResidualCorregido" disabled step="0.1">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Diferencia (Corregida - Residual Corregida) (dB)</label>
-                        <input type="number" class="input-calculated" id="diferencia" disabled step="0.1">
-                    </div>
-                </div>
-
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Emisión Sonora</h3>
-
-                <div class="info-box">
-                    <strong>Criterio:</strong> Si diferencia > 3 dB → Emisión = 10·log₁₀(10^(LRcorr/10) - 10^(LRresid/10)). Si ≤ 3 dB → "No se puede determinar".
-                </div>
-
-                <div id="emisionSection">
                     <div class="form-group">
-                        <div>
-                            <label>LRAeq,T Emisión (dB(A))</label>
-                            <input type="number" class="input-calculated" id="emision" disabled step="0.1">
+                        <div class="form-item">
+                            <label>KT Resultante (máximo)</label>
+                            <input type="number" class="input-calculated" id="ktResultante" disabled aria-label="KT resultante calculado">
+                        </div>
+                        <div class="form-item">
+                            <label>KR Resultante (máximo de todos)</label>
+                            <input type="number" class="input-calculated" id="krResultante" disabled aria-label="KR resultante calculado">
                         </div>
                     </div>
-                </div>
 
-                <div id="emisionNoDeterminable" class="alert alert-warning" style="display: none;">
-                    <strong>No se puede determinar la emisión:</strong> Diferencia ≤ 3 dB(A). La emisión de la fuente es muy cercana al nivel residual.
-                </div>
-
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Correcciones Residual (para verificación)</h3>
-
-                <h4 style="font-size: 12px; color: #7f8c8d; margin-bottom: 10px; margin-top: 15px;">KT Residual (3 rangos) — opcional para análisis</h4>
-
-                <div class="form-group triple">
-                    <div style="border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
-                        <label style="font-size: 12px;">20-125 Hz</label>
-                        <div class="radio-group" style="flex-direction: column; gap: 8px;">
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes1" id="ktRes1_0" value="0" checked>
-                                <label for="ktRes1_0" style="font-size: 12px;">Nula (0)</label>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>LRAeq,T Corregido</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="lraeqCorregido" disabled step="0.1" aria-label="LRAeq T corregido en dB A">
+                                <span class="input-unit">dB(A)</span>
                             </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes1" id="ktRes1_3" value="3">
-                                <label for="ktRes1_3" style="font-size: 12px;">Neto (3)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes1" id="ktRes1_6" value="6">
-                                <label for="ktRes1_6" style="font-size: 12px;">Fuerte (6)</label>
+                        </div>
+                        <div class="form-item">
+                            <label>LRAeq,T Residual Corregido</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="lraeqResidualCorregido" disabled step="0.1" aria-label="LRAeq T residual corregido en dB A">
+                                <span class="input-unit">dB(A)</span>
                             </div>
                         </div>
                     </div>
 
-                    <div style="border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
-                        <label style="font-size: 12px;">160-400 Hz</label>
-                        <div class="radio-group" style="flex-direction: column; gap: 8px;">
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes2" id="ktRes2_0" value="0" checked>
-                                <label for="ktRes2_0" style="font-size: 12px;">Nula (0)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes2" id="ktRes2_3" value="3">
-                                <label for="ktRes2_3" style="font-size: 12px;">Neto (3)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes2" id="ktRes2_6" value="6">
-                                <label for="ktRes2_6" style="font-size: 12px;">Fuerte (6)</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
-                        <label style="font-size: 12px;">≥ 500 Hz</label>
-                        <div class="radio-group" style="flex-direction: column; gap: 8px;">
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes3" id="ktRes3_0" value="0" checked>
-                                <label for="ktRes3_0" style="font-size: 12px;">Nula (0)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes3" id="ktRes3_3" value="3">
-                                <label for="ktRes3_3" style="font-size: 12px;">Neto (3)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes3" id="ktRes3_6" value="6">
-                                <label for="ktRes3_6" style="font-size: 12px;">Fuerte (6)</label>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Diferencia (Corregida - Residual Corregida)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="diferencia" disabled step="0.1" aria-label="Diferencia entre niveles corregidos">
+                                <span class="input-unit">dB</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <h4 style="font-size: 12px; color: #7f8c8d; margin-bottom: 10px; margin-top: 15px;">KI Residual</h4>
-                <div style="border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
-                    <div class="radio-group" style="flex-direction: column; gap: 8px;">
-                        <div class="radio-item">
-                            <input type="radio" name="kiRes" id="kiRes0" value="0" checked>
-                            <label for="kiRes0" style="font-size: 12px;">Nula (0 dB)</label>
+                <div class="field-group">
+                    <h3>Emisión Sonora</h3>
+
+                    <div class="info-box">
+                        <strong>Criterio:</strong> Si diferencia > 3 dB → Emisión = 10·log₁₀(10^(LRcorr/10) - 10^(LRresid/10)). Si ≤ 3 dB → "No se puede determinar".
+                    </div>
+
+                    <div id="emisionSection">
+                        <div class="form-group">
+                            <div class="form-item">
+                                <label>LRAeq,T Emisión</label>
+                                <div class="input-wrapper">
+                                    <input type="number" class="input-calculated" id="emision" disabled step="0.1" aria-label="Emisión en dB A">
+                                    <span class="input-unit">dB(A)</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="radio-item">
-                            <input type="radio" name="kiRes" id="kiRes3" value="3">
-                            <label for="kiRes3" style="font-size: 12px;">Neto (3 dB)</label>
+                    </div>
+
+                    <div id="emisionNoDeterminable" class="alert alert-warning" style="display: none;">
+                        <strong>No se puede determinar la emisión</strong>
+                        Diferencia ≤ 3 dB(A). La emisión de la fuente es muy cercana al nivel residual.
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Correcciones Residual (para verificación)</h3>
+
+                    <h4 style="font-size: 12px; color: #6b7280; margin-bottom: 12px; font-weight: 600;">KT Residual (3 rangos) — opcional para análisis</h4>
+
+                    <div class="form-group triple">
+                        <div style="border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; background: #f9fafb;">
+                            <label style="font-size: 12px;">20-125 Hz</label>
+                            <div class="radio-group" style="flex-direction: column; gap: 8px; margin-top: 10px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes1" id="ktRes1_0" value="0" checked>
+                                    <label for="ktRes1_0" style="font-size: 13px;">Nula (0)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes1" id="ktRes1_3" value="3">
+                                    <label for="ktRes1_3" style="font-size: 13px;">Neto (3)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes1" id="ktRes1_6" value="6">
+                                    <label for="ktRes1_6" style="font-size: 13px;">Fuerte (6)</label>
+                                </div>
+                            </div>
                         </div>
-                        <div class="radio-item">
-                            <input type="radio" name="kiRes" id="kiRes6" value="6">
-                            <label for="kiRes6" style="font-size: 12px;">Fuerte (6 dB)</label>
+
+                        <div style="border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; background: #f9fafb;">
+                            <label style="font-size: 12px;">160-400 Hz</label>
+                            <div class="radio-group" style="flex-direction: column; gap: 8px; margin-top: 10px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes2" id="ktRes2_0" value="0" checked>
+                                    <label for="ktRes2_0" style="font-size: 13px;">Nula (0)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes2" id="ktRes2_3" value="3">
+                                    <label for="ktRes2_3" style="font-size: 13px;">Neto (3)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes2" id="ktRes2_6" value="6">
+                                    <label for="ktRes2_6" style="font-size: 13px;">Fuerte (6)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; background: #f9fafb;">
+                            <label style="font-size: 12px;">≥ 500 Hz</label>
+                            <div class="radio-group" style="flex-direction: column; gap: 8px; margin-top: 10px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes3" id="ktRes3_0" value="0" checked>
+                                    <label for="ktRes3_0" style="font-size: 13px;">Nula (0)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes3" id="ktRes3_3" value="3">
+                                    <label for="ktRes3_3" style="font-size: 13px;">Neto (3)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes3" id="ktRes3_6" value="6">
+                                    <label for="ktRes3_6" style="font-size: 13px;">Fuerte (6)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 style="font-size: 12px; color: #6b7280; margin-bottom: 12px; margin-top: 20px; font-weight: 600;">KI Residual</h4>
+                    <div style="border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; background: #f9fafb;">
+                        <div class="radio-group" style="flex-direction: column; gap: 8px;">
+                            <div class="radio-item">
+                                <input type="radio" name="kiRes" id="kiRes0" value="0" checked>
+                                <label for="kiRes0" style="font-size: 13px;">Nula (0 dB)</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" name="kiRes" id="kiRes3" value="3">
+                                <label for="kiRes3" style="font-size: 13px;">Neto (3 dB)</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" name="kiRes" id="kiRes6" value="6">
+                                <label for="kiRes6" style="font-size: 13px;">Fuerte (6 dB)</label>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- SECCIÓN 7: Comparación Norma y Conclusión -->
+            <!-- SECCIÓN 7: Comparación Norma -->
             <div class="section" id="section-7">
-                <h2 class="section-title">7. Comparación Norma y Conclusión</h2>
+                <h2 class="section-title">
+                    <span class="section-title-emoji">✅</span>
+                    Comparación Norma
+                </h2>
 
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Estándar Aplicable</h3>
+                <div class="field-group">
+                    <h3>Estándar Aplicable</h3>
 
-                <div class="form-group">
-                    <div>
-                        <label>Sector Receptor</label>
-                        <input type="text" class="input-calculated" id="sectorMostrado" disabled>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Sector Receptor</label>
+                            <input type="text" class="input-calculated" id="sectorMostrado" disabled aria-label="Sector receptor">
+                        </div>
+                        <div class="form-item">
+                            <label>Período</label>
+                            <input type="text" class="input-calculated" id="periodoMostrado" disabled aria-label="Período diurno o nocturno">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Estándar Máximo Permisible</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="estandarPermisible" disabled step="0.1" aria-label="Estándar máximo permisible en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div>
-                        <label>Período</label>
-                        <input type="text" class="input-calculated" id="periodoMostrado" disabled>
+                <!-- PANEL DE CONTROL VISUAL: Resultado de Cumplimiento -->
+                <h3 style="font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 20px; margin-top: 28px;">Resultado de Cumplimiento</h3>
+
+                <div class="compliance-panel">
+                    <div class="compliance-card main" id="complianceMain">
+                        <h3 id="complianceMainLabel">CUMPLIMIENTO</h3>
+                        <div class="compliance-card-value" id="complianceMainValue">—</div>
+                    </div>
+
+                    <div class="compliance-card">
+                        <h3>Emisión Medida</h3>
+                        <div class="compliance-card-value" id="sumEmision">—</div>
+                    </div>
+
+                    <div class="compliance-card">
+                        <h3>Estándar Máximo</h3>
+                        <div class="compliance-card-value" id="sumEstandar">—</div>
+                    </div>
+
+                    <div class="compliance-card">
+                        <h3>Margen</h3>
+                        <div class="compliance-card-value" id="sumMargen">—</div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div>
-                        <label>Estándar Máximo Permisible (dB(A))</label>
-                        <input type="number" class="input-calculated" id="estandarPermisible" disabled step="0.1">
+                <div class="field-group">
+                    <h3>Conclusión Técnica</h3>
+
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Conclusión (generada automáticamente)</label>
+                            <textarea class="input-calculated" id="conclusion" disabled aria-label="Conclusión técnica"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Recomendaciones (adicionales, si aplica)</label>
+                            <textarea class="input-manual" id="recomendaciones" placeholder="Acciones correctivas, mejoras propuestas, etc." aria-label="Recomendaciones técnicas"></textarea>
+                        </div>
                     </div>
                 </div>
 
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+                <div class="field-group">
+                    <h3>Profesional Responsable</h3>
 
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Resultado de Cumplimiento</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Nombre Profesional</label>
+                            <input type="text" class="input-manual" id="profesional" aria-label="Nombre del profesional responsable">
+                        </div>
+                        <div class="form-item">
+                            <label>Matrícula Profesional</label>
+                            <input type="text" class="input-manual" id="matricula" aria-label="Matrícula profesional">
+                        </div>
+                    </div>
 
-                <div id="complianceSummary" class="summary-box">
-                    <h4>Evaluación de Cumplimiento</h4>
-                    <div class="summary-row">
-                        <span class="summary-label">Emisión Medida:</span>
-                        <span class="summary-value" id="sumEmision">—</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Estándar Máximo:</span>
-                        <span class="summary-value" id="sumEstandar">—</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Margen:</span>
-                        <span class="summary-value" id="sumMargen">—</span>
-                    </div>
-                    <div class="summary-row" style="margin-top: 10px; border-top: 2px solid rgba(0,0,0,0.2); padding-top: 10px;">
-                        <span class="summary-label">Resultado:</span>
-                        <span class="summary-value" id="sumResultado">—</span>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Cargo / Especialidad</label>
+                            <input type="text" class="input-manual" id="cargo" aria-label="Cargo o especialidad">
+                        </div>
                     </div>
                 </div>
 
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Conclusión Técnica</h3>
-
-                <div class="form-group full">
-                    <label>Conclusión (generada automáticamente)</label>
-                    <textarea class="input-calculated" id="conclusion" disabled></textarea>
-                </div>
-
-                <div class="form-group full">
-                    <label>Recomendaciones (adicionales, si aplica)</label>
-                    <textarea class="input-manual" id="recomendaciones" placeholder="Acciones correctivas, mejoras propuestas, etc."></textarea>
-                </div>
-
-                <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
-
-                <h3 style="font-size: 14px; color: #2c3e50; margin-bottom: 12px;">Profesional Responsable</h3>
-
-                <div class="form-group">
-                    <div>
-                        <label>Nombre Profesional</label>
-                        <input type="text" class="input-manual" id="profesional">
-                    </div>
-                    <div>
-                        <label>Matrícula Profesional</label>
-                        <input type="text" class="input-manual" id="matricula">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div>
-                        <label>Cargo / Especialidad</label>
-                        <input type="text" class="input-manual" id="cargo">
-                    </div>
+                <div class="field-group">
+                    <h3>Exportar Documento</h3>
+                    <button class="btn-success" onclick="generarPDF()" style="width: auto;">Generar PDF</button>
                 </div>
             </div>
         </div>
 
         <div class="navigation">
             <button class="btn-secondary" id="btnPrev" onclick="prevSection()">← Anterior</button>
-            <button class="btn-primary" id="btnNext" onclick="nextSection()" id="btnNextSection">Siguiente →</button>
+            <button class="btn-primary" id="btnNext" onclick="nextSection()" id="btnNext"></button>
+        </div>
+    </div>
+
+    <div class="status-bar" id="statusBar">
+        <span class="status-text" id="statusText">Sección 1 de 7 · Información General</span>
+        <div class="status-counts">
+            <span class="status-count errors" id="errorCount">0 errores</span>
+            <span class="status-count warnings" id="warningCount">0 advertencias</span>
         </div>
     </div>
 
     <script>
         // ============================================
-        // TABLA DE ESTÁNDARES (Art. 17, Res. 0627)
+        // CONSTANTES
         // ============================================
         const STANDARDS = {
-            'A': {
-                'Diurno': 55,
-                'Nocturno': 50
-            },
-            'B': {
-                'Diurno': 65,
-                'Nocturno': 55
-            },
-            'C': {
-                'Diurno': 75,
-                'Nocturno': 75
-            },
-            'D': {
-                'Diurno': 55,
-                'Nocturno': 50
-            }
+            'A': { 'Diurno': 55, 'Nocturno': 50 },
+            'B': { 'Diurno': 65, 'Nocturno': 55 },
+            'C': { 'Diurno': 75, 'Nocturno': 75 },
+            'D': { 'Diurno': 55, 'Nocturno': 50 }
         };
 
-        // Espectro en 1/3 octava (34 frecuencias)
         const SPECTRUM_FREQUENCIES = [
             20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160,
             200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600,
             2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500, 16000
+        ];
+
+        const OCTAVE_FREQUENCIES = [63, 125, 250, 500, 1000, 2000, 4000, 8000];
+
+        const SECTION_NAMES = [
+            'Información General',
+            'Equipos y Calibración',
+            'Condiciones de Medición',
+            'Observaciones y Esquema',
+            'Resultados de Medición',
+            'Niveles Corregidos',
+            'Comparación Norma'
         ];
 
         let currentSection = 1;
@@ -1396,10 +2495,55 @@
         // Inicializar
         window.addEventListener('load', function() {
             initializeSpectrum();
+            initializeSteps();
             setFechaHoy();
             showSection(1);
             actualizarEstadoGlobal();
         });
+
+        // Atajos de teclado: Enter para siguiente, Shift+Tab para anterior
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && event.ctrlKey) {
+                nextSection();
+            }
+        });
+
+        function initializeSteps() {
+            const container = document.getElementById('stepsContainer');
+            container.innerHTML = '';
+
+            for (let i = 1; i <= totalSections; i++) {
+                const step = document.createElement('div');
+                step.className = `step ${i === 1 ? 'active' : ''}`;
+                step.id = `step-${i}`;
+
+                const circle = document.createElement('div');
+                circle.className = 'step-circle';
+                circle.textContent = i;
+
+                const label = document.createElement('div');
+                label.className = 'step-label';
+                label.textContent = SECTION_NAMES[i - 1];
+
+                step.appendChild(circle);
+                step.appendChild(label);
+
+                // Agregar evento de clic para navegación entre steps
+                step.addEventListener('click', function() {
+                    goToStep(i);
+                });
+
+                container.appendChild(step);
+
+                if (i < totalSections) {
+                    const connector = document.createElement('div');
+                    connector.className = 'step-connector';
+                    container.appendChild(connector);
+                }
+            }
+
+            updateStepClickability();
+        }
 
         function setFechaHoy() {
             const today = new Date().toISOString().split('T')[0];
@@ -1418,9 +2562,12 @@
                     if (idx < SPECTRUM_FREQUENCIES.length) {
                         const freq = SPECTRUM_FREQUENCIES[idx];
                         const inputId = `spectrum_${idx}`;
+                        const isOctave = OCTAVE_FREQUENCIES.includes(freq);
+                        const octaveClass = isOctave ? 'freq-octave' : '';
+
                         row.innerHTML += `
-                            <td><strong>${freq}</strong></td>
-                            <td><input type="number" class="input-manual" id="${inputId}" step="0.1" style="width: 70px;"></td>
+                            <td class="${octaveClass}"><strong>${freq}</strong></td>
+                            <td class="${octaveClass}"><input type="number" class="input-manual" id="${inputId}" step="0.1" aria-label="Nivel espectro ${freq} Hz"></td>
                         `;
                     }
                 }
@@ -1433,27 +2580,27 @@
             sections.forEach(s => s.classList.remove('active'));
             document.getElementById(`section-${n}`).classList.add('active');
 
+            document.querySelectorAll('.step').forEach((step, idx) => {
+                step.classList.remove('active', 'completed');
+                if (idx + 1 === n) {
+                    step.classList.add('active');
+                } else if (idx + 1 < n) {
+                    step.classList.add('completed');
+                }
+            });
+
             const percent = (n / totalSections) * 100;
             document.getElementById('progressFill').style.width = percent + '%';
-            document.getElementById('progressText').textContent = `Sección ${n} de ${totalSections}: ${getSectionName(n)}`;
 
+            document.getElementById('statusText').textContent = `Sección ${n} de ${totalSections} · ${SECTION_NAMES[n - 1]}`;
             document.getElementById('btnPrev').disabled = (n === 1);
-            document.getElementById('btnNext').disabled = (n === totalSections);
 
+            const btnNext = document.getElementById('btnNext');
+            btnNext.disabled = (n === totalSections);
+            btnNext.textContent = n === totalSections ? 'Finalizar' : `Siguiente: ${SECTION_NAMES[n]} →`;
+
+            updateStepClickability();
             window.scrollTo(0, 0);
-        }
-
-        function getSectionName(n) {
-            const names = [
-                'Información General',
-                'Equipos y Calibración',
-                'Condiciones de Medición',
-                'Observaciones y Esquema',
-                'Resultados de Medición',
-                'Correcciones K y Emisión',
-                'Comparación Norma y Conclusión'
-            ];
-            return names[n - 1];
         }
 
         function nextSection() {
@@ -1470,6 +2617,47 @@
             }
         }
 
+        function updateStepClickability() {
+            document.querySelectorAll('.step').forEach((step, idx) => {
+                const stepNumber = idx + 1;
+                step.classList.remove('clickable', 'disabled');
+
+                // Un step es clickable si:
+                // 1. Está en una sección ya visitada (completada o actual), O
+                // 2. Es el siguiente inmediato después de la sección actual
+                if (stepNumber <= currentSection + 1) {
+                    step.classList.add('clickable');
+                } else {
+                    step.classList.add('disabled');
+                }
+            });
+        }
+
+        function goToStep(stepNumber) {
+            // Solo permitir navegar a steps ya visitados o al siguiente inmediato
+            if (stepNumber > currentSection + 1) {
+                return; // Step no alcanzable
+            }
+
+            // Si el destino es hacia atrás, permitir siempre
+            if (stepNumber < currentSection) {
+                currentSection = stepNumber;
+                showSection(currentSection);
+                updateStepClickability();
+                return;
+            }
+
+            // Si es hacia adelante, permitir solo si es el siguiente inmediato
+            if (stepNumber === currentSection + 1) {
+                // Aquí se podría validar la sección actual antes de avanzar
+                // Por ahora, permitimos avanzar sin restricciones
+                // Los errores críticos ya bloquean el botón "Siguiente"
+                currentSection = stepNumber;
+                showSection(currentSection);
+                updateStepClickability();
+            }
+        }
+
         // ============================================
         // VALIDACIONES Y CÁLCULOS
         // ============================================
@@ -1478,21 +2666,35 @@
             validationErrors = [];
             validationWarnings = [];
 
-            // Recorrer validaciones
             validarAlturaMicrófono();
             validarDistanciaSuperficies();
             calcularDrift();
 
-            // Actualizar badge
-            const badge = document.getElementById('statusBadge');
-            const errMsg = validationErrors.length > 0 ? `${validationErrors.length} errores` : '0 errores';
-            const warnMsg = validationWarnings.length > 0 ? `${validationWarnings.length} advertencias` : '0 advertencias';
-            badge.textContent = `${errMsg} · ${warnMsg}`;
+            const statusBar = document.getElementById('statusBar');
+            const errorCount = validationErrors.length;
+            const warningCount = validationWarnings.length;
 
-            // Deshabilitar botón siguiente si hay errores críticos
-            if (currentSection === 2 && validationErrors.length > 0) {
+            document.getElementById('errorCount').textContent = `${errorCount} error${errorCount !== 1 ? 'es' : ''}`;
+            document.getElementById('warningCount').textContent = `${warningCount} advertencia${warningCount !== 1 ? 's' : ''}`;
+
+            statusBar.classList.remove('critical', 'warning', 'success');
+            if (errorCount > 0) {
+                statusBar.classList.add('critical');
+            } else if (warningCount > 0) {
+                statusBar.classList.add('warning');
+            } else {
+                statusBar.classList.add('success');
+            }
+
+            if (currentSection === 2 && errorCount > 0) {
                 document.getElementById('btnNext').disabled = true;
             }
+        }
+
+        function flashField(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.classList.add('field-updated');
+            setTimeout(() => field.classList.remove('field-updated'), 500);
         }
 
         function calcularDrift() {
@@ -1508,27 +2710,23 @@
             document.getElementById('desvPost').value = desvPost.toFixed(2);
             document.getElementById('drift').value = drift.toFixed(2);
 
-            // Semáforo de calibración
             const driftStatusDiv = document.getElementById('driftStatus');
             const alertJust = document.getElementById('alertJustificacion');
             const justContainer = document.getElementById('justificacionDriftContainer');
 
             if (drift <= 0.5) {
-                // Verde
                 driftStatusDiv.innerHTML = '<span class="validation-badge badge-success">✓ Dentro de tolerancia</span>';
                 alertJust.style.display = 'none';
                 justContainer.style.display = 'none';
                 validationErrors = validationErrors.filter(e => e !== 'DRIFT_CRITICAL');
             } else if (drift > 0.5 && drift <= 1.0) {
-                // Amarillo - requiere justificación
-                driftStatusDiv.innerHTML = '<span class="validation-badge badge-warning">⚠ Advertencia: requiere justificación</span>';
+                driftStatusDiv.innerHTML = '<span class="validation-badge badge-warning">⚠ Requiere justificación</span>';
                 alertJust.style.display = 'block';
                 justContainer.style.display = 'block';
                 validationWarnings = [...new Set([...validationWarnings, 'DRIFT_WARNING'])];
                 validationErrors = validationErrors.filter(e => e !== 'DRIFT_CRITICAL');
             } else {
-                // Rojo - error crítico
-                driftStatusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Error crítico: medición inválida</span>';
+                driftStatusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Error crítico</span>';
                 alertJust.style.display = 'none';
                 justContainer.style.display = 'none';
                 validationErrors = [...new Set([...validationErrors, 'DRIFT_CRITICAL'])];
@@ -1543,21 +2741,16 @@
             const fechaVencSono = document.getElementById('fechaVencSonometro').value;
             const fechaVencCalib = document.getElementById('fechaVencCalibrador').value;
 
-            // Validar sonómetro
             const sonoStatusDiv = document.getElementById('certificadoSonoStatus');
             if (fechaMedicion && fechaVencSono) {
                 const diasRestantes = Math.floor((new Date(fechaVencSono) - new Date(fechaMedicion)) / (1000 * 60 * 60 * 24));
 
                 if (diasRestantes < 0) {
-                    sonoStatusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Certificado sonómetro vencido - medición inválida</span>';
+                    sonoStatusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Certificado vencido</span>';
                     validationErrors = [...new Set([...validationErrors, 'CERT_SONO_VENCIDO'])];
                 } else if (diasRestantes < 30) {
-                    sonoStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Sonómetro vence pronto (${diasRestantes} días) - verificar</span>`;
+                    sonoStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Vence pronto (${diasRestantes} días)</span>`;
                     validationWarnings = [...new Set([...validationWarnings, 'CERT_SONO_PRONTO'])];
-                    validationErrors = validationErrors.filter(e => e !== 'CERT_SONO_VENCIDO');
-                } else if (diasRestantes <= 60) {
-                    sonoStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Próximo a vencer (${diasRestantes} días)</span>`;
-                    validationWarnings = [...new Set([...validationWarnings, 'CERT_SONO_PROXIMO'])];
                     validationErrors = validationErrors.filter(e => e !== 'CERT_SONO_VENCIDO');
                 } else {
                     sonoStatusDiv.innerHTML = '<span class="validation-badge badge-success">✓ Vigente</span>';
@@ -1566,21 +2759,16 @@
                 }
             }
 
-            // Validar calibrador
             const calibStatusDiv = document.getElementById('certificadoCalibStatus');
             if (fechaMedicion && fechaVencCalib) {
                 const diasRestantes = Math.floor((new Date(fechaVencCalib) - new Date(fechaMedicion)) / (1000 * 60 * 60 * 24));
 
                 if (diasRestantes < 0) {
-                    calibStatusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Certificado calibrador vencido - medición inválida</span>';
+                    calibStatusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Certificado vencido</span>';
                     validationErrors = [...new Set([...validationErrors, 'CERT_CALIB_VENCIDO'])];
                 } else if (diasRestantes < 30) {
-                    calibStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Calibrador vence pronto (${diasRestantes} días) - verificar</span>`;
+                    calibStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Vence pronto (${diasRestantes} días)</span>`;
                     validationWarnings = [...new Set([...validationWarnings, 'CERT_CALIB_PRONTO'])];
-                    validationErrors = validationErrors.filter(e => e !== 'CERT_CALIB_VENCIDO');
-                } else if (diasRestantes <= 60) {
-                    calibStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Próximo a vencer (${diasRestantes} días)</span>`;
-                    validationWarnings = [...new Set([...validationWarnings, 'CERT_CALIB_PROXIMO'])];
                     validationErrors = validationErrors.filter(e => e !== 'CERT_CALIB_VENCIDO');
                 } else {
                     calibStatusDiv.innerHTML = '<span class="validation-badge badge-success">✓ Vigente</span>';
@@ -1596,12 +2784,14 @@
             const altura = parseFloat(document.getElementById('alturaM').value);
             const statusDiv = document.getElementById('alturaStatus');
 
-            if (altura < 1.2) {
-                statusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Art. 20 Res. 0627: altura mínima es 1.2 m</span>';
+            if (altura && altura < 1.2) {
+                statusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Mínimo: 1.2 m</span>';
                 validationErrors = [...new Set([...validationErrors, 'ALTURA_BAJA'])];
-            } else {
-                statusDiv.innerHTML = '<span class="validation-badge badge-success">✓ Altura válida</span>';
+            } else if (altura) {
+                statusDiv.innerHTML = '<span class="validation-badge badge-success">✓ Válida</span>';
                 validationErrors = validationErrors.filter(e => e !== 'ALTURA_BAJA');
+            } else {
+                statusDiv.innerHTML = '';
             }
         }
 
@@ -1609,12 +2799,14 @@
             const distancia = parseFloat(document.getElementById('distSuperficies').value);
             const statusDiv = document.getElementById('distSuperficiesStatus');
 
-            if (distancia < 3.5) {
-                statusDiv.innerHTML = '<span class="validation-badge badge-warning">⚠ Res. 0627: se recomienda mínimo 3.5 m de superficies reflectantes</span>';
+            if (distancia && distancia < 3.5) {
+                statusDiv.innerHTML = '<span class="validation-badge badge-warning">⚠ Se recomienda 3.5 m</span>';
                 validationWarnings = [...new Set([...validationWarnings, 'DIST_BAJA'])];
-            } else {
-                statusDiv.innerHTML = '<span class="validation-badge badge-success">✓ Distancia adecuada</span>';
+            } else if (distancia) {
+                statusDiv.innerHTML = '<span class="validation-badge badge-success">✓ Adecuada</span>';
                 validationWarnings = validationWarnings.filter(w => w !== 'DIST_BAJA');
+            } else {
+                statusDiv.innerHTML = '';
             }
         }
 
@@ -1624,7 +2816,7 @@
 
             if (viento > 3) {
                 alertViento.classList.add('show');
-                alertViento.innerHTML = '<strong>⚠ Art. 20 Res. 0627:</strong> Velocidad del viento > 3 m/s. Medición puede ser inválida.';
+                alertViento.innerHTML = '<strong>⚠ Viento fuerte (>3 m/s)</strong> Puede afectar significativamente la medición. Considere reprogramar.';
             } else {
                 alertViento.classList.remove('show');
             }
@@ -1636,7 +2828,7 @@
 
             if (cielo === 'Lluvia') {
                 alertLluvia.classList.add('show');
-                alertLluvia.innerHTML = '<strong>⚠ Condición de lluvia:</strong> Invalida la medición. Reprogramar.';
+                alertLluvia.innerHTML = '<strong>Lluvia detectada — Medición Inválida</strong> La presencia de lluvia invalida la medición según normas técnicas. Reprograme la medición para condiciones secas.';
             } else {
                 alertLluvia.classList.remove('show');
             }
@@ -1649,8 +2841,6 @@
             const [horas, minutos] = horaInicio.split(':').map(Number);
             let periodo = '';
 
-            // Diurno: 07:01 a 21:00
-            // Nocturno: 21:01 a 07:00
             if ((horas > 7 || (horas === 7 && minutos > 0)) && horas < 21) {
                 periodo = 'Diurno';
             } else {
@@ -1658,13 +2848,12 @@
             }
 
             document.getElementById('periodoMostrado').value = periodo;
-            document.getElementById('periodo').value = periodo;
             actualizarEstandar();
         }
 
         function actualizarEstandar() {
             const sector = document.getElementById('sectorReceptor').value;
-            const periodo = document.getElementById('periodoMostrado').value || document.getElementById('periodo').value;
+            const periodo = document.getElementById('periodoMostrado').value;
 
             if (sector && periodo) {
                 const estandar = STANDARDS[sector][periodo];
@@ -1684,7 +2873,6 @@
             const laeqT = parseFloat(document.getElementById('laeqT').value) || 0;
             const laeqResidual = parseFloat(document.getElementById('laeqResidual').value) || 0;
 
-            // Obtener correcciones
             const ks = obtenerValorRadio('ks');
             const ki = obtenerValorRadio('ki');
             const kt1 = obtenerValorRadio('kt1');
@@ -1693,15 +2881,15 @@
             const ktResultante = Math.max(kt1, kt2, kt3);
             const krResultante = Math.max(ks, ktResultante, ki);
 
-            // Actualizar campos calculados
             document.getElementById('ktResultante').value = ktResultante;
+            flashField('ktResultante');
             document.getElementById('krResultante').value = krResultante;
+            flashField('krResultante');
 
-            // Niveles corregidos
             const lraeqCorregido = laeqT + krResultante;
             document.getElementById('lraeqCorregido').value = lraeqCorregido.toFixed(2);
+            flashField('lraeqCorregido');
 
-            // Para residual: max(KT, KI) sin Ks
             const ktRes1 = obtenerValorRadio('ktRes1');
             const ktRes2 = obtenerValorRadio('ktRes2');
             const ktRes3 = obtenerValorRadio('ktRes3');
@@ -1711,16 +2899,16 @@
 
             const lraeqResidualCorregido = laeqResidual + krResidualResultante;
             document.getElementById('lraeqResidualCorregido').value = lraeqResidualCorregido.toFixed(2);
+            flashField('lraeqResidualCorregido');
 
-            // Diferencia
             const diferencia = lraeqCorregido - lraeqResidualCorregido;
             document.getElementById('diferencia').value = diferencia.toFixed(2);
+            flashField('diferencia');
 
-            // Calcular Emisión
             if (diferencia > 3) {
-                // Sustracción energética
                 const emision = 10 * Math.log10(Math.pow(10, lraeqCorregido / 10) - Math.pow(10, lraeqResidualCorregido / 10));
                 document.getElementById('emision').value = emision.toFixed(2);
+                flashField('emision');
                 document.getElementById('emisionSection').style.display = 'block';
                 document.getElementById('emisionNoDeterminable').style.display = 'none';
             } else {
@@ -1729,7 +2917,6 @@
                 document.getElementById('emisionNoDeterminable').style.display = 'block';
             }
 
-            // Actualizar resumen de cumplimiento
             actualizarCumplimiento();
         }
 
@@ -1741,18 +2928,26 @@
             let resultado = '—';
             let margen = '—';
             let emisionMostrada = '—';
+            let mainClass = '';
+            let mainLabel = 'RESULTADO';
 
             if (isNaN(emision) || diferencia <= 3) {
-                resultado = '<span class="compliance-unknown">No se puede determinar</span>';
-                emisionMostrada = 'No determinable';
+                resultado = '<span class="compliance-unknown">No determinable</span>';
+                emisionMostrada = '—';
+                mainClass = 'unknown';
+                mainLabel = 'NO DETERMINABLE';
             } else {
                 emisionMostrada = emision.toFixed(2);
                 if (emision <= estandar) {
                     resultado = '<span class="compliance-yes">✓ CUMPLE</span>';
                     margen = (estandar - emision).toFixed(2) + ' dB';
+                    mainClass = '';
+                    mainLabel = 'CUMPLE';
                 } else {
                     resultado = '<span class="compliance-no">✗ NO CUMPLE</span>';
-                    margen = (emision - estandar).toFixed(2) + ' dB (exceso)';
+                    margen = (emision - estandar).toFixed(2) + ' dB excedido';
+                    mainClass = 'fail';
+                    mainLabel = 'NO CUMPLE';
                 }
             }
 
@@ -1761,7 +2956,11 @@
             document.getElementById('sumMargen').innerHTML = margen;
             document.getElementById('sumResultado').innerHTML = resultado;
 
-            // Generar conclusión
+            const complianceMain = document.getElementById('complianceMain');
+            complianceMain.className = 'compliance-card main' + (mainClass ? ` ${mainClass}` : '');
+            document.getElementById('complianceMainLabel').textContent = mainLabel;
+            document.getElementById('complianceMainValue').textContent = mainLabel === 'NO DETERMINABLE' ? '—' : mainLabel;
+
             generarConclusion(emision, estandar, resultado);
         }
 
@@ -1769,26 +2968,366 @@
             let texto = '';
 
             if (isNaN(emision)) {
-                texto = 'No fue posible determinar el nivel de emisión de la fuente evaluada (diferencia entre nivel con fuente y residual ≤ 3 dB(A)). ' +
-                        'Por lo tanto, no se puede establecer el cumplimiento respecto a los estándares máximos permisibles.';
+                texto = 'No fue posible determinar el nivel de emisión de la fuente evaluada (diferencia ≤ 3 dB(A)). No se puede establecer cumplimiento con Res. 0627/2006.';
             } else {
                 const sector = document.getElementById('sectorMostrado').value;
                 const periodo = document.getElementById('periodoMostrado').value;
 
                 if (emision <= estandar) {
-                    texto = `El nivel de emisión de la fuente evaluada es de ${emision.toFixed(2)} dB(A), ` +
-                            `inferior al estándar máximo permisible de ${estandar.toFixed(2)} dB(A) para ${sector}, período ${periodo}. ` +
-                            `Por lo tanto, la fuente CUMPLE con la normativa Res. 0627/2006.`;
+                    texto = `Emisión: ${emision.toFixed(2)} dB(A) · Estándar: ${estandar.toFixed(2)} dB(A) · Margen: ${(estandar - emision).toFixed(2)} dB · La fuente CUMPLE con Res. 0627/2006.`;
                 } else {
                     const exceso = (emision - estandar).toFixed(2);
-                    texto = `El nivel de emisión de la fuente evaluada es de ${emision.toFixed(2)} dB(A), ` +
-                            `superior al estándar máximo permisible de ${estandar.toFixed(2)} dB(A) para ${sector}, período ${periodo} (exceso de ${exceso} dB(A)). ` +
-                            `Por lo tanto, la fuente NO CUMPLE con la normativa Res. 0627/2006.`;
+                    texto = `Emisión: ${emision.toFixed(2)} dB(A) · Estándar: ${estandar.toFixed(2)} dB(A) · Exceso: ${exceso} dB · La fuente NO CUMPLE con Res. 0627/2006.`;
                 }
             }
 
             document.getElementById('conclusion').value = texto;
         }
+
+        function generarPDF() {
+            alert('Funcionalidad de PDF pendiente de implementación.');
+        }
+
+        // ============================================
+        // CROQUIS DE UBICACIÓN — Konva.js
+        // ============================================
+        let croquisStage = null;
+        let croquisLayer = null;
+        let selectedGroup = null;
+        let medicionCounter = 0;
+        let symbolCount = 0;
+
+        const SYMBOL_DEFS = {
+            medicion: { label: () => `M${++medicionCounter}`, fill: '#ef4444', stroke: '#dc2626', shape: 'circle', r: 18, textColor: 'white' },
+            fuente:   { label: () => 'F',  fill: '#f97316', stroke: '#ea580c', shape: 'rect', w: 36, h: 36, textColor: 'white' },
+            receptor: { label: () => 'R',  fill: '#3b82f6', stroke: '#2563eb', shape: 'circle', r: 18, textColor: 'white' },
+            edificio: { label: () => 'Ed', fill: '#d1d5db', stroke: '#9ca3af', shape: 'rect', w: 56, h: 40, textColor: '#374151' },
+            arbol:    { label: () => '♣',  fill: '#4ade80', stroke: '#16a34a', shape: 'circle', r: 16, textColor: '#166534', fontSize: 18 },
+            barrera:  { label: () => '',   fill: '#7c3aed', stroke: '#5b21b6', shape: 'rect', w: 64, h: 12, textColor: 'white' },
+            flecha:   { label: () => '',   fill: '#0ea5e9', stroke: '#0284c7', shape: 'arrow' },
+            etiqueta: { label: () => 'Texto', fill: 'white', stroke: '#cbd5e1', shape: 'label', textColor: '#1e293b' },
+        };
+
+        function initCroquis() {
+            if (!window.Konva) return;
+            const wrapper = document.getElementById('croquisCanvasWrapper');
+            if (!wrapper) return;
+
+            const width  = wrapper.offsetWidth || 800;
+            const height = 380;
+
+            croquisStage = new Konva.Stage({ container: 'konva-container', width, height });
+
+            // Fondo con cuadrícula
+            const bgLayer = new Konva.Layer({ listening: false });
+            bgLayer.add(new Konva.Rect({ width, height, fill: '#f9fafb' }));
+            const gridStep = 40, gridColor = '#e5e7eb';
+            for (let x = 0; x <= width; x += gridStep) {
+                bgLayer.add(new Konva.Line({ points: [x, 0, x, height], stroke: gridColor, strokeWidth: 1 }));
+            }
+            for (let y = 0; y <= height; y += gridStep) {
+                bgLayer.add(new Konva.Line({ points: [0, y, width, y], stroke: gridColor, strokeWidth: 1 }));
+            }
+            croquisStage.add(bgLayer);
+
+            // Capa principal de símbolos
+            croquisLayer = new Konva.Layer();
+            croquisStage.add(croquisLayer);
+
+            // Deseleccionar al hacer clic en el fondo
+            croquisStage.on('click', function(e) {
+                if (e.target === croquisStage) deselectAll();
+            });
+            bgLayer.on('click', deselectAll);
+
+            // Suprimir símbolo seleccionado con Delete
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Delete' && selectedGroup) {
+                    const tag = document.activeElement.tagName;
+                    if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+                        deleteSelected();
+                    }
+                }
+            });
+
+            // Drag-and-drop desde la toolbar HTML al canvas Konva
+            wrapper.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                wrapper.classList.add('drag-over');
+            });
+            wrapper.addEventListener('dragleave', function() {
+                wrapper.classList.remove('drag-over');
+            });
+            wrapper.addEventListener('drop', function(e) {
+                e.preventDefault();
+                wrapper.classList.remove('drag-over');
+                const type = e.dataTransfer.getData('symbolType');
+                if (!type) return;
+                const rect = wrapper.getBoundingClientRect();
+                addSymbol(type, e.clientX - rect.left, e.clientY - rect.top);
+            });
+
+            // Registrar dragstart en cada toolbar-item
+            document.querySelectorAll('#croquisToolbar .toolbar-item').forEach(function(item) {
+                item.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('symbolType', this.dataset.type);
+                    e.dataTransfer.effectAllowed = 'copy';
+                });
+            });
+        }
+
+        function addSymbol(type, x, y) {
+            const def = SYMBOL_DEFS[type];
+            if (!def) return;
+
+            symbolCount++;
+            const group = new Konva.Group({ x, y, draggable: true, id: 'sym-' + symbolCount });
+
+            // Rectángulo de selección (oculto por defecto)
+            const selBox = new Konva.Rect({
+                name: 'sel-box',
+                stroke: '#3b82f6',
+                strokeWidth: 2,
+                dash: [5, 3],
+                fill: 'rgba(59,130,246,0.06)',
+                cornerRadius: 4,
+                visible: false,
+                listening: false,
+            });
+            group.add(selBox);
+
+            // Forma principal
+            if (def.shape === 'circle') {
+                group.add(new Konva.Circle({
+                    radius: def.r,
+                    fill: def.fill, stroke: def.stroke, strokeWidth: 2,
+                    shadowColor: 'black', shadowBlur: 6,
+                    shadowOffset: { x: 1, y: 2 }, shadowOpacity: 0.18,
+                }));
+                const lbl = def.label();
+                if (lbl) {
+                    group.add(new Konva.Text({
+                        text: lbl,
+                        fontSize: def.fontSize || 12, fontStyle: 'bold',
+                        fontFamily: 'Inter, sans-serif', fill: def.textColor,
+                        align: 'center', width: def.r * 2,
+                        offsetX: def.r, offsetY: (def.fontSize || 12) / 2,
+                        listening: false,
+                    }));
+                }
+                selBox.setAttrs({ x: -def.r - 6, y: -def.r - 6, width: def.r * 2 + 12, height: def.r * 2 + 12 });
+
+            } else if (def.shape === 'rect') {
+                group.add(new Konva.Rect({
+                    width: def.w, height: def.h,
+                    offsetX: def.w / 2, offsetY: def.h / 2,
+                    fill: def.fill, stroke: def.stroke, strokeWidth: 2,
+                    cornerRadius: type === 'barrera' ? 3 : 5,
+                    shadowColor: 'black', shadowBlur: 6,
+                    shadowOffset: { x: 1, y: 2 }, shadowOpacity: 0.18,
+                }));
+                const lbl = def.label();
+                if (lbl) {
+                    group.add(new Konva.Text({
+                        text: lbl,
+                        fontSize: 12, fontStyle: 'bold',
+                        fontFamily: 'Inter, sans-serif', fill: def.textColor,
+                        align: 'center', width: def.w,
+                        offsetX: def.w / 2, offsetY: 7,
+                        listening: false,
+                    }));
+                }
+                selBox.setAttrs({ x: -def.w / 2 - 6, y: -def.h / 2 - 6, width: def.w + 12, height: def.h + 12 });
+
+            } else if (def.shape === 'arrow') {
+                group.add(new Konva.Arrow({
+                    points: [-28, 0, 28, 0],
+                    pointerLength: 12, pointerWidth: 10,
+                    fill: def.fill, stroke: def.stroke, strokeWidth: 5,
+                    shadowColor: 'black', shadowBlur: 4, shadowOpacity: 0.15,
+                }));
+                selBox.setAttrs({ x: -34, y: -12, width: 68, height: 24 });
+
+            } else if (def.shape === 'label') {
+                const textNode = new Konva.Text({
+                    text: def.label(),
+                    fontSize: 13, fontFamily: 'Inter, sans-serif',
+                    fill: def.textColor, padding: 8,
+                    name: 'label-text',
+                });
+                const tw = textNode.width();
+                const th = textNode.height();
+                textNode.setAttrs({ offsetX: tw / 2, offsetY: th / 2 });
+                group.add(new Konva.Rect({
+                    width: tw, height: th,
+                    offsetX: tw / 2, offsetY: th / 2,
+                    fill: def.fill, stroke: def.stroke, strokeWidth: 1.5,
+                    cornerRadius: 4,
+                    shadowColor: 'black', shadowBlur: 4, shadowOpacity: 0.1,
+                }));
+                group.add(textNode);
+                selBox.setAttrs({ x: -tw / 2 - 6, y: -th / 2 - 6, width: tw + 12, height: th + 12 });
+
+                // Doble clic para editar texto
+                group.on('dblclick dbltap', function() {
+                    editarEtiqueta(group, textNode);
+                });
+            }
+
+            // Botón de eliminar (esquina superior derecha del selBox)
+            const deleteBtn = new Konva.Group({
+                name: 'delete-btn',
+                visible: false,
+            });
+            const bx = selBox.x() + selBox.width() - 8;
+            const by = selBox.y() - 8;
+            deleteBtn.add(new Konva.Circle({ x: bx, y: by, radius: 9, fill: '#ef4444', stroke: 'white', strokeWidth: 1.5 }));
+            deleteBtn.add(new Konva.Text({ x: bx, y: by, text: '×', fontSize: 13, fontStyle: 'bold', fill: 'white', offsetX: 4, offsetY: 7, listening: false }));
+            deleteBtn.on('click tap', function(e) { e.cancelBubble = true; deleteSelected(); });
+            group.add(deleteBtn);
+
+            // Eventos del grupo
+            group.on('click tap', function(e) {
+                e.cancelBubble = true;
+                selectSymbol(group);
+            });
+            group.on('dragstart', function() {
+                selectSymbol(group);
+                group.moveToTop();
+            });
+            group.on('dragend', function() {
+                // Snapping suave a cuadrícula de 10px
+                group.position({
+                    x: Math.round(group.x() / 10) * 10,
+                    y: Math.round(group.y() / 10) * 10,
+                });
+                croquisLayer.batchDraw();
+            });
+
+            croquisLayer.add(group);
+            croquisLayer.batchDraw();
+            selectSymbol(group);
+            updateHint();
+        }
+
+        function selectSymbol(group) {
+            deselectAll();
+            selectedGroup = group;
+            group.findOne('.sel-box').visible(true);
+            group.findOne('.delete-btn').visible(true);
+            croquisLayer.batchDraw();
+        }
+
+        function deselectAll() {
+            if (selectedGroup) {
+                selectedGroup.findOne('.sel-box').visible(false);
+                selectedGroup.findOne('.delete-btn').visible(false);
+                selectedGroup = null;
+                croquisLayer.batchDraw();
+            }
+        }
+
+        function deleteSelected() {
+            if (!selectedGroup) return;
+            selectedGroup.destroy();
+            selectedGroup = null;
+            croquisLayer.batchDraw();
+            updateHint();
+        }
+
+        function limpiarCroquis() {
+            if (!croquisLayer) return;
+            if (croquisLayer.children.length === 0) return;
+            if (!confirm('¿Limpiar todos los elementos del croquis?')) return;
+            croquisLayer.destroyChildren();
+            croquisLayer.batchDraw();
+            selectedGroup = null;
+            medicionCounter = 0;
+            updateHint();
+        }
+
+        function exportarCroquis() {
+            if (!croquisStage) return;
+            deselectAll();
+            const dataURL = croquisStage.toDataURL({ pixelRatio: 2 });
+            const link = document.createElement('a');
+            link.download = 'croquis-ubicacion.png';
+            link.href = dataURL;
+            link.click();
+        }
+
+        function editarEtiqueta(group, textNode) {
+            deselectAll();
+            const stageBox  = croquisStage.container().getBoundingClientRect();
+            const absPos    = group.getAbsolutePosition();
+            const scale     = croquisStage.scaleX();
+
+            const input = document.createElement('input');
+            input.type  = 'text';
+            input.value = textNode.text();
+            input.style.cssText = `
+                position: fixed;
+                top: ${stageBox.top + absPos.y - 16}px;
+                left: ${stageBox.left + absPos.x - 60}px;
+                width: 120px;
+                padding: 4px 8px;
+                font-size: 13px;
+                font-family: Inter, sans-serif;
+                border: 2px solid #3b82f6;
+                border-radius: 4px;
+                background: white;
+                z-index: 9999;
+                outline: none;
+                text-align: center;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            `;
+
+            document.body.appendChild(input);
+            input.focus();
+            input.select();
+
+            function commit() {
+                const val = input.value.trim() || 'Texto';
+                textNode.text(val);
+                // Recentrar
+                textNode.offsetX(textNode.width() / 2);
+                textNode.offsetY(textNode.height() / 2);
+                const rect = group.findOne('Rect');
+                if (rect) {
+                    rect.width(textNode.width());
+                    rect.height(textNode.height());
+                    rect.offsetX(textNode.width() / 2);
+                    rect.offsetY(textNode.height() / 2);
+                }
+                croquisLayer.batchDraw();
+                document.body.removeChild(input);
+            }
+
+            input.addEventListener('blur', commit);
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === 'Escape') input.blur();
+            });
+        }
+
+        function updateHint() {
+            const hint = document.getElementById('croquisHint');
+            if (!hint || !croquisLayer) return;
+            const hasSymbols = croquisLayer.children.length > 0;
+            hint.classList.toggle('hidden', hasSymbols);
+        }
+
+        // Inicializar croquis cuando la sección 4 se active
+        const _origShowSection = window.showSection;
+        window.addEventListener('load', function() {
+            // Parchamos showSection para inicializar Konva al llegar a la sección 4
+            const orig = window.showSection;
+            window.showSection = function(n) {
+                orig(n);
+                if (n === 4 && !croquisStage) {
+                    setTimeout(initCroquis, 60);
+                }
+            };
+        });
     </script>
 </body>
 </html>
