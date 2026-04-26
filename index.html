@@ -268,10 +268,41 @@
         }
 
         /* ============================================
+           FIELDSET CUSTOM (Agrupación de campos)
+           ============================================ */
+        .field-group {
+            margin-bottom: 32px;
+            padding: 20px;
+            background: #f8fafc;
+            border-left: 3px solid #2563eb;
+            border-radius: 8px;
+        }
+
+        .field-group h3 {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .field-group h3::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: #2563eb;
+            border-radius: 2px;
+        }
+
+        /* ============================================
            FORMULARIO
            ============================================ */
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
@@ -309,6 +340,7 @@
             letter-spacing: 0;
         }
 
+        /* Inputs: altura mínima 44px + font-size 16px (evita zoom en iOS) */
         input[type="text"],
         input[type="number"],
         input[type="date"],
@@ -317,14 +349,15 @@
         select,
         textarea {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 14px;
             border: 1px solid #d1d5db;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 16px;
             font-family: 'Inter', inherit;
             transition: all 0.2s ease;
             background: white;
             color: #1f2937;
+            min-height: 44px;
         }
 
         input[type="text"]:focus,
@@ -351,7 +384,7 @@
             background: white;
         }
 
-        /* Campos calculados (azul muy claro) */
+        /* Campos calculados (azul muy claro) con sufijo de unidad */
         .input-calculated {
             background: #f0f9ff;
             color: #1d4ed8;
@@ -367,6 +400,27 @@
 
         .input-calculated:focus {
             border-style: dashed;
+        }
+
+        /* Wrapper para sufijo de unidad */
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding-right: 40px;
+        }
+
+        .input-unit {
+            position: absolute;
+            right: 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #9ca3af;
+            pointer-events: none;
         }
 
         textarea {
@@ -445,16 +499,16 @@
         }
 
         /* ============================================
-           ALERTAS
+           ALERTAS MEJORADAS
            ============================================ */
         .alert {
-            padding: 14px 16px;
+            padding: 16px 16px;
             border-radius: 8px;
             margin-bottom: 20px;
             font-size: 13px;
             border-left: 4px solid;
             display: none;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .alert.show {
@@ -467,10 +521,26 @@
             color: #92400e;
         }
 
+        .alert-warning strong {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
         .alert-danger {
             background: #fee2e2;
             border-color: #dc2626;
             color: #7f1d1d;
+        }
+
+        .alert-danger strong {
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
         }
 
         .alert-success {
@@ -486,17 +556,22 @@
         }
 
         /* ============================================
-           TABLA DE ESPECTRO
+           TABLA DE ESPECTRO MEJORADA
            ============================================ */
+        .spectrum-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
         .spectrum-table {
             width: 100%;
             border-collapse: collapse;
             font-size: 13px;
-            margin: 20px 0;
             background: white;
             border: 1px solid #e5e7eb;
             border-radius: 8px;
             overflow: hidden;
+            min-width: 600px;
         }
 
         .spectrum-table th {
@@ -519,14 +594,26 @@
             background: #f8fafc;
         }
 
+        /* Frecuencias octava completa: resaltar (63, 125, 250, 500, 1k, 2k, 4k, 8k) */
+        .spectrum-table td.freq-octave {
+            background: #fef3c7;
+            font-weight: 700;
+        }
+
+        .spectrum-table tr:nth-child(even) td.freq-octave {
+            background: #fcd34d;
+        }
+
         .spectrum-table input {
             width: 100%;
-            padding: 6px 0;
+            padding: 8px 6px;
             text-align: center;
             border: none;
             background: transparent;
             font-family: 'Inconsolata', monospace;
             font-weight: 500;
+            font-size: 14px;
+            min-height: 40px;
         }
 
         .spectrum-table input:focus {
@@ -564,8 +651,67 @@
         }
 
         /* ============================================
-           RESUMEN
+           RESUMEN / COMPLIANCE PANEL
            ============================================ */
+        .compliance-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin: 28px 0;
+        }
+
+        .compliance-card {
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .compliance-card.main {
+            grid-column: 1 / -1;
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 32px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .compliance-card.main.fail {
+            background: #dc2626;
+        }
+
+        .compliance-card.main.unknown {
+            background: #ca8a04;
+        }
+
+        .compliance-card h3 {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .compliance-card.main h3 {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .compliance-card-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1f2937;
+            font-family: 'Inconsolata', monospace;
+        }
+
+        .compliance-card.main .compliance-card-value {
+            color: white;
+            font-size: 32px;
+        }
+
         .summary-box {
             border: 2px solid #27ae60;
             border-radius: 8px;
@@ -654,6 +800,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             letter-spacing: 0.3px;
+            min-height: 44px;
         }
 
         .btn-primary {
@@ -705,8 +852,18 @@
         }
 
         /* ============================================
-           DINÁMICO
+           MICRO-INTERACCIONES
            ============================================ */
+        @keyframes fieldFlash {
+            0% { background-color: inherit; }
+            50% { background-color: #fef3c7; }
+            100% { background-color: inherit; }
+        }
+
+        .field-updated {
+            animation: fieldFlash 0.5s ease;
+        }
+
         .dynamic-field {
             animation: slideDown 0.3s ease;
         }
@@ -725,6 +882,74 @@
 
         .dynamic-field.hidden {
             display: none;
+        }
+
+        /* ============================================
+           RESUMEN COLAPSABLE
+           ============================================ */
+        .summary-accordion {
+            margin-bottom: 24px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background: #f9fafb;
+            padding: 14px 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 13px;
+            color: #374151;
+            border-bottom: 1px solid #e5e7eb;
+            transition: background 0.2s ease;
+        }
+
+        .accordion-header:hover {
+            background: #f3f4f6;
+        }
+
+        .accordion-toggle {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .summary-accordion.collapsed .accordion-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .accordion-content {
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 16px;
+            background: white;
+        }
+
+        .summary-accordion.collapsed .accordion-content {
+            max-height: 0;
+            padding: 0;
+        }
+
+        .accordion-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .accordion-row span:last-child {
+            font-weight: 600;
+            color: #1f2937;
         }
 
         /* ============================================
@@ -794,6 +1019,10 @@
                 gap: 16px;
             }
 
+            .compliance-panel {
+                grid-template-columns: 1fr;
+            }
+
             .navigation {
                 padding: 16px 20px;
                 flex-direction: column-reverse;
@@ -817,6 +1046,10 @@
             .status-counts {
                 flex-direction: column;
                 gap: 8px;
+            }
+
+            .spectrum-table {
+                min-width: 100%;
             }
         }
 
@@ -876,12 +1109,17 @@
             input[type="time"],
             select,
             textarea {
-                padding: 8px 12px;
-                font-size: 13px;
+                padding: 10px 12px;
+                font-size: 16px;
             }
 
             .radio-group {
                 gap: 12px;
+            }
+
+            .field-group {
+                padding: 16px;
+                margin-bottom: 24px;
             }
         }
     </style>
@@ -907,106 +1145,111 @@
                     Información General
                 </h2>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Número de Informe</label>
-                        <input type="text" class="input-manual" value="24-001-A30-" id="numInforme">
-                    </div>
-                    <div class="form-item">
-                        <label>Fecha del Informe</label>
-                        <input type="date" class="input-manual" id="fechaInforme">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Razón Social / Nombre Solicitante</label>
-                        <input type="text" class="input-manual" id="solicitante">
-                    </div>
-                    <div class="form-item">
-                        <label>NIT / Cédula</label>
-                        <input type="text" class="input-manual" id="nit">
+                <div class="field-group">
+                    <h3>Datos del Informe</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Número de Informe</label>
+                            <input type="text" class="input-manual" value="24-001-A30-" id="numInforme" aria-label="Número de informe">
+                        </div>
+                        <div class="form-item">
+                            <label>Fecha del Informe</label>
+                            <input type="date" class="input-manual" id="fechaInforme" aria-label="Fecha del informe">
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group full">
-                    <div class="form-item">
-                        <label>Dirección</label>
-                        <input type="text" class="input-manual" id="direccion">
+                <div class="field-group">
+                    <h3>Datos del Solicitante</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Razón Social / Nombre Solicitante</label>
+                            <input type="text" class="input-manual" id="solicitante" aria-label="Nombre del solicitante">
+                        </div>
+                        <div class="form-item">
+                            <label>NIT / Cédula</label>
+                            <input type="text" class="input-manual" id="nit" aria-label="NIT o número de cédula">
+                        </div>
+                    </div>
+
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Dirección</label>
+                            <input type="text" class="input-manual" id="direccion" aria-label="Dirección del solicitante">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Ciudad / Municipio</label>
+                            <input type="text" class="input-manual" id="municipio" aria-label="Ciudad o municipio">
+                        </div>
+                        <div class="form-item">
+                            <label>Departamento</label>
+                            <input type="text" class="input-manual" id="departamento" aria-label="Departamento">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Teléfono / Contacto</label>
+                            <input type="text" class="input-manual" id="telefono" aria-label="Teléfono de contacto">
+                        </div>
+                        <div class="form-item">
+                            <label>Correo Electrónico</label>
+                            <input type="email" class="input-manual" id="correo" aria-label="Correo electrónico">
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Ciudad / Municipio</label>
-                        <input type="text" class="input-manual" id="municipio">
+                <div class="field-group">
+                    <h3>Sitio de Medición</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Latitud (grados decimales)</label>
+                            <input type="number" class="input-manual" id="latitud" placeholder="4.7110" step="0.0001" aria-label="Latitud en grados decimales">
+                        </div>
+                        <div class="form-item">
+                            <label>Longitud (grados decimales)</label>
+                            <input type="number" class="input-manual" id="longitud" placeholder="-74.0721" step="0.0001" aria-label="Longitud en grados decimales">
+                        </div>
                     </div>
-                    <div class="form-item">
-                        <label>Departamento</label>
-                        <input type="text" class="input-manual" id="departamento">
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Teléfono / Contacto</label>
-                        <input type="text" class="input-manual" id="telefono">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Autoridad Ambiental Competente</label>
+                            <select class="input-manual" id="autoridad" aria-label="Autoridad ambiental competente">
+                                <option value="">Seleccionar...</option>
+                                <option value="SDA">SDA (Bogotá)</option>
+                                <option value="CAR">CAR (Cundinamarca)</option>
+                                <option value="AMVA">AMVA (Medellín)</option>
+                                <option value="CVC">CVC (Cauca)</option>
+                                <option value="OTRA">Otra</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Propósito de la Medición</label>
+                            <input type="text" class="input-manual" id="proposito" placeholder="Línea base, Monitoreo" aria-label="Propósito de la medición">
+                        </div>
                     </div>
-                    <div class="form-item">
-                        <label>Correo Electrónico</label>
-                        <input type="email" class="input-manual" id="correo">
-                    </div>
-                </div>
 
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 20px;">Sitio de Medición</h3>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Latitud (grados decimales)</label>
-                        <input type="number" class="input-manual" id="latitud" placeholder="e.g., 4.7110" step="0.0001">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Norma Aplicable</label>
+                            <select class="input-manual" id="norma" aria-label="Norma aplicable">
+                                <option value="">Seleccionar...</option>
+                                <option value="Res. 0627/2006">Res. 0627/2006</option>
+                                <option value="NTC 4569-1">NTC 4569-1</option>
+                                <option value="ISO 1996-2">ISO 1996-2</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-item">
-                        <label>Longitud (grados decimales)</label>
-                        <input type="number" class="input-manual" id="longitud" placeholder="e.g., -74.0721" step="0.0001">
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Autoridad Ambiental Competente</label>
-                        <select class="input-manual" id="autoridad">
-                            <option value="">Seleccionar...</option>
-                            <option value="SDA">SDA (Bogotá)</option>
-                            <option value="CAR">CAR (Cundinamarca)</option>
-                            <option value="AMVA">AMVA (Medellín)</option>
-                            <option value="CVC">CVC (Cauca)</option>
-                            <option value="OTRA">Otra</option>
-                        </select>
-                    </div>
-                    <div class="form-item">
-                        <label>Propósito de la Medición</label>
-                        <input type="text" class="input-manual" id="proposito" placeholder="e.g., Línea base, Monitoreo">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Norma Aplicable</label>
-                        <select class="input-manual" id="norma">
-                            <option value="">Seleccionar...</option>
-                            <option value="Res. 0627/2006">Res. 0627/2006</option>
-                            <option value="NTC 4569-1">NTC 4569-1</option>
-                            <option value="ISO 1996-2">ISO 1996-2</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Hora de Inicio de Medición</label>
-                        <input type="time" class="input-manual" id="horaInicio" oninput="actualizarPeriodoAutomatico()">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Hora de Inicio de Medición</label>
+                            <input type="time" class="input-manual" id="horaInicio" oninput="actualizarPeriodoAutomatico()" aria-label="Hora de inicio de medición">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1022,136 +1265,154 @@
                     <strong>Sonómetro:</strong> Instrumento de clase 1 o 2 que mide niveles de presión acústica ponderada A (dB(A)) con respuesta dinámica rápida (F).
                 </div>
 
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px; margin-top: 24px;">Sonómetro</h3>
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Marca</label>
-                        <input type="text" class="input-manual" id="sonoMarca">
-                    </div>
-                    <div class="form-item">
-                        <label>Modelo</label>
-                        <input type="text" class="input-manual" id="sonoModelo">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Número de Serie</label>
-                        <input type="text" class="input-manual" id="sonoSerie">
-                    </div>
-                    <div class="form-item">
-                        <label>Clase (1 o 2)</label>
-                        <select class="input-manual" id="sonoClase">
-                            <option value="">Seleccionar...</option>
-                            <option value="1">Clase 1 (Laboratorio)</option>
-                            <option value="2">Clase 2 (Campo)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Fecha Vencimiento Certificado Sonómetro</label>
-                        <input type="date" class="input-manual" id="fechaVencSonometro" oninput="validarVigenciaCertificados()">
-                    </div>
-                </div>
-
-                <div id="certificadoSonoStatus"></div>
-
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Calibrador Acústico</h3>
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Marca</label>
-                        <input type="text" class="input-manual" id="calibMarca">
-                    </div>
-                    <div class="form-item">
-                        <label>Modelo</label>
-                        <input type="text" class="input-manual" id="calibModelo">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Número de Serie</label>
-                        <input type="text" class="input-manual" id="calibSerie">
-                    </div>
-                    <div class="form-item">
-                        <label>Nivel de Referencia (dB)</label>
-                        <select class="input-manual" id="calibRef">
-                            <option value="">Seleccionar...</option>
-                            <option value="94">94 dB (1000 Hz)</option>
-                            <option value="114">114 dB (1000 Hz)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Fecha Vencimiento Certificado Calibrador</label>
-                        <input type="date" class="input-manual" id="fechaVencCalibrador" oninput="validarVigenciaCertificados()">
-                    </div>
-                </div>
-
-                <div id="certificadoCalibStatus"></div>
-
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Verificación de Calibración</h3>
-
-                <div id="alertDrift" class="alert alert-danger"></div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Nivel Medido Pre-Medición (dB)</label>
-                        <input type="number" class="input-manual" id="nivelPre" step="0.1" oninput="calcularDrift()">
-                    </div>
-                    <div class="form-item">
-                        <label>Desviación Pre-Medición (dB)</label>
-                        <input type="number" class="input-calculated" id="desvPre" disabled step="0.1">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Nivel Medido Post-Medición (dB)</label>
-                        <input type="number" class="input-manual" id="nivelPost" step="0.1" oninput="calcularDrift()">
-                    </div>
-                    <div class="form-item">
-                        <label>Desviación Post-Medición (dB)</label>
-                        <input type="number" class="input-calculated" id="desvPost" disabled step="0.1">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Diferencia Pre/Post (Drift) (dB)</label>
-                        <input type="number" class="input-calculated" id="drift" disabled step="0.1">
-                    </div>
-                    <div id="driftStatus"></div>
-                </div>
-
-                <div id="alertJustificacion" class="alert alert-warning" style="display:none;">
-                    <strong>⚠ Advertencia:</strong> El drift está entre 0.5 y 1.0 dB. Se requiere justificación.
-                </div>
-
-                <div id="justificacionDriftContainer" style="display:none;" class="dynamic-field">
-                    <div class="form-group full">
+                <div class="field-group">
+                    <h3>Sonómetro</h3>
+                    <div class="form-group">
                         <div class="form-item">
-                            <label>Justificación del Drift (requerido)</label>
-                            <textarea class="input-manual" id="justificacionDrift" placeholder="Explique los motivos de la desviación..."></textarea>
+                            <label>Marca</label>
+                            <input type="text" class="input-manual" id="sonoMarca" aria-label="Marca del sonómetro">
+                        </div>
+                        <div class="form-item">
+                            <label>Modelo</label>
+                            <input type="text" class="input-manual" id="sonoModelo" aria-label="Modelo del sonómetro">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Número de Serie</label>
+                            <input type="text" class="input-manual" id="sonoSerie" aria-label="Número de serie del sonómetro">
+                        </div>
+                        <div class="form-item">
+                            <label>Clase (1 o 2)</label>
+                            <select class="input-manual" id="sonoClase" aria-label="Clase del sonómetro">
+                                <option value="">Seleccionar...</option>
+                                <option value="1">Clase 1 (Laboratorio)</option>
+                                <option value="2">Clase 2 (Campo)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Fecha Vencimiento Certificado Sonómetro</label>
+                            <input type="date" class="input-manual" id="fechaVencSonometro" oninput="validarVigenciaCertificados()" aria-label="Fecha de vencimiento del certificado del sonómetro">
+                        </div>
+                    </div>
+
+                    <div id="certificadoSonoStatus"></div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Calibrador Acústico</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Marca</label>
+                            <input type="text" class="input-manual" id="calibMarca" aria-label="Marca del calibrador">
+                        </div>
+                        <div class="form-item">
+                            <label>Modelo</label>
+                            <input type="text" class="input-manual" id="calibModelo" aria-label="Modelo del calibrador">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Número de Serie</label>
+                            <input type="text" class="input-manual" id="calibSerie" aria-label="Número de serie del calibrador">
+                        </div>
+                        <div class="form-item">
+                            <label>Nivel de Referencia</label>
+                            <select class="input-manual" id="calibRef" aria-label="Nivel de referencia del calibrador">
+                                <option value="">Seleccionar...</option>
+                                <option value="94">94 dB (1000 Hz)</option>
+                                <option value="114">114 dB (1000 Hz)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Fecha Vencimiento Certificado Calibrador</label>
+                            <input type="date" class="input-manual" id="fechaVencCalibrador" oninput="validarVigenciaCertificados()" aria-label="Fecha de vencimiento del certificado del calibrador">
+                        </div>
+                    </div>
+
+                    <div id="certificadoCalibStatus"></div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Verificación de Calibración</h3>
+
+                    <div id="alertDrift" class="alert alert-danger"></div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Nivel Medido Pre-Medición</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="nivelPre" step="0.1" oninput="calcularDrift()" aria-label="Nivel medido pre-medición en dB">
+                                <span class="input-unit">dB</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>Desviación Pre-Medición</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="desvPre" disabled step="0.1" aria-label="Desviación pre-medición calculada">
+                                <span class="input-unit">dB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Nivel Medido Post-Medición</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="nivelPost" step="0.1" oninput="calcularDrift()" aria-label="Nivel medido post-medición en dB">
+                                <span class="input-unit">dB</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>Desviación Post-Medición</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="desvPost" disabled step="0.1" aria-label="Desviación post-medición calculada">
+                                <span class="input-unit">dB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Diferencia Pre/Post (Drift)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="drift" disabled step="0.1" aria-label="Diferencia drift entre mediciones">
+                                <span class="input-unit">dB</span>
+                            </div>
+                        </div>
+                        <div id="driftStatus"></div>
+                    </div>
+
+                    <div id="alertJustificacion" class="alert alert-warning" style="display:none;">
+                        <strong>Advertencia: Justificación requerida</strong>
+                        El drift está entre 0.5 y 1.0 dB. Debe justificar la desviación en el campo de abajo.
+                    </div>
+
+                    <div id="justificacionDriftContainer" style="display:none;" class="dynamic-field">
+                        <div class="form-group full">
+                            <div class="form-item">
+                                <label>Justificación del Drift (requerido)</label>
+                                <textarea class="input-manual" id="justificacionDrift" placeholder="Explique los motivos de la desviación..." aria-label="Justificación del drift"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Estación Meteorológica (Opcional)</h3>
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Marca / Modelo</label>
-                        <input type="text" class="input-manual" id="meteoEquipo">
+                <div class="field-group">
+                    <h3>Estación Meteorológica (Opcional)</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Marca / Modelo</label>
+                            <input type="text" class="input-manual" id="meteoEquipo" aria-label="Marca y modelo de estación meteorológica">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1166,154 +1427,177 @@
                 <div id="alertViento" class="alert alert-warning"></div>
                 <div id="alertLluvia" class="alert alert-danger"></div>
 
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Meteorología</h3>
+                <div class="field-group">
+                    <h3>Meteorología</h3>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Temperatura (°C)</label>
-                        <input type="number" class="input-manual" id="temperatura" step="0.1" min="-10" max="50">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Temperatura</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="temperatura" step="0.1" min="-10" max="50" aria-label="Temperatura en grados Celsius">
+                                <span class="input-unit">°C</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>Humedad Relativa</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="humedad" step="0.1" min="0" max="100" aria-label="Humedad relativa en porcentaje">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-item">
-                        <label>Humedad Relativa (%)</label>
-                        <input type="number" class="input-manual" id="humedad" step="0.1" min="0" max="100">
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Velocidad del Viento (m/s)</label>
-                        <input type="number" class="input-manual" id="viento" step="0.1" min="0" oninput="validarViento()">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Velocidad del Viento</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="viento" step="0.1" min="0" oninput="validarViento()" aria-label="Velocidad del viento en metros por segundo">
+                                <span class="input-unit">m/s</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>Dirección del Viento</label>
+                            <input type="text" class="input-manual" id="direccionViento" placeholder="N, NE, E, SE, S, SO, O, NO" aria-label="Dirección del viento">
+                        </div>
                     </div>
-                    <div class="form-item">
-                        <label>Dirección del Viento</label>
-                        <input type="text" class="input-manual" id="direccionViento" placeholder="N, NE, E, ...">
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Presión Atmosférica (hPa)</label>
-                        <input type="number" class="input-manual" id="presion" step="0.1">
-                    </div>
-                    <div class="form-item">
-                        <label>Condición del Cielo</label>
-                        <select class="input-manual" id="cielo" oninput="validarLluvia()">
-                            <option value="">Seleccionar...</option>
-                            <option value="Despejado">Despejado</option>
-                            <option value="Parcialmente Nublado">Parcialmente Nublado</option>
-                            <option value="Nublado">Nublado</option>
-                            <option value="Lluvia">Lluvia</option>
-                        </select>
-                    </div>
-                </div>
-
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Posicionamiento del Micrófono</h3>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Altura del Micrófono (m)
-                            <span class="label-note">Res. 0627 Art. 20: mínimo 1.2 m sobre el suelo</span>
-                        </label>
-                        <input type="number" class="input-manual" id="alturaM" step="0.1" min="0.1" placeholder="1.2 - 4.0" oninput="validarAlturaMicrófono()">
-                    </div>
-                    <div id="alturaStatus"></div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Distancia a Superficies Reflectantes (m)
-                            <span class="label-note">Mínimo recomendado: 3.5 m</span>
-                        </label>
-                        <input type="number" class="input-manual" id="distSuperficies" step="0.1" min="0.1" placeholder="3.5+" oninput="validarDistanciaSuperficies()">
-                    </div>
-                    <div id="distSuperficiesStatus"></div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Distancia a la Fuente (m)</label>
-                        <input type="number" class="input-manual" id="distFuente" step="0.1" min="0.1">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Presión Atmosférica</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="presion" step="0.1" aria-label="Presión atmosférica en hectopascales">
+                                <span class="input-unit">hPa</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>Condición del Cielo</label>
+                            <select class="input-manual" id="cielo" oninput="validarLluvia()" aria-label="Condición del cielo">
+                                <option value="">Seleccionar...</option>
+                                <option value="Despejado">Despejado</option>
+                                <option value="Parcialmente Nublado">Parcialmente Nublado</option>
+                                <option value="Nublado">Nublado</option>
+                                <option value="Lluvia">Lluvia</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
+                <div class="field-group">
+                    <h3>Posicionamiento del Micrófono</h3>
 
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Fuente y Zona Receptora</h3>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Tipo de Fuente</label>
-                        <select class="input-manual" id="tipoFuente">
-                            <option value="">Seleccionar...</option>
-                            <option value="Fija">Fija</option>
-                            <option value="Móvil">Móvil</option>
-                            <option value="Línea">Línea</option>
-                        </select>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Altura del Micrófono
+                                <span class="label-note">Res. 0627 Art. 20: mínimo 1.2 m</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="alturaM" step="0.1" min="0.1" placeholder="1.2 - 4.0" oninput="validarAlturaMicrófono()" aria-label="Altura del micrófono sobre el suelo">
+                                <span class="input-unit">m</span>
+                            </div>
+                        </div>
+                        <div id="alturaStatus"></div>
                     </div>
-                    <div class="form-item">
-                        <label>Operación de Fuente</label>
-                        <select class="input-manual" id="operacionFuente">
-                            <option value="">Seleccionar...</option>
-                            <option value="Continua">Continua</option>
-                            <option value="Intermitente">Intermitente</option>
-                            <option value="Fluctuante">Fluctuante</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="form-group full">
-                    <div class="form-item">
-                        <label>Descripción de la Fuente Evaluada</label>
-                        <textarea class="input-manual" id="descFuente" placeholder="Describa la fuente, ubicación, equipamiento, horario de operación..."></textarea>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Distancia a Superficies Reflectantes
+                                <span class="label-note">Mínimo recomendado: 3.5 m</span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="distSuperficies" step="0.1" min="0.1" placeholder="3.5+" oninput="validarDistanciaSuperficies()" aria-label="Distancia a superficies reflectantes">
+                                <span class="input-unit">m</span>
+                            </div>
+                        </div>
+                        <div id="distSuperficiesStatus"></div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Sector Receptor (Res. 0627)</label>
-                        <select class="input-manual" id="sectorReceptor" oninput="actualizarEstandar()">
-                            <option value="">Seleccionar...</option>
-                            <option value="A">Sector A — Áreas en Recuperación Acústica</option>
-                            <option value="B">Sector B — Residencial/Educativo</option>
-                            <option value="C">Sector C — Industrial</option>
-                            <option value="D">Sector D — Suburbano/Rural</option>
-                        </select>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Distancia a la Fuente</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="distFuente" step="0.1" min="0.1" aria-label="Distancia a la fuente de ruido">
+                                <span class="input-unit">m</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Subsector (si aplica)</label>
-                        <input type="text" class="input-manual" id="subsector" placeholder="e.g., Residencial, Industrial, Comercial">
-                    </div>
-                </div>
+                <div class="field-group">
+                    <h3>Fuente y Zona Receptora</h3>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Tipo de Terreno</label>
-                        <select class="input-manual" id="terreno">
-                            <option value="">Seleccionar...</option>
-                            <option value="Duro">Duro (hormigón, pavimento)</option>
-                            <option value="Poroso">Poroso (césped, tierra)</option>
-                            <option value="Mixto">Mixto</option>
-                        </select>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Tipo de Fuente</label>
+                            <select class="input-manual" id="tipoFuente" aria-label="Tipo de fuente de ruido">
+                                <option value="">Seleccionar...</option>
+                                <option value="Fija">Fija</option>
+                                <option value="Móvil">Móvil</option>
+                                <option value="Línea">Línea</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Operación de Fuente</label>
+                            <select class="input-manual" id="operacionFuente" aria-label="Tipo de operación de la fuente">
+                                <option value="">Seleccionar...</option>
+                                <option value="Continua">Continua</option>
+                                <option value="Intermitente">Intermitente</option>
+                                <option value="Fluctuante">Fluctuante</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-item">
-                        <label>Barreras Acústicas</label>
-                        <select class="input-manual" id="barreras">
-                            <option value="">Seleccionar...</option>
-                            <option value="No">No hay barreras</option>
-                            <option value="Sí">Sí, describa:</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="form-group full">
-                    <div class="form-item">
-                        <label>Descripción de Barreras (si aplica)</label>
-                        <textarea class="input-manual" id="descBarreras" placeholder="Altura, material, ubicación..."></textarea>
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Descripción de la Fuente Evaluada</label>
+                            <textarea class="input-manual" id="descFuente" placeholder="Describa la fuente, ubicación, equipamiento, horario de operación..." aria-label="Descripción detallada de la fuente"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Sector Receptor (Res. 0627)</label>
+                            <select class="input-manual" id="sectorReceptor" oninput="actualizarEstandar()" aria-label="Sector receptor según Resolución 0627">
+                                <option value="">Seleccionar...</option>
+                                <option value="A">Sector A — Áreas en Recuperación Acústica</option>
+                                <option value="B">Sector B — Residencial/Educativo</option>
+                                <option value="C">Sector C — Industrial</option>
+                                <option value="D">Sector D — Suburbano/Rural</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Subsector (si aplica)</label>
+                            <input type="text" class="input-manual" id="subsector" placeholder="Residencial, Industrial, Comercial" aria-label="Subsector">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Tipo de Terreno</label>
+                            <select class="input-manual" id="terreno" aria-label="Tipo de terreno">
+                                <option value="">Seleccionar...</option>
+                                <option value="Duro">Duro (hormigón, pavimento)</option>
+                                <option value="Poroso">Poroso (césped, tierra)</option>
+                                <option value="Mixto">Mixto</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label>Barreras Acústicas</label>
+                            <select class="input-manual" id="barreras" aria-label="Presencia de barreras acústicas">
+                                <option value="">Seleccionar...</option>
+                                <option value="No">No hay barreras</option>
+                                <option value="Sí">Sí, describa:</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Descripción de Barreras (si aplica)</label>
+                            <textarea class="input-manual" id="descBarreras" placeholder="Altura, material, ubicación..." aria-label="Descripción de barreras acústicas"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1325,41 +1609,44 @@
                     Observaciones y Esquema
                 </h2>
 
-                <div class="form-group full">
-                    <div class="form-item">
-                        <label>Observaciones Técnicas del Campo</label>
-                        <textarea class="input-manual" id="observaciones" placeholder="Descripción del entorno sonoro, fuentes observadas, eventos atípicos, variabilidad de la fuente, interferencias, etc."></textarea>
+                <div class="field-group">
+                    <h3>Notas Técnicas de Campo</h3>
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Observaciones Técnicas del Campo</label>
+                            <textarea class="input-manual" id="observaciones" placeholder="Descripción del entorno sonoro, fuentes observadas, eventos atípicos, variabilidad de la fuente, interferencias, etc." aria-label="Observaciones técnicas del campo"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Condiciones Especiales de Medición</label>
+                            <textarea class="input-manual" id="condicionesEspeciales" placeholder="Restricciones de acceso, condiciones climáticas adversas, limitaciones técnicas, etc." aria-label="Condiciones especiales de medición"></textarea>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group full">
-                    <div class="form-item">
-                        <label>Condiciones Especiales de Medición</label>
-                        <textarea class="input-manual" id="condicionesEspeciales" placeholder="Restricciones de acceso, condiciones climáticas adversas, limitaciones técnicas, etc."></textarea>
+                <div class="field-group">
+                    <h3>Croquis de Ubicación</h3>
+
+                    <div class="info-box">
+                        <strong>Nota:</strong> En este prototipo, el croquis es un placeholder. En la versión final, sería un área para insertar imagen o SVG interactivo mostrando ubicación de fuente, receptor y puntos de medición.
                     </div>
-                </div>
 
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Croquis de Ubicación</h3>
-
-                <div class="info-box">
-                    <strong>Nota:</strong> En este prototipo, el croquis es un placeholder. En la versión final, sería un área para insertar imagen o SVG interactivo mostrando ubicación de fuente, receptor y puntos de medición.
-                </div>
-
-                <div style="border: 2px dashed #bdc3c7; border-radius: 8px; padding: 48px; text-align: center; background: #f9fafb; margin: 20px 0;">
-                    <p style="color: #6b7280; font-size: 14px; font-weight: 500;">Área de Diagrama/Croquis</p>
-                    <p style="color: #9ca3af; font-size: 13px;">Fuente — Receptor — Puntos de Medición</p>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Latitud Punto Medición (grados decimales)</label>
-                        <input type="number" class="input-manual" id="latitudMedicion" placeholder="e.g., 4.7110" step="0.0001">
+                    <div style="border: 2px dashed #bdc3c7; border-radius: 8px; padding: 48px; text-align: center; background: #f9fafb; margin: 20px 0;">
+                        <p style="color: #6b7280; font-size: 14px; font-weight: 500;">Área de Diagrama/Croquis</p>
+                        <p style="color: #9ca3af; font-size: 13px;">Fuente — Receptor — Puntos de Medición</p>
                     </div>
-                    <div class="form-item">
-                        <label>Longitud Punto Medición (grados decimales)</label>
-                        <input type="number" class="input-manual" id="longitudMedicion" placeholder="e.g., -74.0721" step="0.0001">
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Latitud Punto Medición</label>
+                            <input type="number" class="input-manual" id="latitudMedicion" placeholder="4.7110" step="0.0001" aria-label="Latitud del punto de medición">
+                        </div>
+                        <div class="form-item">
+                            <label>Longitud Punto Medición</label>
+                            <input type="number" class="input-manual" id="longitudMedicion" placeholder="-74.0721" step="0.0001" aria-label="Longitud del punto de medición">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1371,81 +1658,106 @@
                     Resultados de Medición
                 </h2>
 
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Con Fuente Activa</h3>
+                <div class="field-group">
+                    <h3>Con Fuente Activa</h3>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>LAeq,T (nivel equivalente) (dB(A))</label>
-                        <input type="number" class="input-manual" id="laeqT" step="0.1" oninput="actualizarCalculos()">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>LAeq,T (nivel equivalente)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="laeqT" step="0.1" oninput="actualizarCalculos()" aria-label="LAeq T en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>LAmax (nivel máximo)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="lamax" step="0.1" aria-label="LAmax en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-item">
-                        <label>LAmax (nivel máximo) (dB(A))</label>
-                        <input type="number" class="input-manual" id="lamax" step="0.1">
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>LAmin (nivel mínimo)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="lamin" step="0.1" aria-label="LAmin en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>L10 (percentil 10)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="l10" step="0.1" aria-label="L10 percentil en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>LAmin (nivel mínimo) (dB(A))</label>
-                        <input type="number" class="input-manual" id="lamin" step="0.1">
-                    </div>
-                    <div class="form-item">
-                        <label>L10 (percentil 10) (dB(A))</label>
-                        <input type="number" class="input-manual" id="l10" step="0.1">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>L50 (percentil 50) (dB(A))</label>
-                        <input type="number" class="input-manual" id="l50" step="0.1">
-                    </div>
-                    <div class="form-item">
-                        <label>L90 (percentil 90) (dB(A))</label>
-                        <input type="number" class="input-manual" id="l90" step="0.1">
-                    </div>
-                </div>
-
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Espectro en 1/3 Octava (34 Frecuencias)</h3>
-
-                <div class="info-box">
-                    <strong>Nota:</strong> Ingrese valores en dB(A) para cada banda de frecuencia. El espectro es obligatorio si se evalúa componente tonal (KT ≠ 0).
-                </div>
-
-                <table class="spectrum-table" id="spectrumTable">
-                    <thead>
-                        <tr>
-                            <th colspan="6">Espectro en 1/3 Octava (dB)</th>
-                        </tr>
-                        <tr>
-                            <th>Hz</th><th>dB</th><th>Hz</th><th>dB</th><th>Hz</th><th>dB</th>
-                        </tr>
-                    </thead>
-                    <tbody id="spectrumBody">
-                    </tbody>
-                </table>
-
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Residual (Sin Fuente o L90)</h3>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>LAeq,T Residual (dB(A))</label>
-                        <input type="number" class="input-manual" id="laeqResidual" step="0.1" oninput="actualizarCalculos()">
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>L50 (percentil 50)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="l50" step="0.1" aria-label="L50 percentil en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
+                        <div class="form-item">
+                            <label>L90 (percentil 90)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="l90" step="0.1" aria-label="L90 percentil en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Método Determinación Residual</label>
-                        <select class="input-manual" id="metodoResidual">
-                            <option value="">Seleccionar...</option>
-                            <option value="LAeq medido">LAeq medido sin fuente</option>
-                            <option value="L90">L90 como residual</option>
-                        </select>
+                <div class="field-group">
+                    <h3>Espectro en 1/3 Octava (30 Frecuencias)</h3>
+
+                    <div class="info-box">
+                        <strong>Nota:</strong> Ingrese valores en dB(A) para cada banda de frecuencia. Las frecuencias octava (amarillo) son clave. El espectro es obligatorio si se evalúa componente tonal (KT ≠ 0).
+                    </div>
+
+                    <div class="spectrum-container">
+                        <table class="spectrum-table" id="spectrumTable">
+                            <thead>
+                                <tr>
+                                    <th colspan="6">Espectro en 1/3 Octava (dB)</th>
+                                </tr>
+                                <tr>
+                                    <th>Hz</th><th>dB</th><th>Hz</th><th>dB</th><th>Hz</th><th>dB</th>
+                                </tr>
+                            </thead>
+                            <tbody id="spectrumBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Residual (Sin Fuente o L90)</h3>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>LAeq,T Residual</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-manual" id="laeqResidual" step="0.1" oninput="actualizarCalculos()" aria-label="LAeq T residual en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Método Determinación Residual</label>
+                            <select class="input-manual" id="metodoResidual" aria-label="Método para determinar el residual">
+                                <option value="">Seleccionar...</option>
+                                <option value="LAeq medido">LAeq medido sin fuente</option>
+                                <option value="L90">L90 como residual</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1461,237 +1773,252 @@
                     <strong>Regla de Corrección:</strong> KR = max(Ks, KT, KI) para fuente activa. Para residual: max(KT, KI) sin Ks.
                 </div>
 
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 20px; margin-top: 28px;">Con Fuente Activa</h3>
+                <div class="field-group">
+                    <h3>Con Fuente Activa</h3>
 
-                <div class="corrections-grid">
-                    <div class="correction-box">
-                        <h4>Ks (Baja Frecuencia / Ventilación)</h4>
-                        <div class="radio-group" style="flex-direction: column; gap: 12px; margin-top: 12px;">
-                            <div class="radio-item">
-                                <input type="radio" name="ks" id="ks0" value="0" checked oninput="actualizarCalculos()">
-                                <label for="ks0">No Aplica (0 dB)</label>
+                    <div class="corrections-grid">
+                        <div class="correction-box">
+                            <h4>Ks (Baja Frecuencia / Ventilación)</h4>
+                            <div class="radio-group" style="flex-direction: column; gap: 12px; margin-top: 12px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="ks" id="ks0" value="0" checked oninput="actualizarCalculos()">
+                                    <label for="ks0">No Aplica (0 dB)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ks" id="ks5" value="5" oninput="actualizarCalculos()">
+                                    <label for="ks5">Diurno (5 dB)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ks" id="ks8" value="8" oninput="actualizarCalculos()">
+                                    <label for="ks8">Nocturno (8 dB)</label>
+                                </div>
                             </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ks" id="ks5" value="5" oninput="actualizarCalculos()">
-                                <label for="ks5">Diurno (5 dB)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ks" id="ks8" value="8" oninput="actualizarCalculos()">
-                                <label for="ks8">Nocturno (8 dB)</label>
+                        </div>
+
+                        <div class="correction-box">
+                            <h4>KI (Impulsivo)</h4>
+                            <div class="radio-group" style="flex-direction: column; gap: 12px; margin-top: 12px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="ki" id="ki0" value="0" checked oninput="actualizarCalculos()">
+                                    <label for="ki0">Nula (0 dB)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ki" id="ki3" value="3" oninput="actualizarCalculos()">
+                                    <label for="ki3">Neto (3 dB)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ki" id="ki6" value="6" oninput="actualizarCalculos()">
+                                    <label for="ki6">Fuerte (6 dB)</label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="correction-box">
-                        <h4>KI (Impulsivo)</h4>
-                        <div class="radio-group" style="flex-direction: column; gap: 12px; margin-top: 12px;">
-                            <div class="radio-item">
-                                <input type="radio" name="ki" id="ki0" value="0" checked oninput="actualizarCalculos()">
-                                <label for="ki0">Nula (0 dB)</label>
+                    <h3 style="margin-top: 28px;">Componente Tonal (KT)</h3>
+                    <div class="info-box">
+                        Evalúe presencia de tonos puros en 3 rangos de frecuencia. KT resultante = máximo de los 3 rangos.
+                    </div>
+
+                    <div class="form-group triple">
+                        <div class="correction-box">
+                            <h4>20-125 Hz</h4>
+                            <div class="radio-group" style="flex-direction: column; gap: 10px; margin-top: 12px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="kt1" id="kt1_0" value="0" checked oninput="actualizarCalculos()">
+                                    <label for="kt1_0">Nula (0)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="kt1" id="kt1_3" value="3" oninput="actualizarCalculos()">
+                                    <label for="kt1_3">Neto (3)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="kt1" id="kt1_6" value="6" oninput="actualizarCalculos()">
+                                    <label for="kt1_6">Fuerte (6)</label>
+                                </div>
                             </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ki" id="ki3" value="3" oninput="actualizarCalculos()">
-                                <label for="ki3">Neto (3 dB)</label>
+                        </div>
+
+                        <div class="correction-box">
+                            <h4>160-400 Hz</h4>
+                            <div class="radio-group" style="flex-direction: column; gap: 10px; margin-top: 12px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="kt2" id="kt2_0" value="0" checked oninput="actualizarCalculos()">
+                                    <label for="kt2_0">Nula (0)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="kt2" id="kt2_3" value="3" oninput="actualizarCalculos()">
+                                    <label for="kt2_3">Neto (3)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="kt2" id="kt2_6" value="6" oninput="actualizarCalculos()">
+                                    <label for="kt2_6">Fuerte (6)</label>
+                                </div>
                             </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ki" id="ki6" value="6" oninput="actualizarCalculos()">
-                                <label for="ki6">Fuerte (6 dB)</label>
+                        </div>
+
+                        <div class="correction-box">
+                            <h4>≥ 500 Hz</h4>
+                            <div class="radio-group" style="flex-direction: column; gap: 10px; margin-top: 12px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="kt3" id="kt3_0" value="0" checked oninput="actualizarCalculos()">
+                                    <label for="kt3_0">Nula (0)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="kt3" id="kt3_3" value="3" oninput="actualizarCalculos()">
+                                    <label for="kt3_3">Neto (3)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="kt3" id="kt3_6" value="6" oninput="actualizarCalculos()">
+                                    <label for="kt3_6">Fuerte (6)</label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px; margin-top: 28px;">Componente Tonal (KT)</h3>
-                <div class="info-box">
-                    Evalúe presencia de tonos puros en 3 rangos de frecuencia. KT resultante = max de los 3 rangos.
-                </div>
+                <div class="field-group">
+                    <h3>Niveles Corregidos — Con Fuente Activa</h3>
 
-                <div class="form-group triple">
-                    <div class="correction-box">
-                        <h4>20-125 Hz</h4>
-                        <div class="radio-group" style="flex-direction: column; gap: 10px; margin-top: 12px;">
-                            <div class="radio-item">
-                                <input type="radio" name="kt1" id="kt1_0" value="0" checked oninput="actualizarCalculos()">
-                                <label for="kt1_0">Nula (0)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="kt1" id="kt1_3" value="3" oninput="actualizarCalculos()">
-                                <label for="kt1_3">Neto (3)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="kt1" id="kt1_6" value="6" oninput="actualizarCalculos()">
-                                <label for="kt1_6">Fuerte (6)</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="correction-box">
-                        <h4>160-400 Hz</h4>
-                        <div class="radio-group" style="flex-direction: column; gap: 10px; margin-top: 12px;">
-                            <div class="radio-item">
-                                <input type="radio" name="kt2" id="kt2_0" value="0" checked oninput="actualizarCalculos()">
-                                <label for="kt2_0">Nula (0)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="kt2" id="kt2_3" value="3" oninput="actualizarCalculos()">
-                                <label for="kt2_3">Neto (3)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="kt2" id="kt2_6" value="6" oninput="actualizarCalculos()">
-                                <label for="kt2_6">Fuerte (6)</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="correction-box">
-                        <h4>≥ 500 Hz</h4>
-                        <div class="radio-group" style="flex-direction: column; gap: 10px; margin-top: 12px;">
-                            <div class="radio-item">
-                                <input type="radio" name="kt3" id="kt3_0" value="0" checked oninput="actualizarCalculos()">
-                                <label for="kt3_0">Nula (0)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="kt3" id="kt3_3" value="3" oninput="actualizarCalculos()">
-                                <label for="kt3_3">Neto (3)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="kt3" id="kt3_6" value="6" oninput="actualizarCalculos()">
-                                <label for="kt3_6">Fuerte (6)</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Niveles Corregidos — Con Fuente Activa</h3>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>KT Resultante (máximo)</label>
-                        <input type="number" class="input-calculated" id="ktResultante" disabled>
-                    </div>
-                    <div class="form-item">
-                        <label>KR Resultante (máximo de todos)</label>
-                        <input type="number" class="input-calculated" id="krResultante" disabled>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>LRAeq,T Corregido (dB(A))</label>
-                        <input type="number" class="input-calculated" id="lraeqCorregido" disabled step="0.1">
-                    </div>
-                    <div class="form-item">
-                        <label>LRAeq,T Residual Corregido (dB(A))</label>
-                        <input type="number" class="input-calculated" id="lraeqResidualCorregido" disabled step="0.1">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Diferencia (Corregida - Residual Corregida) (dB)</label>
-                        <input type="number" class="input-calculated" id="diferencia" disabled step="0.1">
-                    </div>
-                </div>
-
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Emisión Sonora</h3>
-
-                <div class="info-box">
-                    <strong>Criterio:</strong> Si diferencia > 3 dB → Emisión = 10·log₁₀(10^(LRcorr/10) - 10^(LRresid/10)). Si ≤ 3 dB → "No se puede determinar".
-                </div>
-
-                <div id="emisionSection">
                     <div class="form-group">
                         <div class="form-item">
-                            <label>LRAeq,T Emisión (dB(A))</label>
-                            <input type="number" class="input-calculated" id="emision" disabled step="0.1">
+                            <label>KT Resultante (máximo)</label>
+                            <input type="number" class="input-calculated" id="ktResultante" disabled aria-label="KT resultante calculado">
+                        </div>
+                        <div class="form-item">
+                            <label>KR Resultante (máximo de todos)</label>
+                            <input type="number" class="input-calculated" id="krResultante" disabled aria-label="KR resultante calculado">
                         </div>
                     </div>
-                </div>
 
-                <div id="emisionNoDeterminable" class="alert alert-warning" style="display: none;">
-                    <strong>No se puede determinar la emisión:</strong> Diferencia ≤ 3 dB(A). La emisión de la fuente es muy cercana al nivel residual.
-                </div>
-
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Correcciones Residual (para verificación)</h3>
-
-                <h4 style="font-size: 12px; color: #6b7280; margin-bottom: 12px; margin-top: 16px; font-weight: 600;">KT Residual (3 rangos) — opcional para análisis</h4>
-
-                <div class="form-group triple">
-                    <div style="border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; background: #f9fafb;">
-                        <label style="font-size: 12px;">20-125 Hz</label>
-                        <div class="radio-group" style="flex-direction: column; gap: 8px; margin-top: 10px;">
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes1" id="ktRes1_0" value="0" checked>
-                                <label for="ktRes1_0" style="font-size: 13px;">Nula (0)</label>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>LRAeq,T Corregido</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="lraeqCorregido" disabled step="0.1" aria-label="LRAeq T corregido en dB A">
+                                <span class="input-unit">dB(A)</span>
                             </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes1" id="ktRes1_3" value="3">
-                                <label for="ktRes1_3" style="font-size: 13px;">Neto (3)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes1" id="ktRes1_6" value="6">
-                                <label for="ktRes1_6" style="font-size: 13px;">Fuerte (6)</label>
+                        </div>
+                        <div class="form-item">
+                            <label>LRAeq,T Residual Corregido</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="lraeqResidualCorregido" disabled step="0.1" aria-label="LRAeq T residual corregido en dB A">
+                                <span class="input-unit">dB(A)</span>
                             </div>
                         </div>
                     </div>
 
-                    <div style="border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; background: #f9fafb;">
-                        <label style="font-size: 12px;">160-400 Hz</label>
-                        <div class="radio-group" style="flex-direction: column; gap: 8px; margin-top: 10px;">
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes2" id="ktRes2_0" value="0" checked>
-                                <label for="ktRes2_0" style="font-size: 13px;">Nula (0)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes2" id="ktRes2_3" value="3">
-                                <label for="ktRes2_3" style="font-size: 13px;">Neto (3)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes2" id="ktRes2_6" value="6">
-                                <label for="ktRes2_6" style="font-size: 13px;">Fuerte (6)</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div style="border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; background: #f9fafb;">
-                        <label style="font-size: 12px;">≥ 500 Hz</label>
-                        <div class="radio-group" style="flex-direction: column; gap: 8px; margin-top: 10px;">
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes3" id="ktRes3_0" value="0" checked>
-                                <label for="ktRes3_0" style="font-size: 13px;">Nula (0)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes3" id="ktRes3_3" value="3">
-                                <label for="ktRes3_3" style="font-size: 13px;">Neto (3)</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" name="ktRes3" id="ktRes3_6" value="6">
-                                <label for="ktRes3_6" style="font-size: 13px;">Fuerte (6)</label>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Diferencia (Corregida - Residual Corregida)</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="diferencia" disabled step="0.1" aria-label="Diferencia entre niveles corregidos">
+                                <span class="input-unit">dB</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <h4 style="font-size: 12px; color: #6b7280; margin-bottom: 12px; margin-top: 20px; font-weight: 600;">KI Residual</h4>
-                <div style="border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; background: #f9fafb;">
-                    <div class="radio-group" style="flex-direction: column; gap: 8px;">
-                        <div class="radio-item">
-                            <input type="radio" name="kiRes" id="kiRes0" value="0" checked>
-                            <label for="kiRes0" style="font-size: 13px;">Nula (0 dB)</label>
+                <div class="field-group">
+                    <h3>Emisión Sonora</h3>
+
+                    <div class="info-box">
+                        <strong>Criterio:</strong> Si diferencia > 3 dB → Emisión = 10·log₁₀(10^(LRcorr/10) - 10^(LRresid/10)). Si ≤ 3 dB → "No se puede determinar".
+                    </div>
+
+                    <div id="emisionSection">
+                        <div class="form-group">
+                            <div class="form-item">
+                                <label>LRAeq,T Emisión</label>
+                                <div class="input-wrapper">
+                                    <input type="number" class="input-calculated" id="emision" disabled step="0.1" aria-label="Emisión en dB A">
+                                    <span class="input-unit">dB(A)</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="radio-item">
-                            <input type="radio" name="kiRes" id="kiRes3" value="3">
-                            <label for="kiRes3" style="font-size: 13px;">Neto (3 dB)</label>
+                    </div>
+
+                    <div id="emisionNoDeterminable" class="alert alert-warning" style="display: none;">
+                        <strong>No se puede determinar la emisión</strong>
+                        Diferencia ≤ 3 dB(A). La emisión de la fuente es muy cercana al nivel residual.
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Correcciones Residual (para verificación)</h3>
+
+                    <h4 style="font-size: 12px; color: #6b7280; margin-bottom: 12px; font-weight: 600;">KT Residual (3 rangos) — opcional para análisis</h4>
+
+                    <div class="form-group triple">
+                        <div style="border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; background: #f9fafb;">
+                            <label style="font-size: 12px;">20-125 Hz</label>
+                            <div class="radio-group" style="flex-direction: column; gap: 8px; margin-top: 10px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes1" id="ktRes1_0" value="0" checked>
+                                    <label for="ktRes1_0" style="font-size: 13px;">Nula (0)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes1" id="ktRes1_3" value="3">
+                                    <label for="ktRes1_3" style="font-size: 13px;">Neto (3)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes1" id="ktRes1_6" value="6">
+                                    <label for="ktRes1_6" style="font-size: 13px;">Fuerte (6)</label>
+                                </div>
+                            </div>
                         </div>
-                        <div class="radio-item">
-                            <input type="radio" name="kiRes" id="kiRes6" value="6">
-                            <label for="kiRes6" style="font-size: 13px;">Fuerte (6 dB)</label>
+
+                        <div style="border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; background: #f9fafb;">
+                            <label style="font-size: 12px;">160-400 Hz</label>
+                            <div class="radio-group" style="flex-direction: column; gap: 8px; margin-top: 10px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes2" id="ktRes2_0" value="0" checked>
+                                    <label for="ktRes2_0" style="font-size: 13px;">Nula (0)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes2" id="ktRes2_3" value="3">
+                                    <label for="ktRes2_3" style="font-size: 13px;">Neto (3)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes2" id="ktRes2_6" value="6">
+                                    <label for="ktRes2_6" style="font-size: 13px;">Fuerte (6)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; background: #f9fafb;">
+                            <label style="font-size: 12px;">≥ 500 Hz</label>
+                            <div class="radio-group" style="flex-direction: column; gap: 8px; margin-top: 10px;">
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes3" id="ktRes3_0" value="0" checked>
+                                    <label for="ktRes3_0" style="font-size: 13px;">Nula (0)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes3" id="ktRes3_3" value="3">
+                                    <label for="ktRes3_3" style="font-size: 13px;">Neto (3)</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="ktRes3" id="ktRes3_6" value="6">
+                                    <label for="ktRes3_6" style="font-size: 13px;">Fuerte (6)</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4 style="font-size: 12px; color: #6b7280; margin-bottom: 12px; margin-top: 20px; font-weight: 600;">KI Residual</h4>
+                    <div style="border: 1px solid #e5e7eb; padding: 14px; border-radius: 8px; background: #f9fafb;">
+                        <div class="radio-group" style="flex-direction: column; gap: 8px;">
+                            <div class="radio-item">
+                                <input type="radio" name="kiRes" id="kiRes0" value="0" checked>
+                                <label for="kiRes0" style="font-size: 13px;">Nula (0 dB)</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" name="kiRes" id="kiRes3" value="3">
+                                <label for="kiRes3" style="font-size: 13px;">Neto (3 dB)</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" name="kiRes" id="kiRes6" value="6">
+                                <label for="kiRes6" style="font-size: 13px;">Fuerte (6 dB)</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1704,98 +2031,106 @@
                     Comparación Norma
                 </h2>
 
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Estándar Aplicable</h3>
+                <div class="field-group">
+                    <h3>Estándar Aplicable</h3>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Sector Receptor</label>
-                        <input type="text" class="input-calculated" id="sectorMostrado" disabled>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Sector Receptor</label>
+                            <input type="text" class="input-calculated" id="sectorMostrado" disabled aria-label="Sector receptor">
+                        </div>
+                        <div class="form-item">
+                            <label>Período</label>
+                            <input type="text" class="input-calculated" id="periodoMostrado" disabled aria-label="Período diurno o nocturno">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Estándar Máximo Permisible</label>
+                            <div class="input-wrapper">
+                                <input type="number" class="input-calculated" id="estandarPermisible" disabled step="0.1" aria-label="Estándar máximo permisible en dB A">
+                                <span class="input-unit">dB(A)</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Período</label>
-                        <input type="text" class="input-calculated" id="periodoMostrado" disabled>
+                <!-- PANEL DE CONTROL VISUAL: Resultado de Cumplimiento -->
+                <h3 style="font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 20px; margin-top: 28px;">Resultado de Cumplimiento</h3>
+
+                <div class="compliance-panel">
+                    <div class="compliance-card main" id="complianceMain">
+                        <h3 id="complianceMainLabel">CUMPLIMIENTO</h3>
+                        <div class="compliance-card-value" id="complianceMainValue">—</div>
+                    </div>
+
+                    <div class="compliance-card">
+                        <h3>Emisión Medida</h3>
+                        <div class="compliance-card-value" id="sumEmision">—</div>
+                    </div>
+
+                    <div class="compliance-card">
+                        <h3>Estándar Máximo</h3>
+                        <div class="compliance-card-value" id="sumEstandar">—</div>
+                    </div>
+
+                    <div class="compliance-card">
+                        <h3>Margen</h3>
+                        <div class="compliance-card-value" id="sumMargen">—</div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Estándar Máximo Permisible (dB(A))</label>
-                        <input type="number" class="input-calculated" id="estandarPermisible" disabled step="0.1">
+                <div class="field-group">
+                    <h3>Conclusión Técnica</h3>
+
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Conclusión (generada automáticamente)</label>
+                            <textarea class="input-calculated" id="conclusion" disabled aria-label="Conclusión técnica"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group full">
+                        <div class="form-item">
+                            <label>Recomendaciones (adicionales, si aplica)</label>
+                            <textarea class="input-manual" id="recomendaciones" placeholder="Acciones correctivas, mejoras propuestas, etc." aria-label="Recomendaciones técnicas"></textarea>
+                        </div>
                     </div>
                 </div>
 
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
+                <div class="field-group">
+                    <h3>Profesional Responsable</h3>
 
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Resultado de Cumplimiento</h3>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Nombre Profesional</label>
+                            <input type="text" class="input-manual" id="profesional" aria-label="Nombre del profesional responsable">
+                        </div>
+                        <div class="form-item">
+                            <label>Matrícula Profesional</label>
+                            <input type="text" class="input-manual" id="matricula" aria-label="Matrícula profesional">
+                        </div>
+                    </div>
 
-                <div id="complianceSummary" class="summary-box">
-                    <h4>Evaluación de Cumplimiento</h4>
-                    <div class="summary-row">
-                        <span class="summary-label">Emisión Medida:</span>
-                        <span class="summary-value" id="sumEmision">—</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Estándar Máximo:</span>
-                        <span class="summary-value" id="sumEstandar">—</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">Margen:</span>
-                        <span class="summary-value" id="sumMargen">—</span>
-                    </div>
-                    <div class="summary-row" style="margin-top: 12px; border-top: 2px solid rgba(0,0,0,0.15); padding-top: 12px;">
-                        <span class="summary-label">Resultado:</span>
-                        <span class="summary-value" id="sumResultado">—</span>
+                    <div class="form-group">
+                        <div class="form-item">
+                            <label>Cargo / Especialidad</label>
+                            <input type="text" class="input-manual" id="cargo" aria-label="Cargo o especialidad">
+                        </div>
                     </div>
                 </div>
 
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Conclusión Técnica</h3>
-
-                <div class="form-group full">
-                    <div class="form-item">
-                        <label>Conclusión (generada automáticamente)</label>
-                        <textarea class="input-calculated" id="conclusion" disabled></textarea>
-                    </div>
-                </div>
-
-                <div class="form-group full">
-                    <div class="form-item">
-                        <label>Recomendaciones (adicionales, si aplica)</label>
-                        <textarea class="input-manual" id="recomendaciones" placeholder="Acciones correctivas, mejoras propuestas, etc."></textarea>
-                    </div>
-                </div>
-
-                <hr style="margin: 32px 0; border: none; border-top: 1px solid #e5e7eb;">
-
-                <h3 style="font-size: 14px; font-weight: 700; color: #1f2937; margin-bottom: 16px;">Profesional Responsable</h3>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Nombre Profesional</label>
-                        <input type="text" class="input-manual" id="profesional">
-                    </div>
-                    <div class="form-item">
-                        <label>Matrícula Profesional</label>
-                        <input type="text" class="input-manual" id="matricula">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-item">
-                        <label>Cargo / Especialidad</label>
-                        <input type="text" class="input-manual" id="cargo">
-                    </div>
+                <div class="field-group">
+                    <h3>Exportar Documento</h3>
+                    <button class="btn-success" onclick="generarPDF()" style="width: auto;">Generar PDF</button>
                 </div>
             </div>
         </div>
 
         <div class="navigation">
             <button class="btn-secondary" id="btnPrev" onclick="prevSection()">← Anterior</button>
-            <button class="btn-primary" id="btnNext" onclick="nextSection()">Siguiente →</button>
+            <button class="btn-primary" id="btnNext" onclick="nextSection()" id="btnNext"></button>
         </div>
     </div>
 
@@ -1809,33 +2144,22 @@
 
     <script>
         // ============================================
-        // TABLA DE ESTÁNDARES (Art. 17, Res. 0627)
+        // CONSTANTES
         // ============================================
         const STANDARDS = {
-            'A': {
-                'Diurno': 55,
-                'Nocturno': 50
-            },
-            'B': {
-                'Diurno': 65,
-                'Nocturno': 55
-            },
-            'C': {
-                'Diurno': 75,
-                'Nocturno': 75
-            },
-            'D': {
-                'Diurno': 55,
-                'Nocturno': 50
-            }
+            'A': { 'Diurno': 55, 'Nocturno': 50 },
+            'B': { 'Diurno': 65, 'Nocturno': 55 },
+            'C': { 'Diurno': 75, 'Nocturno': 75 },
+            'D': { 'Diurno': 55, 'Nocturno': 50 }
         };
 
-        // Espectro en 1/3 octava (34 frecuencias)
         const SPECTRUM_FREQUENCIES = [
             20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160,
             200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600,
             2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500, 16000
         ];
+
+        const OCTAVE_FREQUENCIES = [63, 125, 250, 500, 1000, 2000, 4000, 8000];
 
         const SECTION_NAMES = [
             'Información General',
@@ -1859,6 +2183,13 @@
             setFechaHoy();
             showSection(1);
             actualizarEstadoGlobal();
+        });
+
+        // Atajos de teclado: Enter para siguiente, Shift+Tab para anterior
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && event.ctrlKey) {
+                nextSection();
+            }
         });
 
         function initializeSteps() {
@@ -1907,9 +2238,12 @@
                     if (idx < SPECTRUM_FREQUENCIES.length) {
                         const freq = SPECTRUM_FREQUENCIES[idx];
                         const inputId = `spectrum_${idx}`;
+                        const isOctave = OCTAVE_FREQUENCIES.includes(freq);
+                        const octaveClass = isOctave ? 'freq-octave' : '';
+
                         row.innerHTML += `
-                            <td><strong>${freq}</strong></td>
-                            <td><input type="number" class="input-manual" id="${inputId}" step="0.1"></td>
+                            <td class="${octaveClass}"><strong>${freq}</strong></td>
+                            <td class="${octaveClass}"><input type="number" class="input-manual" id="${inputId}" step="0.1" aria-label="Nivel espectro ${freq} Hz"></td>
                         `;
                     }
                 }
@@ -1922,7 +2256,6 @@
             sections.forEach(s => s.classList.remove('active'));
             document.getElementById(`section-${n}`).classList.add('active');
 
-            // Actualizar steps
             document.querySelectorAll('.step').forEach((step, idx) => {
                 step.classList.remove('active', 'completed');
                 if (idx + 1 === n) {
@@ -1937,7 +2270,10 @@
 
             document.getElementById('statusText').textContent = `Sección ${n} de ${totalSections} · ${SECTION_NAMES[n - 1]}`;
             document.getElementById('btnPrev').disabled = (n === 1);
-            document.getElementById('btnNext').disabled = (n === totalSections);
+
+            const btnNext = document.getElementById('btnNext');
+            btnNext.disabled = (n === totalSections);
+            btnNext.textContent = n === totalSections ? 'Finalizar' : `Siguiente: ${SECTION_NAMES[n]} →`;
 
             window.scrollTo(0, 0);
         }
@@ -1968,7 +2304,6 @@
             validarDistanciaSuperficies();
             calcularDrift();
 
-            // Actualizar status bar
             const statusBar = document.getElementById('statusBar');
             const errorCount = validationErrors.length;
             const warningCount = validationWarnings.length;
@@ -1988,6 +2323,12 @@
             if (currentSection === 2 && errorCount > 0) {
                 document.getElementById('btnNext').disabled = true;
             }
+        }
+
+        function flashField(fieldId) {
+            const field = document.getElementById(fieldId);
+            field.classList.add('field-updated');
+            setTimeout(() => field.classList.remove('field-updated'), 500);
         }
 
         function calcularDrift() {
@@ -2042,7 +2383,7 @@
                     sonoStatusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Certificado vencido</span>';
                     validationErrors = [...new Set([...validationErrors, 'CERT_SONO_VENCIDO'])];
                 } else if (diasRestantes < 30) {
-                    sonoStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Vence pronto (${diasRestantes}d)</span>`;
+                    sonoStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Vence pronto (${diasRestantes} días)</span>`;
                     validationWarnings = [...new Set([...validationWarnings, 'CERT_SONO_PRONTO'])];
                     validationErrors = validationErrors.filter(e => e !== 'CERT_SONO_VENCIDO');
                 } else {
@@ -2060,7 +2401,7 @@
                     calibStatusDiv.innerHTML = '<span class="validation-badge badge-danger">✗ Certificado vencido</span>';
                     validationErrors = [...new Set([...validationErrors, 'CERT_CALIB_VENCIDO'])];
                 } else if (diasRestantes < 30) {
-                    calibStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Vence pronto (${diasRestantes}d)</span>`;
+                    calibStatusDiv.innerHTML = `<span class="validation-badge badge-warning">⚠ Vence pronto (${diasRestantes} días)</span>`;
                     validationWarnings = [...new Set([...validationWarnings, 'CERT_CALIB_PRONTO'])];
                     validationErrors = validationErrors.filter(e => e !== 'CERT_CALIB_VENCIDO');
                 } else {
@@ -2109,7 +2450,7 @@
 
             if (viento > 3) {
                 alertViento.classList.add('show');
-                alertViento.innerHTML = '<strong>⚠ Velocidad del viento > 3 m/s:</strong> Puede invalidar la medición.';
+                alertViento.innerHTML = '<strong>⚠ Viento fuerte (>3 m/s)</strong> Puede afectar significativamente la medición. Considere reprogramar.';
             } else {
                 alertViento.classList.remove('show');
             }
@@ -2121,7 +2462,7 @@
 
             if (cielo === 'Lluvia') {
                 alertLluvia.classList.add('show');
-                alertLluvia.innerHTML = '<strong>⚠ Lluvia detectada:</strong> Invalida la medición. Reprogramar.';
+                alertLluvia.innerHTML = '<strong>Lluvia detectada — Medición Inválida</strong> La presencia de lluvia invalida la medición según normas técnicas. Reprograme la medición para condiciones secas.';
             } else {
                 alertLluvia.classList.remove('show');
             }
@@ -2141,13 +2482,12 @@
             }
 
             document.getElementById('periodoMostrado').value = periodo;
-            document.getElementById('periodo').value = periodo;
             actualizarEstandar();
         }
 
         function actualizarEstandar() {
             const sector = document.getElementById('sectorReceptor').value;
-            const periodo = document.getElementById('periodoMostrado').value || document.getElementById('periodo').value;
+            const periodo = document.getElementById('periodoMostrado').value;
 
             if (sector && periodo) {
                 const estandar = STANDARDS[sector][periodo];
@@ -2176,10 +2516,13 @@
             const krResultante = Math.max(ks, ktResultante, ki);
 
             document.getElementById('ktResultante').value = ktResultante;
+            flashField('ktResultante');
             document.getElementById('krResultante').value = krResultante;
+            flashField('krResultante');
 
             const lraeqCorregido = laeqT + krResultante;
             document.getElementById('lraeqCorregido').value = lraeqCorregido.toFixed(2);
+            flashField('lraeqCorregido');
 
             const ktRes1 = obtenerValorRadio('ktRes1');
             const ktRes2 = obtenerValorRadio('ktRes2');
@@ -2190,13 +2533,16 @@
 
             const lraeqResidualCorregido = laeqResidual + krResidualResultante;
             document.getElementById('lraeqResidualCorregido').value = lraeqResidualCorregido.toFixed(2);
+            flashField('lraeqResidualCorregido');
 
             const diferencia = lraeqCorregido - lraeqResidualCorregido;
             document.getElementById('diferencia').value = diferencia.toFixed(2);
+            flashField('diferencia');
 
             if (diferencia > 3) {
                 const emision = 10 * Math.log10(Math.pow(10, lraeqCorregido / 10) - Math.pow(10, lraeqResidualCorregido / 10));
                 document.getElementById('emision').value = emision.toFixed(2);
+                flashField('emision');
                 document.getElementById('emisionSection').style.display = 'block';
                 document.getElementById('emisionNoDeterminable').style.display = 'none';
             } else {
@@ -2216,18 +2562,26 @@
             let resultado = '—';
             let margen = '—';
             let emisionMostrada = '—';
+            let mainClass = '';
+            let mainLabel = 'RESULTADO';
 
             if (isNaN(emision) || diferencia <= 3) {
                 resultado = '<span class="compliance-unknown">No determinable</span>';
                 emisionMostrada = '—';
+                mainClass = 'unknown';
+                mainLabel = 'NO DETERMINABLE';
             } else {
                 emisionMostrada = emision.toFixed(2);
                 if (emision <= estandar) {
                     resultado = '<span class="compliance-yes">✓ CUMPLE</span>';
                     margen = (estandar - emision).toFixed(2) + ' dB';
+                    mainClass = '';
+                    mainLabel = 'CUMPLE';
                 } else {
                     resultado = '<span class="compliance-no">✗ NO CUMPLE</span>';
-                    margen = (emision - estandar).toFixed(2) + ' dB';
+                    margen = (emision - estandar).toFixed(2) + ' dB excedido';
+                    mainClass = 'fail';
+                    mainLabel = 'NO CUMPLE';
                 }
             }
 
@@ -2236,6 +2590,11 @@
             document.getElementById('sumMargen').innerHTML = margen;
             document.getElementById('sumResultado').innerHTML = resultado;
 
+            const complianceMain = document.getElementById('complianceMain');
+            complianceMain.className = 'compliance-card main' + (mainClass ? ` ${mainClass}` : '');
+            document.getElementById('complianceMainLabel').textContent = mainLabel;
+            document.getElementById('complianceMainValue').textContent = mainLabel === 'NO DETERMINABLE' ? '—' : mainLabel;
+
             generarConclusion(emision, estandar, resultado);
         }
 
@@ -2243,20 +2602,24 @@
             let texto = '';
 
             if (isNaN(emision)) {
-                texto = 'No fue posible determinar el nivel de emisión de la fuente evaluada (diferencia ≤ 3 dB(A)). No se puede establecer cumplimiento.';
+                texto = 'No fue posible determinar el nivel de emisión de la fuente evaluada (diferencia ≤ 3 dB(A)). No se puede establecer cumplimiento con Res. 0627/2006.';
             } else {
                 const sector = document.getElementById('sectorMostrado').value;
                 const periodo = document.getElementById('periodoMostrado').value;
 
                 if (emision <= estandar) {
-                    texto = `Emisión: ${emision.toFixed(2)} dB(A) — Estándar: ${estandar.toFixed(2)} dB(A) — La fuente CUMPLE con Res. 0627/2006.`;
+                    texto = `Emisión: ${emision.toFixed(2)} dB(A) · Estándar: ${estandar.toFixed(2)} dB(A) · Margen: ${(estandar - emision).toFixed(2)} dB · La fuente CUMPLE con Res. 0627/2006.`;
                 } else {
                     const exceso = (emision - estandar).toFixed(2);
-                    texto = `Emisión: ${emision.toFixed(2)} dB(A) — Estándar: ${estandar.toFixed(2)} dB(A) — Exceso: ${exceso} dB(A) — La fuente NO CUMPLE.`;
+                    texto = `Emisión: ${emision.toFixed(2)} dB(A) · Estándar: ${estandar.toFixed(2)} dB(A) · Exceso: ${exceso} dB · La fuente NO CUMPLE con Res. 0627/2006.`;
                 }
             }
 
             document.getElementById('conclusion').value = texto;
+        }
+
+        function generarPDF() {
+            alert('Funcionalidad de PDF pendiente de implementación.');
         }
     </script>
 </body>
