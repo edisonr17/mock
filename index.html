@@ -1218,6 +1218,11 @@
         .toolbar-icon.barrera   { background: #7c3aed; border-radius: 4px; width: 40px; height: 14px; }
         .toolbar-icon.flecha    { background: #0ea5e9; font-size: 16px; }
         .toolbar-icon.etiqueta  { background: #f1f5f9; border: 1.5px solid #cbd5e1; border-radius: 4px; color: #334155; font-size: 10px; font-weight: 600; }
+        .toolbar-icon.mesa      { background: #d4a574; border-radius: 4px; width: 42px; height: 22px; font-size: 9px; font-weight: 700; }
+        .toolbar-icon.calle     { background: #6b7280; border-radius: 2px; width: 46px; height: 20px; font-size: 9px; font-weight: 700; border-top: 3px solid #9ca3af; border-bottom: 3px solid #9ca3af; }
+        .toolbar-icon.consola   { background: #1f2937; border-radius: 4px; font-size: 9px; font-weight: 700; color: #e5e7eb; }
+        .toolbar-icon.puerta    { background: transparent; font-size: 20px; border: none; }
+        .toolbar-icon.persona   { background: transparent; font-size: 20px; border: none; }
 
         .toolbar-label {
             font-size: 10px;
@@ -1913,6 +1918,31 @@
                             <div class="toolbar-item" draggable="true" data-type="etiqueta" title="Etiqueta de texto">
                                 <div class="toolbar-icon etiqueta">Aa</div>
                                 <span class="toolbar-label">Etiqueta</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="mesa" title="Mesa">
+                                <div class="toolbar-icon mesa">Mesa</div>
+                                <span class="toolbar-label">Mesa</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="calle" title="Calle / Vía">
+                                <div class="toolbar-icon calle">Calle</div>
+                                <span class="toolbar-label">Calle</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="consola" title="Consola / Equipo">
+                                <div class="toolbar-icon consola">Con.</div>
+                                <span class="toolbar-label">Consola</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="puerta" title="Puerta">
+                                <div class="toolbar-icon puerta">🚪</div>
+                                <span class="toolbar-label">Puerta</span>
+                            </div>
+
+                            <div class="toolbar-item" draggable="true" data-type="persona" title="Persona / Receptor">
+                                <div class="toolbar-icon persona">🧍</div>
+                                <span class="toolbar-label">Persona</span>
                             </div>
                         </div>
 
@@ -3004,8 +3034,13 @@
             edificio: { label: () => 'Ed', fill: '#d1d5db', stroke: '#9ca3af', shape: 'rect', w: 56, h: 40, textColor: '#374151' },
             arbol:    { label: () => '♣',  fill: '#4ade80', stroke: '#16a34a', shape: 'circle', r: 16, textColor: '#166534', fontSize: 18 },
             barrera:  { label: () => '',   fill: '#7c3aed', stroke: '#5b21b6', shape: 'rect', w: 64, h: 12, textColor: 'white' },
-            flecha:   { label: () => '',   fill: '#0ea5e9', stroke: '#0284c7', shape: 'arrow' },
-            etiqueta: { label: () => 'Texto', fill: 'white', stroke: '#cbd5e1', shape: 'label', textColor: '#1e293b' },
+            flecha:   { label: () => '',      fill: '#0ea5e9', stroke: '#0284c7', shape: 'arrow' },
+            etiqueta: { label: () => 'Texto', fill: 'white',  stroke: '#cbd5e1', shape: 'label',    textColor: '#1e293b' },
+            mesa:     { label: () => 'Mesa',  fill: '#d4a574', stroke: '#a0714f', shape: 'rect',    w: 56, h: 28, textColor: '#5c2e00', fontSize: 10 },
+            calle:    { label: () => 'Calle', fill: '#9ca3af', stroke: '#6b7280', shape: 'calle' },
+            consola:  { label: () => 'Con.',  fill: '#1f2937', stroke: '#111827', shape: 'rect',    w: 46, h: 34, textColor: '#e5e7eb', fontSize: 10 },
+            puerta:   { label: () => '',      fill: '#92400e', stroke: '#78350f', shape: 'puerta' },
+            persona:  { label: () => '',      fill: '#fde68a', stroke: '#d97706', shape: 'persona' },
         };
 
         function initCroquis() {
@@ -3172,6 +3207,78 @@
                 group.on('dblclick dbltap', function() {
                     editarEtiqueta(group, textNode);
                 });
+
+            } else if (def.shape === 'calle') {
+                // Franja gris con línea central amarilla discontinua
+                const w = 84, h = 38;
+                group.add(new Konva.Rect({
+                    width: w, height: h, offsetX: w / 2, offsetY: h / 2,
+                    fill: '#9ca3af', stroke: '#6b7280', strokeWidth: 2, cornerRadius: 2,
+                    shadowColor: 'black', shadowBlur: 6, shadowOffset: { x: 1, y: 2 }, shadowOpacity: 0.18,
+                }));
+                group.add(new Konva.Line({
+                    points: [-w / 2 + 10, 0, w / 2 - 10, 0],
+                    stroke: '#fbbf24', strokeWidth: 2, dash: [10, 7], listening: false,
+                }));
+                group.add(new Konva.Text({
+                    text: 'Calle', fontSize: 9, fontStyle: 'bold',
+                    fontFamily: 'Inter, sans-serif', fill: 'white',
+                    align: 'center', width: w, offsetX: w / 2, offsetY: 14, listening: false,
+                }));
+                selBox.setAttrs({ x: -w / 2 - 6, y: -h / 2 - 6, width: w + 12, height: h + 12 });
+
+            } else if (def.shape === 'puerta') {
+                // Panel de puerta + arco de apertura
+                const dh = 34, dw = 8;
+                group.add(new Konva.Rect({
+                    x: 0, y: 0, width: dw, height: dh,
+                    fill: '#92400e', stroke: '#78350f', strokeWidth: 2, cornerRadius: 2,
+                    shadowColor: 'black', shadowBlur: 4, shadowOpacity: 0.18,
+                }));
+                // Marco superior y lateral
+                group.add(new Konva.Line({
+                    points: [0, 0, dw + dh, 0, dw + dh, dh],
+                    stroke: '#5c2407', strokeWidth: 2, listening: false,
+                }));
+                // Arco de barrido (apertura)
+                group.add(new Konva.Arc({
+                    x: dw, y: 0,
+                    innerRadius: 0, outerRadius: dh,
+                    angle: 90, rotation: 0,
+                    fill: 'rgba(146, 64, 14, 0.15)',
+                    stroke: '#92400e', strokeWidth: 1.5, dash: [5, 4], listening: false,
+                }));
+                selBox.setAttrs({ x: -6, y: -6, width: dw + dh + 12, height: dh + 12 });
+
+            } else if (def.shape === 'persona') {
+                // Figura simplificada: cabeza + cuerpo + brazos + piernas
+                const shadow = { shadowColor: 'black', shadowBlur: 4, shadowOpacity: 0.15 };
+                // Cabeza
+                group.add(new Konva.Circle({
+                    y: -22, radius: 9,
+                    fill: '#fde68a', stroke: '#d97706', strokeWidth: 2, ...shadow,
+                }));
+                // Cuerpo
+                group.add(new Konva.Line({
+                    points: [0, -13, 0, 8],
+                    stroke: '#d97706', strokeWidth: 3, lineCap: 'round', listening: false,
+                }));
+                // Brazos
+                group.add(new Konva.Line({
+                    points: [-11, -4, 11, -4],
+                    stroke: '#d97706', strokeWidth: 3, lineCap: 'round', listening: false,
+                }));
+                // Pierna izquierda
+                group.add(new Konva.Line({
+                    points: [0, 8, -9, 24],
+                    stroke: '#d97706', strokeWidth: 3, lineCap: 'round', listening: false,
+                }));
+                // Pierna derecha
+                group.add(new Konva.Line({
+                    points: [0, 8, 9, 24],
+                    stroke: '#d97706', strokeWidth: 3, lineCap: 'round', listening: false,
+                }));
+                selBox.setAttrs({ x: -17, y: -35, width: 34, height: 65 });
             }
 
             // Botón de eliminar (esquina superior derecha del selBox)
