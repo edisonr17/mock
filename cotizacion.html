@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ruido App — Propuesta de Desarrollo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --brand:    #1a2744;
+    --brand-lt: #243561;
+    --accent:   #27ae60;
+    --acc-lt:   #f0fdf4;
+    --ink:      #1e293b;
+    --ink-m:    #64748b;
+    --ink-s:    #94a3b8;
+    --surface:  #ffffff;
+    --bg:       #f5f6fa;
+    --border:   #e2e8f0;
+    --radius:   12px;
+    --shadow:   0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
+    --shadow-lg:0 4px 20px rgba(0,0,0,.09);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--brand);
+    color: #fff;
+    padding: 64px 24px 56px;
+    text-align: center;
+  }
+  .hero-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .hero-logo .icon {
+    width: 44px; height: 44px;
+    background: var(--accent);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hero-logo .icon svg { width: 24px; height: 24px; color: #fff; }
+  .hero-logo span { font-size: 18px; font-weight: 700; }
+  .hero h1 { font-size: clamp(26px, 5vw, 40px); font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+  .hero p  { font-size: 16px; color: rgba(255,255,255,.6); max-width: 560px; margin: 0 auto 32px; }
+  .hero-meta {
+    display: inline-flex; gap: 24px; flex-wrap: wrap; justify-content: center;
+    border-top: 1px solid rgba(255,255,255,.12); padding-top: 24px; margin-top: 8px;
+  }
+  .hero-meta span { font-size: 13px; color: rgba(255,255,255,.5); }
+  .hero-meta strong { color: rgba(255,255,255,.85); }
+
+  /* ── NAV ── */
+  .toc {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 50;
+    overflow-x: auto;
+  }
+  .toc-inner {
+    max-width: 900px; margin: 0 auto;
+    display: flex; gap: 4px; padding: 0 16px;
+  }
+  .toc a {
+    display: block; padding: 14px 14px;
+    font-size: 13px; font-weight: 500; color: var(--ink-m);
+    text-decoration: none; white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+  }
+  .toc a:hover { color: var(--ink); border-color: var(--accent); }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 900px; margin: 0 auto; padding: 40px 16px 80px; }
+
+  /* ── SECTIONS ── */
+  section { margin-bottom: 56px; scroll-margin-top: 60px; }
+  .section-title {
+    font-size: 22px; font-weight: 700; color: var(--ink);
+    margin-bottom: 24px; padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title .num {
+    width: 32px; height: 32px; flex-shrink: 0;
+    background: var(--accent); color: #fff;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 15px; font-weight: 700; color: var(--ink);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .tag {
+    font-size: 11px; font-weight: 600; padding: 2px 8px;
+    border-radius: 100px; background: var(--acc-lt); color: var(--accent);
+  }
+  .card p { color: var(--ink-m); font-size: 14px; margin-bottom: 8px; }
+  .card p:last-child { margin-bottom: 0; }
+  .card strong { color: var(--ink); }
+
+  .card-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .06em; color: var(--ink-s); margin: 16px 0 6px;
+  }
+  .card ul { padding-left: 18px; }
+  .card ul li { font-size: 14px; color: var(--ink-m); margin-bottom: 4px; }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight {
+    background: var(--acc-lt);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 16px 20px; margin: 20px 0;
+    font-size: 14px; color: var(--ink);
+  }
+  .highlight strong { color: var(--accent); }
+
+  .info-box {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 16px 20px; margin: 20px 0;
+    font-size: 14px; color: var(--ink);
+  }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; margin: 16px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th {
+    background: var(--brand); color: #fff;
+    padding: 10px 14px; text-align: left;
+    font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+  }
+  th:first-child { border-radius: 8px 0 0 0; }
+  th:last-child  { border-radius: 0 8px 0 0; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--ink-m); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--bg); }
+  td strong { color: var(--ink); }
+  .num-col { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+  tfoot td { background: var(--brand) !important; color: #fff; font-weight: 700; border-bottom: none; }
+  tfoot .num-col { color: #fff; }
+
+  /* ── PHASES ── */
+  .phases { display: flex; flex-direction: column; gap: 0; }
+  .phase {
+    display: flex; gap: 0;
+  }
+  .phase-left {
+    display: flex; flex-direction: column; align-items: center; width: 48px; flex-shrink: 0;
+  }
+  .phase-dot {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--brand); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+  }
+  .phase-line {
+    width: 2px; flex: 1; background: var(--border); margin: 4px 0;
+    min-height: 24px;
+  }
+  .phase:last-child .phase-line { display: none; }
+  .phase-body {
+    flex: 1; padding: 0 0 32px 16px;
+  }
+  .phase-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    padding-top: 4px;
+  }
+  .phase-title { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .phase-weeks {
+    font-size: 11px; font-weight: 600; padding: 2px 8px;
+    border-radius: 100px; background: #f1f5f9; color: var(--ink-m);
+  }
+  .phase-body p { font-size: 14px; color: var(--ink-m); margin-bottom: 6px; }
+  .deliverable {
+    display: flex; align-items: flex-start; gap: 8px;
+    background: var(--acc-lt); border-radius: 8px;
+    padding: 10px 14px; margin-top: 10px; font-size: 13px; color: var(--ink);
+  }
+  .deliverable::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+
+  /* ── INFRA CARDS ── */
+  .infra-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .infra-card {
+    border: 2px solid var(--border); border-radius: var(--radius);
+    padding: 20px; background: var(--surface);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .infra-card:hover { border-color: var(--accent); box-shadow: var(--shadow-lg); }
+  .infra-card.recommended { border-color: var(--accent); }
+  .infra-card .provider { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .infra-card .tagline { font-size: 12px; color: var(--ink-m); margin-bottom: 16px; }
+  .infra-card .price { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .infra-card .price span { font-size: 13px; font-weight: 400; color: var(--ink-m); }
+  .infra-card .badge-rec {
+    display: inline-block; margin-bottom: 8px;
+    background: var(--accent); color: #fff;
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 100px; letter-spacing: .05em;
+  }
+  .difficulty { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12px; color: var(--ink-m); }
+  .dots { display: flex; gap: 3px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+  .dot.on { background: var(--accent); }
+
+  /* ── TOTAL BANNER ── */
+  .total-banner {
+    background: var(--brand);
+    border-radius: var(--radius);
+    padding: 32px;
+    color: #fff;
+    margin: 32px 0;
+  }
+  .total-banner h3 { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: rgba(255,255,255,.7); }
+  .total-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+  .total-item { }
+  .total-item .label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.45); margin-bottom: 4px; }
+  .total-item .value { font-size: 22px; font-weight: 800; }
+  .total-item.highlight-total .value { color: var(--accent); font-size: 28px; }
+  .total-divider { border: none; border-top: 1px solid rgba(255,255,255,.1); margin: 20px 0; }
+
+  /* ── FAQ ── */
+  .faq { display: flex; flex-direction: column; gap: 12px; }
+  .faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; }
+  .faq-q { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+  .faq-a { font-size: 14px; color: var(--ink-m); }
+
+  /* ── PAYMENT ── */
+  .payment-steps { display: flex; gap: 12px; flex-wrap: wrap; }
+  .pay-step {
+    flex: 1; min-width: 140px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px; text-align: center; background: var(--surface);
+  }
+  .pay-step .pct { font-size: 32px; font-weight: 800; color: var(--accent); }
+  .pay-step .when { font-size: 12px; color: var(--ink-m); margin-top: 4px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--brand); color: rgba(255,255,255,.4);
+    text-align: center; padding: 24px; font-size: 13px;
+  }
+
+  @media (max-width: 600px) {
+    .total-grid { grid-template-columns: 1fr 1fr; }
+    .infra-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-logo">
+    <div class="icon">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/>
+      </svg>
+    </div>
+    <span>Ruido App</span>
+  </div>
+  <h1>Propuesta de Desarrollo<br>y Estimación de Costos</h1>
+  <p>Digitalización del proceso de medición y reporte de ruido ambiental conforme a la Resolución 0627 de 2006 del MAVDT.</p>
+  <div class="hero-meta">
+    <span>Cliente: <strong>[Nombre del cliente]</strong></span>
+    <span>Fecha: <strong>Abril 2026</strong></span>
+    <span>Versión: <strong>1.0</strong></span>
+    <span>Validez: <strong>30 días</strong></span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="toc">
+  <div class="toc-inner">
+    <a href="#descripcion">¿Qué es?</a>
+    <a href="#modulos">Módulos</a>
+    <a href="#etapas">Plan de trabajo</a>
+    <a href="#costos">Costos</a>
+    <a href="#servidor">Servidor</a>
+    <a href="#condiciones">Condiciones</a>
+    <a href="#preguntas">Preguntas</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- 1. DESCRIPCIÓN -->
+  <section id="descripcion">
+    <div class="section-title"><div class="num">1</div> ¿Qué es Ruido App y para qué sirve?</div>
+
+    <div class="card">
+      <p>Hoy, cuando un técnico termina una medición de ruido en campo, elaborar el informe final es un proceso manual: pasa los datos del sonómetro a una planilla Excel, hace los cálculos a mano, dibuja el croquis en papel o en otro programa, y arma el documento. <strong>Ese proceso toma horas, es propenso a errores y depende del conocimiento individual de cada técnico.</strong></p>
+      <p><strong>Ruido App reemplaza ese proceso.</strong> El técnico abre la aplicación desde cualquier computador o celular, llena el formulario paso a paso, carga el archivo que genera el sonómetro, y el sistema hace los cálculos automáticamente y genera el informe final listo para entregar — cumpliendo con la normativa colombiana vigente.</p>
+    </div>
+
+    <div class="highlight">
+      <strong>Lo que hoy toma varias horas de trabajo manual, con la aplicación toma minutos.</strong>
+    </div>
+
+    <div class="card">
+      <div class="card-title">¿Qué tiene avanzado el proyecto? <span class="tag">Ya construido</span></div>
+      <p>Antes de esta propuesta ya existe una base de trabajo que reduce el tiempo y costo del desarrollo:</p>
+      <ul>
+        <li>La aplicación web existe y tiene sistema de ingreso con usuario y contraseña.</li>
+        <li>Tiene diseño visual base consistente (colores, tipografía, botones).</li>
+        <li>Tiene construida la primera sección del formulario de medición.</li>
+        <li>Existe un prototipo interactivo del croquis donde se arrastran elementos como mesas, puertas, fuentes de ruido y personas.</li>
+      </ul>
+      <div class="card-label">Esta base no se cobra en esta propuesta</div>
+    </div>
+  </section>
+
+  <!-- 2. MÓDULOS -->
+  <section id="modulos">
+    <div class="section-title"><div class="num">2</div> ¿Qué se va a construir?</div>
+
+    <div class="card">
+      <div class="card-title">Relevamiento de requerimientos</div>
+      <p><strong>¿Qué es?</strong> Antes de programar, el equipo se reúne con los responsables de la empresa para entender exactamente cómo trabajan, qué necesita la aplicación y cuáles son los criterios para decir que algo quedó bien hecho.</p>
+      <p><strong>¿Qué produce?</strong> Un documento con todas las funcionalidades acordadas y firmadas por ambas partes. Este documento es el mapa que guía todo el desarrollo y protege al cliente de cobros inesperados.</p>
+      <div class="info-box">💡 Los cambios que se hacen antes de programar cuestan $0. Los cambios a mitad del desarrollo pueden costar 5 o 10 veces más.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Diseño de la base de datos</div>
+      <p><strong>¿Qué es?</strong> La base de datos es el "archivo" digital donde la aplicación guarda toda la información: los informes, los técnicos, las empresas, los dispositivos, las mediciones. Diseñarla bien desde el inicio es fundamental para que la aplicación sea rápida, segura y fácil de ampliar en el futuro.</p>
+      <p><strong>¿Por qué importa?</strong> Una base de datos mal diseñada es como construir una casa sobre cimientos débiles: funciona al principio, pero se vuelve un problema costoso a medida que crece.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Formulario completo de medición</div>
+      <p><strong>¿Qué es?</strong> El corazón de la aplicación. Tiene múltiples secciones que el técnico llena durante y después de la visita de campo, adaptado exactamente a los formatos oficiales <strong>24-001-A30_</strong> y <strong>FO-GA-17</strong>.</p>
+      <div class="card-label">¿Qué incluye?</div>
+      <ul>
+        <li>Todas las secciones del formulario (la sección 1 ya está construida).</li>
+        <li>Croquis interactivo donde el técnico dibuja el plano del lugar arrastrando elementos.</li>
+        <li>Posibilidad de adjuntar fotos tomadas en campo.</li>
+        <li>Guardado automático para no perder información si se cierra el navegador.</li>
+        <li>Validaciones que avisan si algo está mal diligenciado antes de continuar.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Módulo de dispositivos de medición</div>
+      <p><strong>¿Qué es?</strong> Un inventario digital de todos los equipos que usa la empresa: sonómetros, calibradores acústicos, etc.</p>
+      <ul>
+        <li>Registrar cada equipo con su marca, modelo y número de serie.</li>
+        <li>Cargar el certificado de calibración de cada equipo.</li>
+        <li>Recibir alertas antes de que venza la próxima calibración.</li>
+        <li>Asignar un equipo específico a cada medición para que quede en el informe.</li>
+      </ul>
+      <div class="info-box">La normativa exige que cada informe indique qué equipo se usó y que esté calibrado. Este módulo garantiza que esa información siempre esté disponible y al día.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Módulo de registro de empresas</div>
+      <p><strong>¿Qué es?</strong> Un directorio de los clientes y contratantes para quienes se realizan las mediciones: NIT, razón social, representante legal, datos de contacto, y los sitios o instalaciones donde se hacen las mediciones.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Módulo de gestión de informes</div>
+      <p><strong>¿Qué es?</strong> El repositorio central donde viven todos los informes. Funciona como una carpeta digital organizada y consultable.</p>
+      <ul>
+        <li>Ver todos los informes con su estado: <strong>Borrador</strong>, <strong>Emitido</strong> o <strong>Aprobado</strong>.</li>
+        <li>Buscar por cliente, fecha, técnico o número de contrato.</li>
+        <li>Ver el detalle y el historial de cambios de cualquier informe.</li>
+        <li>El técnico solo edita sus propios informes; el administrador gestiona todos.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Lectura automática de archivos Excel del sonómetro</div>
+      <p><strong>¿Qué es?</strong> Los sonómetros exportan sus datos en archivos Excel. En lugar de que el técnico copie esos datos a mano (con el riesgo de errores), la aplicación lee el archivo directamente.</p>
+      <p><strong>¿Cómo funciona?</strong> El técnico sube el archivo Excel que genera el equipo, y la aplicación extrae automáticamente los datos y los asocia al informe en curso. Soporta los dos formatos que usa la empresa actualmente (medición + meteorología).</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Cálculo automático de indicadores acústicos</div>
+      <p><strong>¿Qué es?</strong> Una vez que los datos del sonómetro están en el sistema, la aplicación hace todos los cálculos matemáticos que exige la normativa sin intervención humana.</p>
+      <div class="card-label">¿Qué calcula?</div>
+      <ul>
+        <li><strong>Nivel equivalente (Leq):</strong> el nivel de ruido promedio durante el período de medición.</li>
+        <li><strong>Percentiles (L90, L50, L10):</strong> cómo se distribuyó el ruido durante la medición.</li>
+        <li><strong>Correcciones</strong> por tipo de ruido (impulsivo, tonal).</li>
+        <li><strong>Incertidumbre de medición:</strong> el margen de error técnico exigido por la norma.</li>
+      </ul>
+      <div class="highlight"><strong>Elimina los errores de cálculo humano</strong>, que son la principal causa de informes rechazados o con observaciones por parte de las autoridades ambientales.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Módulo del profesional de medición</div>
+      <p><strong>¿Qué es?</strong> Un registro de los profesionales habilitados para firmar los informes (ingenieros, técnicos certificados).</p>
+      <ul>
+        <li>Nombre, número de tarjeta profesional y vigencia de certificaciones.</li>
+        <li>Firma digitalizada del profesional.</li>
+        <li>Al asignarlo a un informe, su nombre y firma aparecen automáticamente en el documento final.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Módulo de usuarios y roles</div>
+      <p><strong>¿Qué es?</strong> El control de quién puede entrar a la aplicación y qué puede hacer dentro de ella.</p>
+      <ul>
+        <li><strong>Administrador:</strong> acceso total. Gestiona usuarios y toda la información del sistema.</li>
+        <li><strong>Técnico:</strong> crea y edita sus propios informes. Ve los equipos disponibles.</li>
+        <li><strong>Cliente:</strong> acceso de solo lectura a los informes que le corresponden.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Generación del documento final</div>
+      <p><strong>¿Qué es?</strong> Al terminar el informe en la aplicación, el sistema genera automáticamente el documento oficial listo para entregar.</p>
+      <ul>
+        <li>Archivo <strong>Excel</strong> con el formato exacto 24-001-A30_, rellenado automáticamente.</li>
+        <li><strong>PDF</strong> listo para imprimir o enviar por correo, con la firma del profesional incluida.</li>
+      </ul>
+      <div class="highlight"><strong>Este es el objetivo principal de toda la aplicación:</strong> que el documento final salga correcto, completo y con el formato exacto exigido por la normativa.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Publicación en internet</div>
+      <p><strong>¿Qué es?</strong> Para que los técnicos usen la aplicación desde cualquier lugar, necesita estar publicada en internet. Esto incluye:</p>
+      <ul>
+        <li>Configurar el servidor donde vivirá la aplicación.</li>
+        <li>Asignar un dominio (ej. <em>ruido.miempresa.com.co</em>).</li>
+        <li>Activar el candado de seguridad HTTPS para que la conexión sea cifrada.</li>
+        <li>Configurar copias de seguridad automáticas de todos los datos.</li>
+        <li>Una sesión de capacitación con los usuarios finales al momento del lanzamiento.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3. ETAPAS -->
+  <section id="etapas">
+    <div class="section-title"><div class="num">3</div> Plan de trabajo — Etapas de desarrollo</div>
+
+    <div class="info-box">
+      El desarrollo se divide en 6 etapas. <strong>Al final de cada una se hace una revisión con el cliente antes de continuar.</strong> Duración total estimada: <strong>18 semanas (~4 meses y medio)</strong>.
+    </div>
+
+    <div class="phases">
+      <div class="phase">
+        <div class="phase-left"><div class="phase-dot">1</div><div class="phase-line"></div></div>
+        <div class="phase-body">
+          <div class="phase-header">
+            <div class="phase-title">Entender el negocio</div>
+            <div class="phase-weeks">Semanas 1–2</div>
+          </div>
+          <p>El equipo técnico se reúne con los responsables del proceso para entender en detalle cómo trabajan, qué datos manejan y qué problemas tienen con el proceso manual. Se revisan las plantillas Excel actuales y se documentan todos los requerimientos.</p>
+          <div class="deliverable">Documento de alcance firmado por ambas partes. Esto protege al cliente de cobros inesperados y al equipo de pedidos que no estaban acordados.</div>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-left"><div class="phase-dot">2</div><div class="phase-line"></div></div>
+        <div class="phase-body">
+          <div class="phase-header">
+            <div class="phase-title">Diseñar los cimientos</div>
+            <div class="phase-weeks">Semanas 3–4</div>
+          </div>
+          <p>Se diseña la estructura de datos de la aplicación y se construyen los módulos base: el registro de empresas y el inventario de dispositivos de medición con sus calibraciones.</p>
+          <div class="deliverable">Módulos de empresas y dispositivos funcionando. El cliente puede revisar y hacer ajustes antes de avanzar.</div>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-left"><div class="phase-dot">3</div><div class="phase-line"></div></div>
+        <div class="phase-body">
+          <div class="phase-header">
+            <div class="phase-title">El formulario completo</div>
+            <div class="phase-weeks">Semanas 5–8</div>
+          </div>
+          <p>Se construyen todas las secciones del formulario de medición: condiciones del entorno, fuentes de ruido, croquis interactivo, condiciones meteorológicas y resultados. Esta es la etapa más larga porque es el corazón de la aplicación.</p>
+          <div class="deliverable">Formulario completo funcionando con guardado automático y validaciones. El cliente puede probarlo con datos reales.</div>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-left"><div class="phase-dot">4</div><div class="phase-line"></div></div>
+        <div class="phase-body">
+          <div class="phase-header">
+            <div class="phase-title">Los datos del equipo y los cálculos</div>
+            <div class="phase-weeks">Semanas 9–11</div>
+          </div>
+          <p>Se construye el lector de archivos Excel del sonómetro y del informe meteorológico. También se programa el motor de cálculo que obtiene el Leq, los percentiles y la incertidumbre automáticamente.</p>
+          <div class="deliverable">El técnico puede subir el Excel del equipo y ver los resultados calculados en pantalla, listos para el informe.</div>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-left"><div class="phase-dot">5</div><div class="phase-line"></div></div>
+        <div class="phase-body">
+          <div class="phase-header">
+            <div class="phase-title">Gestión de informes y profesionales</div>
+            <div class="phase-weeks">Semanas 12–14</div>
+          </div>
+          <p>Se construye el repositorio de informes (búsqueda, filtros, estados), el módulo del profesional de medición con firma digitalizada, y la administración de usuarios con los tres roles.</p>
+          <div class="deliverable">Sistema completo: técnicos crean informes, un revisor los aprueba, y los clientes los consultan.</div>
+        </div>
+      </div>
+      <div class="phase">
+        <div class="phase-left"><div class="phase-dot">6</div><div class="phase-line"></div></div>
+        <div class="phase-body">
+          <div class="phase-header">
+            <div class="phase-title">Documento final y lanzamiento</div>
+            <div class="phase-weeks">Semanas 15–18</div>
+          </div>
+          <p>Se construye la exportación del informe en el Excel oficial y en PDF. Luego se publica la aplicación en el servidor, se configura el dominio y la seguridad, y se hace la sesión de capacitación con los usuarios finales.</p>
+          <div class="deliverable">Aplicación publicada en internet, funcionando, con dominio propio y lista para uso productivo.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. COSTOS -->
+  <section id="costos">
+    <div class="section-title"><div class="num">4</div> Estimación de costos de desarrollo</div>
+
+    <div class="info-box">
+      El desarrollo se cobra por <strong>días efectivos de trabajo</strong> a <strong>$350.000 COP por día</strong> (jornadas de 4–6 horas de un desarrollador senior). Esta tarifa refleja el modelo de trabajo de alta productividad del equipo.
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>¿Qué se construye?</th>
+            <th style="text-align:center">Días</th>
+            <th style="text-align:right">Costo COP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Reuniones de requerimientos + documento de alcance firmado</td><td style="text-align:center">5</td><td class="num-col">$1.750.000</td></tr>
+          <tr><td>2</td><td>Diseño de la base de datos (estructura completa de la información)</td><td style="text-align:center">6</td><td class="num-col">$2.100.000</td></tr>
+          <tr><td>3</td><td>Formulario completo de medición — secciones 2 a 7 con croquis interactivo</td><td style="text-align:center">14</td><td class="num-col">$4.900.000</td></tr>
+          <tr><td>4</td><td>Formulario FO-GA-17 (informe de resultados complementario)</td><td style="text-align:center">5</td><td class="num-col">$1.750.000</td></tr>
+          <tr><td>5</td><td>Módulo de dispositivos de medición (inventario + calibraciones + alertas)</td><td style="text-align:center">5</td><td class="num-col">$1.750.000</td></tr>
+          <tr><td>6</td><td>Módulo de empresas y sitios de monitoreo</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>7</td><td>Módulo de gestión de informes (estados, repositorio, búsqueda)</td><td style="text-align:center">7</td><td class="num-col">$2.450.000</td></tr>
+          <tr><td>8</td><td>Lectura automática de archivos Excel del sonómetro y meteorología</td><td style="text-align:center">6</td><td class="num-col">$2.100.000</td></tr>
+          <tr><td>9</td><td>Cálculo automático de Leq, L90, L50, L10 e incertidumbre</td><td style="text-align:center">8</td><td class="num-col">$2.800.000</td></tr>
+          <tr><td>10</td><td>Módulo de usuarios y roles (administrador, técnico, cliente)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>11</td><td>Módulo del profesional de medición (registro, certificaciones, firma)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>12</td><td>Generación del documento final en Excel oficial + PDF exportable</td><td style="text-align:center">9</td><td class="num-col">$3.150.000</td></tr>
+          <tr><td>13</td><td>Organización del código fuente, documentación técnica y automatizaciones</td><td style="text-align:center">3</td><td class="num-col">$1.050.000</td></tr>
+          <tr><td>14</td><td>Publicación en servidor (dominio, seguridad, copias de seguridad, capacitación)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="2"><strong>Total desarrollo</strong></td><td style="text-align:center"><strong>84 días</strong></td><td class="num-col"><strong>$29.400.000</strong></td></tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
+  <!-- 5. SERVIDOR -->
+  <section id="servidor">
+    <div class="section-title"><div class="num">5</div> Costos del servidor (12 meses)</div>
+
+    <div class="card">
+      <p>La aplicación necesita un servidor en internet para funcionar. Es similar al arriendo del espacio digital donde vive la aplicación. Se presentan tres opciones con distintos precios y niveles de complejidad. <strong>El cliente elige según su presupuesto y preferencia.</strong></p>
+      <p style="font-size:13px;color:var(--ink-s);margin-top:8px;">Precios en USD. Se convierten a pesos a TRM $4.200. El valor en pesos varía con la tasa de cambio.</p>
+    </div>
+
+    <div class="infra-grid">
+      <div class="infra-card">
+        <div class="provider">Amazon Web Services</div>
+        <div class="tagline">Mayor respaldo corporativo</div>
+        <div class="price">$2.247.200 <span>COP/año</span></div>
+        <div class="difficulty">
+          Dificultad de administración:
+          <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div>
+          Alta
+        </div>
+        <div style="margin-top:12px;font-size:13px;color:var(--ink-m);">
+          El proveedor más grande del mundo. Ideal si hay requisitos corporativos que exigen AWS. <strong>El primer año es casi gratis</strong> gracias al plan Free Tier (~$382.400 COP solo dominio y almacenamiento).
+        </div>
+      </div>
+
+      <div class="infra-card">
+        <div class="provider">DigitalOcean</div>
+        <div class="tagline">Interfaz simple y amigable</div>
+        <div class="price">$2.045.200 <span>COP/año</span></div>
+        <div class="difficulty">
+          Dificultad de administración:
+          <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div>
+          Media
+        </div>
+        <div style="margin-top:12px;font-size:13px;color:var(--ink-m);">
+          Panel de control muy intuitivo. Plantillas preconfiguradas para aplicaciones como la nuestra. Documentación excelente en español. Buena opción para equipos sin perfil técnico.
+        </div>
+      </div>
+
+      <div class="infra-card recommended">
+        <div class="badge-rec">Recomendado</div>
+        <div class="provider">Hetzner</div>
+        <div class="tagline">Mejor relación costo / rendimiento</div>
+        <div class="price">$734.800 <span>COP/año</span></div>
+        <div class="difficulty">
+          Dificultad de administración:
+          <div class="dots"><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div>
+          Media-baja
+        </div>
+        <div style="margin-top:12px;font-size:13px;color:var(--ink-m);">
+          Proveedor alemán con servidores en EE.UU. Popular entre startups por su precio. Servidor más sencillo (sin servicios separados), perfectamente suficiente para este volumen de usuarios.
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap" style="margin-top:24px;">
+      <table>
+        <thead>
+          <tr><th>Proveedor</th><th style="text-align:right">Costo anual</th><th>Complejidad</th><th>Servidor en Latam</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>AWS</strong></td><td class="num-col">$2.247.200</td><td>Alta</td><td>✓ São Paulo</td></tr>
+          <tr><td><strong>DigitalOcean</strong></td><td class="num-col">$2.045.200</td><td>Media</td><td>No (EE.UU.)</td></tr>
+          <tr><td><strong>Hetzner</strong></td><td class="num-col">$734.800</td><td>Media-baja</td><td>No (EE.UU.)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin-top:24px;">
+      <div class="card-title">Soporte posterior al lanzamiento — 6 meses</div>
+      <p>Durante los 6 meses siguientes al lanzamiento, el equipo está disponible para corregir errores que aparezcan en el uso real y hacer ajustes menores. Esto garantiza una transición tranquila del proceso manual al digital.</p>
+      <div class="card-label">¿Qué incluye?</div>
+      <ul>
+        <li>Corrección de errores reportados (hasta 2 por mes).</li>
+        <li>Actualizaciones de seguridad y mantenimiento preventivo.</li>
+        <li>Ajustes menores de configuración y consultas técnicas.</li>
+      </ul>
+      <div style="margin-top:16px;font-size:22px;font-weight:800;color:var(--accent);">$3.000.000 COP</div>
+    </div>
+  </section>
+
+  <!-- RESUMEN TOTAL -->
+  <div class="total-banner">
+    <h3>Resumen de la inversión total</h3>
+    <div class="total-grid">
+      <div class="total-item">
+        <div class="label">Desarrollo (84 días)</div>
+        <div class="value">$29.400.000</div>
+      </div>
+      <div class="total-item">
+        <div class="label">Soporte 6 meses</div>
+        <div class="value">$3.000.000</div>
+      </div>
+      <div class="total-item">
+        <div class="label">Servidor AWS / año</div>
+        <div class="value" style="font-size:16px;color:rgba(255,255,255,.6)">$2.247.200</div>
+      </div>
+      <div class="total-item">
+        <div class="label">Servidor Hetzner / año</div>
+        <div class="value" style="font-size:16px;color:rgba(255,255,255,.6)">$734.800</div>
+      </div>
+    </div>
+    <hr class="total-divider" />
+    <div class="total-grid">
+      <div class="total-item highlight-total">
+        <div class="label">Total con AWS (antes de IVA)</div>
+        <div class="value">$34.647.200</div>
+      </div>
+      <div class="total-item highlight-total">
+        <div class="label">Total con Hetzner (antes de IVA)</div>
+        <div class="value">$33.134.800</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;font-size:13px;color:rgba(255,255,255,.4);">
+      Con IVA (19%): AWS ~$41.230.000 · Hetzner ~$39.430.000 · Con AWS Free Tier año 1: ~$32.782.400
+    </div>
+  </div>
+
+  <!-- 6. CONDICIONES -->
+  <section id="condiciones">
+    <div class="section-title"><div class="num">6</div> Condiciones y forma de pago</div>
+
+    <div class="card">
+      <div class="card-title">Forma de pago sugerida</div>
+      <div class="payment-steps">
+        <div class="pay-step">
+          <div class="pct">30%</div>
+          <div class="when">Al firmar el contrato</div>
+        </div>
+        <div class="pay-step">
+          <div class="pct">40%</div>
+          <div class="when">Al entregar la Etapa 4 (cálculos funcionando)</div>
+        </div>
+        <div class="pay-step">
+          <div class="pct">30%</div>
+          <div class="when">Al lanzamiento y cierre del proyecto</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Lo que el cliente debe proveer</div>
+      <ul>
+        <li>Acceso a las plantillas Excel del sonómetro y del informe meteorológico.</li>
+        <li>Un técnico disponible para validar que los cálculos automáticos coincidan con los actuales.</li>
+        <li>Respuesta a las revisiones de cada etapa dentro de los <strong>10 días hábiles</strong> siguientes a la entrega.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Lo que NO está incluido en este presupuesto</div>
+      <ul>
+        <li><strong>Aplicación móvil nativa</strong> (app descargable para iPhone o Android). Lo que se construye es una web que funciona en el navegador del celular, que cubre el 95% de los casos de uso.</li>
+        <li><strong>Firma electrónica con validez jurídica</strong> (como las que usan notarías o la DIAN). La firma del profesional es una imagen digitalizada, suficiente para el proceso interno.</li>
+        <li><strong>Integración con otros sistemas</strong> del cliente (ERP, plataformas gubernamentales). Se cotiza por separado si se necesita.</li>
+        <li><strong>Capacitaciones adicionales</strong> más allá de la sesión de lanzamiento incluida.</li>
+        <li><strong>Nuevas funcionalidades</strong> que no estén en el documento de alcance firmado en la Etapa 1.</li>
+      </ul>
+    </div>
+
+    <div class="info-box">
+      <strong>Validez de esta propuesta:</strong> 30 días calendario desde la fecha de emisión. ·
+      <strong>Moneda:</strong> Pesos colombianos (COP). Los costos de servidor en USD se liquidan a la TRM del día de pago.
+    </div>
+  </section>
+
+  <!-- 7. PREGUNTAS -->
+  <section id="preguntas">
+    <div class="section-title"><div class="num">7</div> Preguntas frecuentes</div>
+
+    <div class="faq">
+
+      <div class="faq-item">
+        <div class="faq-q">¿Qué pasa si el desarrollador deja el proyecto?</div>
+        <div class="faq-a">El código está documentado en un repositorio de GitHub que es propiedad del cliente al finalizar el proyecto. Está escrito con estándares que cualquier otro desarrollador puede entender. No hay conocimiento guardado en la cabeza de una sola persona.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿La aplicación funciona en el celular en campo?</div>
+        <div class="faq-a">Sí. La aplicación está diseñada para funcionar en el navegador de cualquier celular o tableta. No requiere instalación. Solo se necesita conexión a internet para guardar los datos.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Los datos de los informes están seguros?</div>
+        <div class="faq-a">Sí. La conexión es cifrada (HTTPS), los datos se guardan en servidores con copias de seguridad automáticas, y el acceso está controlado por usuario y contraseña con roles diferenciados.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Se puede ampliar la aplicación en el futuro?</div>
+        <div class="faq-a">Sí. La arquitectura está diseñada para crecer: más tipos de formularios, más usuarios, integración con otros sistemas, o una app móvil nativa en el futuro. Los cambios de alcance se cotizan por separado.</div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Documento preparado por el equipo técnico del proyecto · Abril 2026 ·
+  Para consultas contactar al responsable técnico.
+</footer>
+
+</body>
+</html>
