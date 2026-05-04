@@ -303,6 +303,7 @@
 <nav class="toc">
   <div class="toc-inner">
     <a href="#descripcion">¿Qué es?</a>
+    <a href="#alcance">Alcance</a>
     <a href="#modulos">Módulos</a>
     <a href="#etapas">Plan de trabajo</a>
     <a href="#costos">Costos</a>
@@ -340,9 +341,54 @@
     </div>
   </section>
 
-  <!-- 2. MÓDULOS -->
+  <!-- ALCANCE Y NORMA -->
+  <section id="alcance">
+    <div class="section-title"><div class="num">2</div> Alcance: ¿qué tipo de medición cubre esta propuesta?</div>
+
+    <div class="card">
+      <div class="card-title">Tres tipos de medición — tres alcances distintos</div>
+      <p>En Colombia existen tres tipos de estudios de ruido que, aunque usan el mismo equipo de medición (el sonómetro), se diferencian en cómo se calculan los resultados y en los límites que fija la norma para cada uno:</p>
+      <div class="table-wrap" style="margin-top:16px;">
+        <table>
+          <thead><tr><th>Tipo</th><th>¿Qué mide?</th><th>¿Cuándo aplica?</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Ruido ambiental</strong></td>
+              <td>El nivel general de ruido en un sector (barrio, zona industrial, vía, etc.)</td>
+              <td>Monitoreo de zonas, diagnósticos ambientales, planes de ordenamiento</td>
+            </tr>
+            <tr>
+              <td><strong>Emisión de ruido</strong></td>
+              <td>El ruido que genera una fuente específica (una fábrica, un bar, una maquinaria)</td>
+              <td>Cuando una empresa debe demostrar que no supera los límites permitidos en su predio</td>
+            </tr>
+            <tr>
+              <td><strong>Inmisión de ruido</strong></td>
+              <td>El ruido que llega a un receptor (una vivienda, una escuela, un hospital)</td>
+              <td>Cuando una persona o comunidad reporta afectación por ruido de una fuente vecina</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <strong>Esta propuesta cubre únicamente el tipo de medición acordado en la Etapa 1 (relevamiento de requerimientos).</strong> Cada tipo adicional implica formularios, cálculos y límites normativos diferentes, y se cotiza como un alcance separado.
+    </div>
+
+    <div class="card">
+      <div class="card-title">¿Qué pasa si cambia la normativa?</div>
+      <p>La aplicación se construye conforme a la normativa colombiana vigente al momento del desarrollo: principalmente la <strong>Resolución 0627 de 2006 del MAVDT</strong>, la Resolución 8321 de 1983 y el Decreto 948 de 1995.</p>
+      <p>Si durante o después del desarrollo el Ministerio de Ambiente expide una nueva resolución que modifique los formularios, los límites o los procedimientos de cálculo, <strong>los ajustes necesarios se cotizarán como un alcance adicional</strong> independiente de este contrato.</p>
+      <div class="info-box" style="margin-top:12px;">
+        Esta cláusula protege al cliente y al equipo de desarrollo: el cliente tiene claridad de que la app cumple con la norma vigente hoy, y el equipo no asume el riesgo de cambios regulatorios futuros sin compensación.
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. MÓDULOS -->
   <section id="modulos">
-    <div class="section-title"><div class="num">2</div> ¿Qué se va a construir?</div>
+    <div class="section-title"><div class="num">3</div> ¿Qué se va a construir?</div>
 
     <div class="card">
       <div class="card-title">Relevamiento de requerimientos</div>
@@ -462,10 +508,15 @@
 
   <!-- 3. ETAPAS -->
   <section id="etapas">
-    <div class="section-title"><div class="num">3</div> Plan de trabajo — Etapas de desarrollo</div>
+    <div class="section-title"><div class="num">4</div> Plan de trabajo — Etapas de desarrollo</div>
 
     <div class="info-box">
-      El desarrollo se divide en 6 etapas. <strong>Al final de cada una se hace una revisión con el cliente antes de continuar.</strong> Duración total estimada: <strong>18 semanas (~4 meses y medio)</strong>.
+      El desarrollo se divide en 6 etapas. <strong>Al final de cada una se hace una revisión con el cliente antes de continuar — nada avanza sin aprobación.</strong> Duración total estimada: <strong>18 semanas (~4 meses y medio)</strong> desde la firma del contrato.
+      <br><br>
+      <strong>Calendario orientativo (inicio: semana 1 de junio 2026)</strong><br>
+      Etapa 1: jun 1–14 &nbsp;·&nbsp; Etapa 2: jun 15–28 &nbsp;·&nbsp; Etapa 3: jun 29–jul 26 &nbsp;·&nbsp;
+      Etapa 4: jul 27–ago 16 &nbsp;·&nbsp; Etapa 5: ago 17–sep 6 &nbsp;·&nbsp; Etapa 6: sep 7–28 &nbsp;·&nbsp;
+      <strong>Lanzamiento estimado: 28 de septiembre de 2026</strong>
     </div>
 
     <div class="phases">
@@ -540,7 +591,7 @@
 
   <!-- 4. COSTOS -->
   <section id="costos">
-    <div class="section-title"><div class="num">4</div> Estimación de costos de desarrollo</div>
+    <div class="section-title"><div class="num">5</div> Estimación de costos de desarrollo</div>
 
     <div class="info-box">
       El desarrollo se cobra por <strong>días efectivos de trabajo</strong> a <strong>$350.000 COP por día</strong> (jornadas de 4–6 horas de un desarrollador senior). Esta tarifa refleja el modelo de trabajo de alta productividad del equipo.
@@ -570,10 +621,11 @@
           <tr><td>11</td><td>Módulo del profesional de medición (registro, certificaciones, firma)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
           <tr><td>12</td><td>Generación del documento final en Excel oficial + PDF exportable</td><td style="text-align:center">9</td><td class="num-col">$3.150.000</td></tr>
           <tr><td>13</td><td>Organización del código fuente, documentación técnica y automatizaciones</td><td style="text-align:center">3</td><td class="num-col">$1.050.000</td></tr>
-          <tr><td>14</td><td>Publicación en servidor (dominio, seguridad, copias de seguridad, capacitación)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>14</td><td>Publicación en servidor AWS (dominio, seguridad, copias de seguridad, capacitación)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>15</td><td>Gestión del proyecto, coordinación de entregas y pruebas de calidad</td><td style="text-align:center">9</td><td class="num-col">$3.150.000</td></tr>
         </tbody>
         <tfoot>
-          <tr><td colspan="2"><strong>Total desarrollo</strong></td><td style="text-align:center"><strong>84 días</strong></td><td class="num-col"><strong>$29.400.000</strong></td></tr>
+          <tr><td colspan="2"><strong>Total desarrollo</strong></td><td style="text-align:center"><strong>93 días</strong></td><td class="num-col"><strong>$32.550.000</strong></td></tr>
         </tfoot>
       </table>
     </div>
@@ -581,15 +633,16 @@
 
   <!-- 5. SERVIDOR -->
   <section id="servidor">
-    <div class="section-title"><div class="num">5</div> Costos del servidor (12 meses)</div>
+    <div class="section-title"><div class="num">6</div> Costos del servidor (12 meses)</div>
 
     <div class="card">
-      <p>La aplicación necesita un servidor en internet para funcionar. Es similar al arriendo del espacio digital donde vive la aplicación. Se presentan tres opciones con distintos precios y niveles de complejidad. <strong>El cliente elige según su presupuesto y preferencia.</strong></p>
+      <p>La aplicación estará publicada en <strong>Amazon Web Services (AWS)</strong>, el proveedor de nube más grande del mundo. Es similar al arriendo del espacio digital donde vive la aplicación.</p>
       <p style="font-size:13px;color:var(--ink-s);margin-top:8px;">Precios en USD. Se convierten a pesos a TRM $4.200. El valor en pesos varía con la tasa de cambio.</p>
     </div>
 
     <div class="infra-grid">
-      <div class="infra-card">
+      <div class="infra-card recommended">
+        <div class="badge-rec">Seleccionado</div>
         <div class="provider">Amazon Web Services</div>
         <div class="tagline">Mayor respaldo corporativo</div>
         <div class="price">$2.247.200 <span>COP/año</span></div>
@@ -617,8 +670,7 @@
         </div>
       </div>
 
-      <div class="infra-card recommended">
-        <div class="badge-rec">Recomendado</div>
+      <div class="infra-card">
         <div class="provider">Hetzner</div>
         <div class="tagline">Mejor relación costo / rendimiento</div>
         <div class="price">$734.800 <span>COP/año</span></div>
@@ -664,41 +716,37 @@
     <h3>Resumen de la inversión total</h3>
     <div class="total-grid">
       <div class="total-item">
-        <div class="label">Desarrollo (84 días)</div>
-        <div class="value">$29.400.000</div>
+        <div class="label">Desarrollo (93 días)</div>
+        <div class="value">$32.550.000</div>
       </div>
       <div class="total-item">
-        <div class="label">Soporte 6 meses</div>
-        <div class="value">$3.000.000</div>
+        <div class="label">Servidor AWS — 12 meses</div>
+        <div class="value" style="font-size:18px;">$2.247.200</div>
       </div>
       <div class="total-item">
-        <div class="label">Servidor AWS / año</div>
-        <div class="value" style="font-size:16px;color:rgba(255,255,255,.6)">$2.247.200</div>
-      </div>
-      <div class="total-item">
-        <div class="label">Servidor Hetzner / año</div>
-        <div class="value" style="font-size:16px;color:rgba(255,255,255,.6)">$734.800</div>
+        <div class="label">Soporte post-lanzamiento — 6 meses</div>
+        <div class="value" style="font-size:18px;">$3.000.000</div>
       </div>
     </div>
     <hr class="total-divider" />
     <div class="total-grid">
       <div class="total-item highlight-total">
-        <div class="label">Total con AWS (antes de IVA)</div>
-        <div class="value">$34.647.200</div>
+        <div class="label">TOTAL ANTES DE IMPUESTOS</div>
+        <div class="value">$37.797.200</div>
       </div>
       <div class="total-item highlight-total">
-        <div class="label">Total con Hetzner (antes de IVA)</div>
-        <div class="value">$33.134.800</div>
+        <div class="label">Con IVA (19%)</div>
+        <div class="value">~$44.978.668</div>
       </div>
     </div>
     <div style="margin-top:16px;font-size:13px;color:rgba(255,255,255,.4);">
-      Con IVA (19%): AWS ~$41.230.000 · Hetzner ~$39.430.000 · Con AWS Free Tier año 1: ~$32.782.400
+      Con AWS Free Tier el primer año: ~$35.932.400 COP antes de IVA
     </div>
   </div>
 
   <!-- 6. CONDICIONES -->
   <section id="condiciones">
-    <div class="section-title"><div class="num">6</div> Condiciones y forma de pago</div>
+    <div class="section-title"><div class="num">7</div> Condiciones y forma de pago</div>
 
     <div class="card">
       <div class="card-title">Forma de pago sugerida</div>
@@ -735,6 +783,8 @@
         <li><strong>Integración con otros sistemas</strong> del cliente (ERP, plataformas gubernamentales). Se cotiza por separado si se necesita.</li>
         <li><strong>Capacitaciones adicionales</strong> más allá de la sesión de lanzamiento incluida.</li>
         <li><strong>Nuevas funcionalidades</strong> que no estén en el documento de alcance firmado en la Etapa 1.</li>
+        <li><strong>Los otros tipos de medición de ruido</strong> (emisión o inmisión) si no están incluidos en el alcance acordado. Cada tipo adicional se cotiza como un módulo independiente.</li>
+        <li><strong>Ajustes por cambios en la normativa.</strong> Si durante o después del desarrollo el Ministerio de Ambiente modifica los formularios, cálculos o límites de la Resolución 0627, los ajustes requeridos se cotizan por separado.</li>
       </ul>
     </div>
 
@@ -746,7 +796,7 @@
 
   <!-- 7. PREGUNTAS -->
   <section id="preguntas">
-    <div class="section-title"><div class="num">7</div> Preguntas frecuentes</div>
+    <div class="section-title"><div class="num">8</div> Preguntas frecuentes</div>
 
     <div class="faq">
 
