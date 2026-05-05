@@ -418,14 +418,13 @@
 
     <div class="card">
       <div class="card-title">Módulo de dispositivos de medición</div>
-      <p><strong>¿Qué es?</strong> Un inventario digital de todos los equipos que usa la empresa: sonómetros, calibradores acústicos, etc.</p>
+      <p><strong>¿Qué es?</strong> Un registro digital de todos los equipos que usa la empresa: sonómetros, calibradores acústicos, etc.</p>
       <ul>
         <li>Registrar cada equipo con su marca, modelo y número de serie.</li>
+        <li>Registrar la fecha de calibración y la entidad que la realizó.</li>
         <li>Cargar el certificado de calibración de cada equipo.</li>
-        <li>Recibir alertas antes de que venza la próxima calibración.</li>
-        <li>Asignar un equipo específico a cada medición para que quede en el informe.</li>
       </ul>
-      <div class="info-box">La normativa exige que cada informe indique qué equipo se usó y que esté calibrado. Este módulo garantiza que esa información siempre esté disponible y al día.</div>
+      <div class="info-box">La normativa exige que cada informe indique qué equipo se usó y su estado de calibración. Este registro garantiza que esa información esté disponible para incluirla en los informes.</div>
     </div>
 
     <div class="card">
@@ -611,21 +610,21 @@
           <tr><td>1</td><td>Reuniones de requerimientos + documento de alcance firmado</td><td style="text-align:center">5</td><td class="num-col">$1.750.000</td></tr>
           <tr><td>2</td><td>Diseño de la base de datos (estructura completa de la información)</td><td style="text-align:center">6</td><td class="num-col">$2.100.000</td></tr>
           <tr><td>3</td><td>Formulario completo de medición — secciones 2 a 7 con croquis interactivo</td><td style="text-align:center">14</td><td class="num-col">$4.900.000</td></tr>
-          <tr><td>4</td><td>Formulario FO-GA-17 (informe de resultados complementario)</td><td style="text-align:center">5</td><td class="num-col">$1.750.000</td></tr>
-          <tr><td>5</td><td>Módulo de dispositivos de medición (inventario + calibraciones + alertas)</td><td style="text-align:center">5</td><td class="num-col">$1.750.000</td></tr>
-          <tr><td>6</td><td>Módulo de empresas y sitios de monitoreo</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
-          <tr><td>7</td><td>Módulo de gestión de informes (estados, repositorio, búsqueda)</td><td style="text-align:center">7</td><td class="num-col">$2.450.000</td></tr>
-          <tr><td>8</td><td>Lectura automática de archivos Excel del sonómetro y meteorología</td><td style="text-align:center">6</td><td class="num-col">$2.100.000</td></tr>
-          <tr><td>9</td><td>Cálculo automático de Leq, L90, L50, L10 e incertidumbre</td><td style="text-align:center">8</td><td class="num-col">$2.800.000</td></tr>
-          <tr><td>10</td><td>Módulo de usuarios y roles (administrador, técnico, cliente)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
-          <tr><td>11</td><td>Módulo del profesional de medición (registro, certificaciones, firma)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
-          <tr><td>12</td><td>Generación del documento final en Excel oficial + PDF exportable</td><td style="text-align:center">9</td><td class="num-col">$3.150.000</td></tr>
-          <tr><td>13</td><td>Organización del código fuente, documentación técnica y automatizaciones</td><td style="text-align:center">3</td><td class="num-col">$1.050.000</td></tr>
-          <tr><td>14</td><td>Publicación en servidor AWS (dominio, seguridad, copias de seguridad, capacitación)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
-          <tr><td>15</td><td>Gestión del proyecto, coordinación de entregas y pruebas de calidad</td><td style="text-align:center">9</td><td class="num-col">$3.150.000</td></tr>
+          
+          <tr><td>5</td><td>Módulo de dispositivos de medición (registro de equipos y certificados de calibración)</td><td style="text-align:center">3</td><td class="num-col">$1.050.000</td></tr>
+          <tr><td>5</td><td>Módulo de empresas y sitios de monitoreo</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>6</td><td>Módulo de gestión de informes (estados, repositorio, búsqueda)</td><td style="text-align:center">7</td><td class="num-col">$2.450.000</td></tr>
+          <tr><td>7</td><td>Lectura automática de archivos Excel del sonómetro y meteorología</td><td style="text-align:center">6</td><td class="num-col">$2.100.000</td></tr>
+          <tr><td>8</td><td>Cálculo automático de Leq, L90, L50, L10 e incertidumbre</td><td style="text-align:center">8</td><td class="num-col">$2.800.000</td></tr>
+          <tr><td>9</td><td>Módulo de usuarios y roles (administrador, técnico, cliente)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>10</td><td>Módulo del profesional de medición (registro, certificaciones, firma)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>11</td><td>Generación del documento final en Excel oficial + PDF exportable</td><td style="text-align:center">9</td><td class="num-col">$3.150.000</td></tr>
+          <tr><td>12</td><td>Organización del código fuente, documentación técnica y automatizaciones</td><td style="text-align:center">3</td><td class="num-col">$1.050.000</td></tr>
+          <tr><td>13</td><td>Publicación en servidor AWS (dominio, seguridad, copias de seguridad, capacitación)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>14</td><td>Gestión del proyecto, coordinación de entregas y pruebas de calidad</td><td style="text-align:center">9</td><td class="num-col">$3.150.000</td></tr>
         </tbody>
         <tfoot>
-          <tr><td colspan="2"><strong>Total desarrollo</strong></td><td style="text-align:center"><strong>93 días</strong></td><td class="num-col"><strong>$32.550.000</strong></td></tr>
+          <tr><td colspan="2"><strong>Total desarrollo</strong></td><td style="text-align:center"><strong>86 días</strong></td><td class="num-col"><strong>$30.100.000</strong></td></tr>
         </tfoot>
       </table>
     </div>
@@ -716,8 +715,8 @@
     <h3>Resumen de la inversión total</h3>
     <div class="total-grid">
       <div class="total-item">
-        <div class="label">Desarrollo (93 días)</div>
-        <div class="value">$32.550.000</div>
+        <div class="label">Desarrollo (86 días)</div>
+        <div class="value">$30.100.000</div>
       </div>
       <div class="total-item">
         <div class="label">Servidor AWS — 12 meses</div>
@@ -732,15 +731,15 @@
     <div class="total-grid">
       <div class="total-item highlight-total">
         <div class="label">TOTAL ANTES DE IMPUESTOS</div>
-        <div class="value">$37.797.200</div>
+        <div class="value">$35.347.200</div>
       </div>
       <div class="total-item highlight-total">
         <div class="label">Con IVA (19%)</div>
-        <div class="value">~$44.978.668</div>
+        <div class="value">~$42.063.000</div>
       </div>
     </div>
     <div style="margin-top:16px;font-size:13px;color:rgba(255,255,255,.4);">
-      Con AWS Free Tier el primer año: ~$35.932.400 COP antes de IVA
+      Con AWS Free Tier el primer año: ~$32.932.400 COP antes de IVA
     </div>
   </div>
 
