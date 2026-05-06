@@ -510,12 +510,13 @@
     <div class="section-title"><div class="num">4</div> Plan de trabajo — Etapas de desarrollo</div>
 
     <div class="info-box">
-      El desarrollo se divide en 6 etapas. <strong>Al final de cada una se hace una revisión con el cliente antes de continuar — nada avanza sin aprobación.</strong> Duración total estimada: <strong>18 semanas (~4 meses y medio)</strong> desde la firma del contrato.
+      El desarrollo se divide en <strong>dos bloques de 4 semanas</strong>. Al final de cada bloque se hace una revisión formal con el cliente.
+      <br><br>
+      <strong>Bloque 1 — MVP (semanas 1 a 4):</strong> versión funcional lista para ser usada con los datos reales del proceso. Cubre las funcionalidades principales del formulario, módulos base y la lógica de cálculo.<br>
+      <strong>Bloque 2 — Afinamiento (semanas 5 a 8):</strong> se completan los detalles no incluidos en el MVP (generación del documento final, ajustes de formulario, despliegue en AWS y capacitación).
       <br><br>
       <strong>Calendario orientativo (inicio: semana 1 de junio 2026)</strong><br>
-      Etapa 1: jun 1–14 &nbsp;·&nbsp; Etapa 2: jun 15–28 &nbsp;·&nbsp; Etapa 3: jun 29–jul 26 &nbsp;·&nbsp;
-      Etapa 4: jul 27–ago 16 &nbsp;·&nbsp; Etapa 5: ago 17–sep 6 &nbsp;·&nbsp; Etapa 6: sep 7–28 &nbsp;·&nbsp;
-      <strong>Lanzamiento estimado: 28 de septiembre de 2026</strong>
+      MVP listo: <strong>jun 28 de 2026</strong> &nbsp;·&nbsp; Lanzamiento oficial: <strong>jul 26 de 2026</strong>
     </div>
 
     <div class="phases">
@@ -524,7 +525,7 @@
         <div class="phase-body">
           <div class="phase-header">
             <div class="phase-title">Entender el negocio</div>
-            <div class="phase-weeks">Semanas 1–2</div>
+            <div class="phase-weeks">Bloque 1 · Semanas 1–2</div>
           </div>
           <p>El equipo técnico se reúne con los responsables del proceso para entender en detalle cómo trabajan, qué datos manejan y qué problemas tienen con el proceso manual. Se revisan las plantillas Excel actuales y se documentan todos los requerimientos.</p>
           <div class="deliverable">Documento de alcance firmado por ambas partes. Esto protege al cliente de cobros inesperados y al equipo de pedidos que no estaban acordados.</div>
@@ -535,7 +536,7 @@
         <div class="phase-body">
           <div class="phase-header">
             <div class="phase-title">Diseñar los cimientos</div>
-            <div class="phase-weeks">Semanas 3–4</div>
+            <div class="phase-weeks">Bloque 1 · Semanas 3–4</div>
           </div>
           <p>Se diseña la estructura de datos de la aplicación y se construyen los módulos base: el registro de empresas y el inventario de dispositivos de medición con sus calibraciones.</p>
           <div class="deliverable">Módulos de empresas y dispositivos funcionando. El cliente puede revisar y hacer ajustes antes de avanzar.</div>
@@ -546,7 +547,7 @@
         <div class="phase-body">
           <div class="phase-header">
             <div class="phase-title">El formulario completo</div>
-            <div class="phase-weeks">Semanas 5–8</div>
+            <div class="phase-weeks">Bloque 1 · Semanas 3–4</div>
           </div>
           <p>Se construyen todas las secciones del formulario de medición: condiciones del entorno, fuentes de ruido, croquis interactivo, condiciones meteorológicas y resultados. Esta es la etapa más larga porque es el corazón de la aplicación.</p>
           <div class="deliverable">Formulario completo funcionando con guardado automático y validaciones. El cliente puede probarlo con datos reales.</div>
@@ -557,7 +558,7 @@
         <div class="phase-body">
           <div class="phase-header">
             <div class="phase-title">Los datos del equipo y los cálculos</div>
-            <div class="phase-weeks">Semanas 9–11</div>
+            <div class="phase-weeks">Bloque 2 · Semanas 5–6</div>
           </div>
           <p>Se construye el lector de archivos Excel del sonómetro y del informe meteorológico. También se programa el motor de cálculo que obtiene el Leq, los percentiles y la incertidumbre automáticamente.</p>
           <div class="deliverable">El técnico puede subir el Excel del equipo y ver los resultados calculados en pantalla, listos para el informe.</div>
@@ -568,7 +569,7 @@
         <div class="phase-body">
           <div class="phase-header">
             <div class="phase-title">Gestión de informes y profesionales</div>
-            <div class="phase-weeks">Semanas 12–14</div>
+            <div class="phase-weeks">Bloque 2 · Semanas 6–7</div>
           </div>
           <p>Se construye el repositorio de informes (búsqueda, filtros, estados), el módulo del profesional de medición con firma digitalizada, y la administración de usuarios con los tres roles.</p>
           <div class="deliverable">Sistema completo: técnicos crean informes, un revisor los aprueba, y los clientes los consultan.</div>
@@ -579,7 +580,7 @@
         <div class="phase-body">
           <div class="phase-header">
             <div class="phase-title">Documento final y lanzamiento</div>
-            <div class="phase-weeks">Semanas 15–18</div>
+            <div class="phase-weeks">Bloque 2 · Semanas 7–8</div>
           </div>
           <p>Se construye la exportación del informe en el Excel oficial y en PDF. Luego se publica la aplicación en el servidor, se configura el dominio y la seguridad, y se hace la sesión de capacitación con los usuarios finales.</p>
           <div class="deliverable">Aplicación publicada en internet, funcionando, con dominio propio y lista para uso productivo.</div>
@@ -730,16 +731,13 @@
     <hr class="total-divider" />
     <div class="total-grid">
       <div class="total-item highlight-total">
-        <div class="label">TOTAL ANTES DE IMPUESTOS</div>
+        <div class="label">TOTAL</div>
         <div class="value">$35.347.200</div>
       </div>
-      <div class="total-item highlight-total">
-        <div class="label">Con IVA (19%)</div>
-        <div class="value">~$42.063.000</div>
-      </div>
+
     </div>
     <div style="margin-top:16px;font-size:13px;color:rgba(255,255,255,.4);">
-      Con AWS Free Tier el primer año: ~$32.932.400 COP antes de IVA
+      Con AWS Free Tier el primer año el costo de infraestructura se reduce a ~$382.400 COP
     </div>
   </div>
 
