@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ruido App Lite — Propuesta de Desarrollo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --brand:  #1a2744;
+    --accent: #27ae60;
+    --acc-lt: #f0fdf4;
+    --ink:    #1e293b;
+    --ink-m:  #64748b;
+    --ink-s:  #94a3b8;
+    --surface:#ffffff;
+    --bg:     #f5f6fa;
+    --border: #e2e8f0;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
+    --shadow-lg: 0 4px 20px rgba(0,0,0,.09);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); font-size: 15px; line-height: 1.65; }
+
+  .hero { background: var(--brand); color: #fff; padding: 56px 24px 48px; text-align: center; }
+  .hero-logo { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+  .hero-logo .icon { width: 44px; height: 44px; background: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+  .hero-logo .icon svg { width: 24px; height: 24px; }
+  .hero-logo span { font-size: 18px; font-weight: 700; }
+  .lite-badge { display: inline-block; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: 3px 10px; border-radius: 100px; margin-bottom: 16px; }
+  .hero h1 { font-size: clamp(24px, 5vw, 36px); font-weight: 800; line-height: 1.2; margin-bottom: 12px; }
+  .hero p { font-size: 15px; color: rgba(255,255,255,.55); max-width: 500px; margin: 0 auto 28px; }
+  .hero-meta { display: inline-flex; gap: 24px; flex-wrap: wrap; justify-content: center; border-top: 1px solid rgba(255,255,255,.12); padding-top: 20px; }
+  .hero-meta span { font-size: 13px; color: rgba(255,255,255,.45); }
+  .hero-meta strong { color: rgba(255,255,255,.85); }
+
+  .page { max-width: 820px; margin: 0 auto; padding: 40px 16px 80px; }
+  section { margin-bottom: 48px; }
+  .section-title { font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--accent); display: flex; align-items: center; gap: 10px; }
+  .section-title .num { width: 30px; height: 30px; flex-shrink: 0; background: var(--accent); color: #fff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; margin-bottom: 14px; }
+  .card-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .card p { color: var(--ink-m); font-size: 14px; margin-bottom: 6px; }
+  .card p:last-child { margin-bottom: 0; }
+  .card strong { color: var(--ink); }
+  .card ul { padding-left: 18px; margin-top: 6px; }
+  .card ul li { font-size: 14px; color: var(--ink-m); margin-bottom: 3px; }
+
+  .highlight { background: var(--acc-lt); border-left: 4px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 18px; margin: 16px 0; font-size: 14px; color: var(--ink); }
+  .highlight strong { color: var(--accent); }
+  .info-box { background: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 0 var(--radius) var(--radius) 0; padding: 14px 18px; margin: 16px 0; font-size: 14px; color: var(--ink); }
+
+  /* Flow diagram */
+  .flow { display: flex; flex-direction: column; gap: 0; }
+  .flow-item { display: flex; gap: 0; }
+  .flow-left { display: flex; flex-direction: column; align-items: center; width: 44px; flex-shrink: 0; }
+  .flow-dot { width: 34px; height: 34px; border-radius: 50%; background: var(--brand); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+  .flow-line { width: 2px; flex: 1; background: var(--border); margin: 4px 0; min-height: 20px; }
+  .flow-item:last-child .flow-line { display: none; }
+  .flow-body { flex: 1; padding: 0 0 24px 14px; }
+  .flow-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 4px; padding-top: 5px; }
+  .flow-body p { font-size: 13px; color: var(--ink-m); }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; margin: 14px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { background: var(--brand); color: #fff; padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  th:first-child { border-radius: 8px 0 0 0; } th:last-child { border-radius: 0 8px 0 0; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--ink-m); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: var(--bg); }
+  td strong { color: var(--ink); }
+  .num-col { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 600; }
+  tfoot td { background: var(--brand) !important; color: #fff; font-weight: 700; border-bottom: none; }
+  tfoot .num-col { color: #fff; }
+
+  /* Total banner */
+  .total-banner { background: var(--brand); border-radius: var(--radius); padding: 28px 32px; color: #fff; margin: 28px 0; }
+  .total-banner h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.45); margin-bottom: 8px; }
+  .total-amount { font-size: 42px; font-weight: 800; color: var(--accent); line-height: 1; }
+  .total-sub { font-size: 13px; color: rgba(255,255,255,.4); margin-top: 10px; }
+  .total-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 20px; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.1); }
+  .total-item .label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: rgba(255,255,255,.4); margin-bottom: 4px; }
+  .total-item .value { font-size: 18px; font-weight: 700; }
+
+  /* Compare */
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  .compare-card { border: 2px solid var(--border); border-radius: var(--radius); padding: 18px; }
+  .compare-card.lite { border-color: var(--accent); }
+  .compare-card .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-s); margin-bottom: 8px; }
+  .compare-card .price { font-size: 26px; font-weight: 800; }
+  .compare-card.lite .price { color: var(--accent); }
+  .compare-card ul { padding-left: 16px; margin-top: 10px; }
+  .compare-card ul li { font-size: 13px; color: var(--ink-m); margin-bottom: 3px; }
+  .compare-card ul li.out { color: var(--ink-s); text-decoration: line-through; }
+
+  /* Payment */
+  .pay-steps { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  .pay-step { flex: 1; min-width: 130px; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; text-align: center; background: var(--surface); }
+  .pay-step .pct { font-size: 28px; font-weight: 800; color: var(--accent); }
+  .pay-step .when { font-size: 12px; color: var(--ink-m); margin-top: 4px; }
+
+  footer { background: var(--brand); color: rgba(255,255,255,.35); text-align: center; padding: 20px; font-size: 13px; }
+
+  @media(max-width:560px) { .compare { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-logo">
+    <div class="icon">
+      <svg fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/>
+      </svg>
+    </div>
+    <span>Ruido App</span>
+  </div>
+  <div class="lite-badge">Versión Lite</div>
+  <h1>Propuesta de Desarrollo<br>Herramienta de Informes</h1>
+  <p>Solución enfocada: lectura de mediciones, cálculo automático y generación del informe final 24-001-A30_.</p>
+  <div class="hero-meta">
+    <span>Cliente: <strong>Conintegral SAS</strong></span>
+    <span>Fecha: <strong>Mayo 2026</strong></span>
+    <span>Validez: <strong>30 días</strong></span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- 1. QUÉ ES -->
+  <section>
+    <div class="section-title"><div class="num">1</div> ¿Qué es Ruido App Lite?</div>
+
+    <div class="card">
+      <p>Es una herramienta web liviana y enfocada en un solo objetivo: <strong>tomar los datos del sonómetro y generar el informe oficial 24-001-A30_ listo para imprimir y entregar</strong>, sin necesidad de copiar datos a mano ni manejar fórmulas Excel directamente.</p>
+      <p>No requiere base de datos propia. El Excel de salida es el registro oficial — la aplicación es el puente entre los datos crudos del equipo y el documento final.</p>
+    </div>
+
+    <div class="highlight">
+      <strong>¿Cuál es el problema que resuelve?</strong> Hoy el técnico toma los datos del sonómetro, los copia manualmente al Excel de informe, calcula a mano o verifica las fórmulas, y arma el documento final. Con esta herramienta ese proceso se reduce a: subir el archivo → revisar → descargar el informe listo.
+    </div>
+  </section>
+
+  <!-- 2. CÓMO FUNCIONA -->
+  <section>
+    <div class="section-title"><div class="num">2</div> ¿Cómo funciona?</div>
+
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-left"><div class="flow-dot">1</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">El técnico registra el equipo y el profesional</div>
+          <p>Llena un formulario simple con los datos del sonómetro usado (marca, modelo, número de serie, fecha de calibración) y del profesional que firma el informe (nombre, tarjeta profesional). Estos datos quedan listos para incluirse en el documento final.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-left"><div class="flow-dot">2</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Sube el Excel del sonómetro</div>
+          <p>Carga el archivo que exporta el equipo con las mediciones de <strong>fuente encendida</strong> y <strong>fuente apagada</strong>. La aplicación lo lee automáticamente y extrae todos los datos relevantes.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-left"><div class="flow-dot">3</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Dibuja la maqueta del lugar</div>
+          <p>Un lienzo interactivo donde el técnico arrastra y posiciona elementos: fuentes de ruido, puntos de medición, barreras, edificios, etc. El croquis queda incluido en el informe final.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-left"><div class="flow-dot">4</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">La app puebla el Excel oficial con los cálculos</div>
+          <p>Los datos leídos se insertan automáticamente en la plantilla <strong>24-001-A30_</strong> que ya tiene las fórmulas vinculadas. Los resultados (Leq, percentiles, incertidumbre) se calculan solos.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-left"><div class="flow-dot">5</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Descarga el informe final listo</div>
+          <p>El técnico descarga el Excel completo y/o una versión PDF lista para imprimir y entregar al cliente o a la autoridad ambiental.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. QUÉ SE CONSTRUYE -->
+  <section>
+    <div class="section-title"><div class="num">3</div> ¿Qué se construye exactamente?</div>
+
+    <div class="card">
+      <div class="card-title">Registro de dispositivo de medición</div>
+      <p>Formulario para ingresar los datos del sonómetro utilizado en cada medición: marca, modelo, número de serie, fecha de calibración y entidad certificadora. Esta información se traslada automáticamente al informe.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Registro del profesional</div>
+      <p>Formulario para ingresar el nombre, número de tarjeta profesional y firma digitalizada del profesional responsable. Su información aparece en el documento final.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Lector del Excel de mediciones</div>
+      <p>La aplicación lee el archivo Excel que exporta el sonómetro con los datos de <strong>fuente encendida</strong> y <strong>fuente apagada</strong>, interpreta la estructura del archivo y extrae los valores de medición por intervalo de tiempo.</p>
+      <div class="info-box">Se trabaja con el formato exacto del archivo que actualmente exporta el equipo de Conintegral. Si en el futuro se cambia de sonómetro o cambia el formato del archivo, se requiere un ajuste adicional.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Población del Excel oficial 24-001-A30_</div>
+      <p>Los datos leídos del sonómetro, junto con los del dispositivo y el profesional, se insertan automáticamente en las celdas correspondientes de la plantilla oficial. Las fórmulas existentes en el Excel hacen el resto: Leq, L90, L50, L10 e incertidumbre se calculan solos.</p>
+      <p>La plantilla la provee Conintegral — la aplicación la usa como base sin modificar su estructura ni sus fórmulas.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Constructor de maqueta / croquis del lugar</div>
+      <p>Un lienzo interactivo donde el técnico puede armar el plano del sitio arrastrando y soltando elementos: fuentes de ruido, puntos de medición, barreras acústicas, edificios, vías, personas. El croquis resultante se exporta como imagen e incluye en el informe.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Formato de impresión final</div>
+      <p>Generación del informe listo para entregar: el Excel 24-001-A30_ completamente diligenciado para descarga, y una vista de impresión en PDF con todos los datos, el croquis y la firma del profesional.</p>
+    </div>
+  </section>
+
+  <!-- 4. COSTOS -->
+  <section>
+    <div class="section-title"><div class="num">4</div> Estimación de costos</div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>¿Qué se construye?</th>
+            <th style="text-align:center">Días</th>
+            <th style="text-align:right">Costo COP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>Setup del proyecto y estructura base de la aplicación</td><td style="text-align:center">2</td><td class="num-col">$700.000</td></tr>
+          <tr><td>2</td><td>Formulario de dispositivo de medición</td><td style="text-align:center">2</td><td class="num-col">$700.000</td></tr>
+          <tr><td>3</td><td>Formulario del profesional (con firma digitalizada)</td><td style="text-align:center">2</td><td class="num-col">$700.000</td></tr>
+          <tr><td>4</td><td>Lector del Excel del sonómetro (fuente encendida / apagada)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>5</td><td>Mapeo de datos al Excel oficial 24-001-A30_ (celda por celda)</td><td style="text-align:center">5</td><td class="num-col">$1.750.000</td></tr>
+          <tr><td>6</td><td>Constructor de maqueta / croquis interactivo</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>7</td><td>Formato de impresión final (PDF + Excel descargable)</td><td style="text-align:center">3</td><td class="num-col">$1.050.000</td></tr>
+          <tr><td>8</td><td>Integración completa y pruebas con datos reales</td><td style="text-align:center">3</td><td class="num-col">$1.050.000</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="2"><strong>Total</strong></td><td style="text-align:center"><strong>25 días</strong></td><td class="num-col"><strong>$8.750.000</strong></td></tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="total-banner">
+      <h3>Inversión total</h3>
+      <div class="total-amount">$9.000.000</div>
+      <div class="total-sub">Pesos colombianos · Sin IVA · Incluye 1 mes de soporte post-entrega</div>
+      <div class="total-grid">
+        <div class="total-item">
+          <div class="label">Desarrollo (25 días)</div>
+          <div class="value">$8.750.000</div>
+        </div>
+        <div class="total-item">
+          <div class="label">Soporte 1 mes</div>
+          <div class="value">$250.000</div>
+        </div>
+        <div class="total-item">
+          <div class="label">Infraestructura</div>
+          <div class="value">$0 — GitHub Pages</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. LITE vs COMPLETA -->
+  <section>
+    <div class="section-title"><div class="num">5</div> Lite vs. versión completa</div>
+
+    <div class="card">
+      <p>Esta propuesta es una herramienta de trabajo puntual. La versión completa incluye base de datos, repositorio de informes, gestión de usuarios y empresas. La Lite resuelve el problema inmediato al menor costo posible.</p>
+    </div>
+
+    <div class="compare">
+      <div class="compare-card lite">
+        <div class="label">Ruido App Lite</div>
+        <div class="price">$9.000.000</div>
+        <ul>
+          <li>Registro de dispositivo y profesional</li>
+          <li>Lector de Excel del sonómetro</li>
+          <li>Mapeo al Excel 24-001-A30_</li>
+          <li>Croquis interactivo</li>
+          <li>Exportación PDF / Excel</li>
+          <li>Sin servidor — GitHub Pages</li>
+          <li class="out">Base de datos de informes</li>
+          <li class="out">Gestión de usuarios y roles</li>
+          <li class="out">Repositorio de clientes y empresas</li>
+          <li class="out">Alertas y automatizaciones</li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <div class="label">Ruido App Completa</div>
+        <div class="price" style="color:var(--ink-m)">$38.000.000</div>
+        <ul>
+          <li>Todo lo de la versión Lite</li>
+          <li>Base de datos de informes</li>
+          <li>Gestión de usuarios y roles</li>
+          <li>Módulo de empresas y clientes</li>
+          <li>Repositorio consultable</li>
+          <li>Estados del informe (borrador/emitido)</li>
+          <li>Servidor AWS dedicado</li>
+          <li>Soporte 6 meses</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. PLAZO Y PAGO -->
+  <section>
+    <div class="section-title"><div class="num">6</div> Plazo y condiciones</div>
+
+    <div class="card">
+      <div class="card-title">Plazo de entrega</div>
+      <p><strong>4 semanas</strong> desde la firma del contrato y la entrega de los archivos Excel (plantilla 24-001-A30_ y archivo de ejemplo del sonómetro).</p>
+      <p>La semana 3 se entrega una versión funcional para pruebas con datos reales. La semana 4 es de ajustes y entrega final.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Forma de pago</div>
+      <div class="pay-steps">
+        <div class="pay-step">
+          <div class="pct">50%</div>
+          <div class="when">Al firmar el contrato</div>
+        </div>
+        <div class="pay-step">
+          <div class="pct">50%</div>
+          <div class="when">A la entrega final</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Lo que el cliente debe proveer</div>
+      <ul>
+        <li>La plantilla Excel oficial <strong>24-001-A30_</strong> con sus fórmulas.</li>
+        <li>Un archivo de ejemplo del Excel que exporta el sonómetro con datos reales.</li>
+        <li>Un técnico disponible para validar que los datos mapeados sean correctos.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Lo que NO incluye</div>
+      <ul>
+        <li>Cambios en la estructura de la plantilla Excel 24-001-A30_ (se usa tal como está).</li>
+        <li>Soporte a formatos de archivo de otros sonómetros distintos al actual.</li>
+        <li>Base de datos, repositorio de informes o gestión de usuarios.</li>
+        <li>Ajustes por cambios en la normativa vigente.</li>
+      </ul>
+    </div>
+
+    <div class="info-box">
+      <strong>Validez de esta propuesta:</strong> 30 días desde la fecha de emisión. ·
+      <strong>Moneda:</strong> Pesos colombianos (COP).
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Documento preparado por el equipo técnico · Mayo 2026 · Para consultas contactar al responsable técnico.
+</footer>
+
+</body>
+</html>
