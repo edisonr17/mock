@@ -214,7 +214,7 @@
     <div class="card">
       <div class="card-title">Población del Excel oficial 24-001-A30_</div>
       <p>Los datos leídos del sonómetro, junto con los del dispositivo y el profesional, se insertan automáticamente en las celdas correspondientes de la plantilla oficial. Las fórmulas existentes en el Excel hacen el resto: Leq, L90, L50, L10 e incertidumbre se calculan solos.</p>
-      <p>La plantilla la provee Conintegral — la aplicación la usa como base sin modificar su estructura ni sus fórmulas.</p>
+      <p>La plantilla vive en un bucket de <strong>Amazon S3</strong>. Una función <strong>AWS Lambda (Node.js + ExcelJS)</strong> la descarga, la llena con los datos y devuelve el archivo al usuario. Para actualizar la plantilla basta con subir el nuevo archivo al bucket — sin tocar código.</p>
     </div>
 
     <div class="card">
@@ -228,9 +228,54 @@
     </div>
   </section>
 
-  <!-- 4. COSTOS -->
+  <!-- ARQUITECTURA -->
   <section>
-    <div class="section-title"><div class="num">4</div> Estimación de costos</div>
+    <div class="section-title"><div class="num">4</div> Arquitectura técnica</div>
+
+    <div class="card">
+      <div class="card-title">Stack tecnológico</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;">
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-s);margin-bottom:6px;">Frontend</div>
+          <ul>
+            <li>Vue 3 — interfaz de usuario</li>
+            <li>SheetJS — leer Excel del sonómetro</li>
+            <li>Konva.js — croquis interactivo</li>
+            <li>GitHub Pages — hosting gratuito</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-s);margin-bottom:6px;">Backend</div>
+          <ul>
+            <li>AWS Lambda — Node.js</li>
+            <li>ExcelJS — poblar template</li>
+            <li>Amazon S3 — template + archivos generados</li>
+            <li>API Gateway — expone la Lambda</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Flujo de datos</div>
+      <div style="font-family:monospace;font-size:13px;line-height:1.8;color:var(--ink-m);background:var(--bg);border-radius:8px;padding:16px;margin-top:8px;overflow-x:auto;">
+        <div>① Browser lee Excel sonómetro <span style="color:var(--accent)">→</span> extrae mediciones (SheetJS)</div>
+        <div>② Técnico llena formulario + dibuja croquis</div>
+        <div>③ Frontend envía JSON <span style="color:var(--accent)">→</span> API Gateway <span style="color:var(--accent)">→</span> Lambda</div>
+        <div>④ Lambda descarga template de S3 <span style="color:var(--accent)">→</span> llena celdas (ExcelJS)</div>
+        <div>⑤ Lambda sube Excel generado a S3 <span style="color:var(--accent)">→</span> retorna URL firmada</div>
+        <div>⑥ Browser descarga el informe 24-001-A30_ listo</div>
+      </div>
+    </div>
+
+    <div class="highlight">
+      <strong>Para actualizar la plantilla Excel</strong> basta con subir el nuevo archivo al bucket S3 desde la consola AWS. La Lambda usa automáticamente la versión más reciente sin ningún cambio de código.
+    </div>
+  </section>
+
+  <!-- 5. COSTOS -->
+  <section>
+    <div class="section-title"><div class="num">5</div> Estimación de costos</div>
 
     <div class="table-wrap">
       <table>
@@ -253,27 +298,31 @@
           <tr><td>8</td><td>Integración completa y pruebas con datos reales</td><td style="text-align:center">3</td><td class="num-col">$1.050.000</td></tr>
         </tbody>
         <tfoot>
-          <tr><td colspan="2"><strong>Total</strong></td><td style="text-align:center"><strong>25 días</strong></td><td class="num-col"><strong>$8.750.000</strong></td></tr>
+          <tr><td colspan="2"><strong>Total</strong></td><td style="text-align:center"><strong>25 días</strong></td><td class="num-col"><strong>$9.750.000</strong></td></tr>
         </tfoot>
       </table>
     </div>
 
     <div class="total-banner">
       <h3>Inversión total</h3>
-      <div class="total-amount">$9.000.000</div>
-      <div class="total-sub">Pesos colombianos · Sin IVA · Incluye 1 mes de soporte post-entrega</div>
+      <div class="total-amount">$12.000.000</div>
+      <div class="total-sub">Pesos colombianos · Incluye setup AWS + 1 mes de soporte</div>
       <div class="total-grid">
         <div class="total-item">
           <div class="label">Desarrollo (25 días)</div>
-          <div class="value">$8.750.000</div>
+          <div class="value">$9.750.000</div>
+        </div>
+        <div class="total-item">
+          <div class="label">Setup AWS (Lambda, S3, API Gateway)</div>
+          <div class="value">$1.750.000</div>
         </div>
         <div class="total-item">
           <div class="label">Soporte 1 mes</div>
-          <div class="value">$250.000</div>
+          <div class="value">$500.000</div>
         </div>
         <div class="total-item">
-          <div class="label">Infraestructura</div>
-          <div class="value">$0 — GitHub Pages</div>
+          <div class="label">Infraestructura mensual</div>
+          <div class="value">~$2.000 COP/mes</div>
         </div>
       </div>
     </div>
@@ -281,7 +330,7 @@
 
   <!-- 5. LITE vs COMPLETA -->
   <section>
-    <div class="section-title"><div class="num">5</div> Lite vs. versión completa</div>
+    <div class="section-title"><div class="num">6</div> Lite vs. versión completa</div>
 
     <div class="card">
       <p>Esta propuesta es una herramienta de trabajo puntual. La versión completa incluye base de datos, repositorio de informes, gestión de usuarios y empresas. La Lite resuelve el problema inmediato al menor costo posible.</p>
@@ -297,7 +346,7 @@
           <li>Mapeo al Excel 24-001-A30_</li>
           <li>Croquis interactivo</li>
           <li>Exportación PDF / Excel</li>
-          <li>Sin servidor — GitHub Pages</li>
+          <li>AWS Lambda + S3 (~$2.000 COP/mes)</li>
           <li class="out">Base de datos de informes</li>
           <li class="out">Gestión de usuarios y roles</li>
           <li class="out">Repositorio de clientes y empresas</li>
@@ -323,7 +372,7 @@
 
   <!-- 6. PLAZO Y PAGO -->
   <section>
-    <div class="section-title"><div class="num">6</div> Plazo y condiciones</div>
+    <div class="section-title"><div class="num">7</div> Plazo y condiciones</div>
 
     <div class="card">
       <div class="card-title">Plazo de entrega</div>
