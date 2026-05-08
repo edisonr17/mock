@@ -139,12 +139,12 @@
     <div class="section-title"><div class="num">1</div> ¿Qué es Ruido App Lite?</div>
 
     <div class="card">
-      <p>Es una herramienta web liviana y enfocada en un solo objetivo: <strong>tomar los datos del sonómetro y generar el informe oficial 24-001-A30_ listo para imprimir y entregar</strong>, sin necesidad de copiar datos a mano ni manejar fórmulas Excel directamente.</p>
-      <p>No requiere base de datos propia. El Excel de salida es el registro oficial — la aplicación es el puente entre los datos crudos del equipo y el documento final.</p>
+      <p>Es una herramienta web liviana y enfocada en un solo objetivo: <strong>tomar los archivos que exporta el sonómetro, unirlos en la plantilla estándar y generar el informe oficial 24-001-A30_ listo para entregar</strong>, sin copiar datos a mano ni tocar fórmulas directamente.</p>
+      <p>No requiere base de datos propia. El Excel de salida es el registro oficial. La aplicación es el puente entre los archivos crudos del equipo y el documento final.</p>
     </div>
 
     <div class="highlight">
-      <strong>¿Cuál es el problema que resuelve?</strong> Hoy el técnico toma los datos del sonómetro, los copia manualmente al Excel de informe, calcula a mano o verifica las fórmulas, y arma el documento final. Con esta herramienta ese proceso se reduce a: subir el archivo → revisar → descargar el informe listo.
+      <strong>¿Cuál es el problema que resuelve?</strong> Hoy el técnico exporta los datos del sonómetro en varios archivos, los copia manualmente al Excel de informe, verifica las fórmulas y arma el documento final. Con esta herramienta ese proceso se reduce a: subir los 3 archivos del sonómetro → revisar → descargar el informe listo. Todo en menos de 20 minutos.
     </div>
   </section>
 
@@ -156,36 +156,43 @@
       <div class="flow-item">
         <div class="flow-left"><div class="flow-dot">1</div><div class="flow-line"></div></div>
         <div class="flow-body">
-          <div class="flow-title">El técnico registra el equipo y el profesional</div>
-          <p>Llena un formulario simple con los datos del sonómetro usado (marca, modelo, número de serie, fecha de calibración) y del profesional que firma el informe (nombre, tarjeta profesional). Estos datos quedan listos para incluirse en el documento final.</p>
+          <div class="flow-title">Selecciona dispositivo y profesional</div>
+          <p>La aplicación carga automáticamente los dispositivos de medición y profesionales disponibles desde la plantilla de configuración almacenada en S3. El técnico los selecciona de un menú desplegable — sin formularios.</p>
         </div>
       </div>
       <div class="flow-item">
         <div class="flow-left"><div class="flow-dot">2</div><div class="flow-line"></div></div>
         <div class="flow-body">
-          <div class="flow-title">Sube el Excel del sonómetro</div>
-          <p>Carga el archivo que exporta el equipo con las mediciones de <strong>fuente encendida</strong> y <strong>fuente apagada</strong>. La aplicación lo lee automáticamente y extrae todos los datos relevantes.</p>
+          <div class="flow-title">Sube los 3 archivos del sonómetro</div>
+          <p>El sonómetro exporta un archivo Excel por cada tipo de medición. El técnico sube los 3: <strong>fuente encendida</strong>, <strong>fuente apagada</strong> y el tercero según el tipo de medición. La aplicación lee las columnas automáticamente.</p>
         </div>
       </div>
       <div class="flow-item">
         <div class="flow-left"><div class="flow-dot">3</div><div class="flow-line"></div></div>
         <div class="flow-body">
-          <div class="flow-title">Dibuja la maqueta del lugar</div>
-          <p>Un lienzo interactivo donde el técnico arrastra y posiciona elementos: fuentes de ruido, puntos de medición, barreras, edificios, etc. El croquis queda incluido en el informe final.</p>
+          <div class="flow-title">Completa los datos del sitio</div>
+          <p>Dirección, barrio, coordenadas, fechas, horas de medición y los demás campos requeridos por el formato 24-001-A30_. La mayoría ya viene prellenada o se puede copiar de una medición anterior.</p>
         </div>
       </div>
       <div class="flow-item">
         <div class="flow-left"><div class="flow-dot">4</div><div class="flow-line"></div></div>
         <div class="flow-body">
-          <div class="flow-title">La app puebla el Excel oficial con los cálculos</div>
-          <p>Los datos leídos se insertan automáticamente en la plantilla <strong>24-001-A30_</strong> que ya tiene las fórmulas vinculadas. Los resultados (Leq, percentiles, incertidumbre) se calculan solos.</p>
+          <div class="flow-title">Dibuja el croquis del lugar</div>
+          <p>Un lienzo interactivo donde el técnico posiciona los elementos: fuentes de ruido, puntos de medición, barreras, vías. El croquis se exporta como imagen e incluye en el informe.</p>
         </div>
       </div>
       <div class="flow-item">
         <div class="flow-left"><div class="flow-dot">5</div><div class="flow-line"></div></div>
         <div class="flow-body">
-          <div class="flow-title">Descarga el informe final listo</div>
-          <p>El técnico descarga el Excel completo y/o una versión PDF lista para imprimir y entregar al cliente o a la autoridad ambiental.</p>
+          <div class="flow-title">La app genera la plantilla estándar completa</div>
+          <p>Todos los datos — mediciones de los 3 archivos, información del sitio, dispositivo, profesional y croquis — se insertan en las celdas correspondientes de la plantilla <strong>24-001-A30_</strong>. Las fórmulas del Excel hacen el resto.</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-left"><div class="flow-dot">6</div><div class="flow-line"></div></div>
+        <div class="flow-body">
+          <div class="flow-title">Descarga y listo</div>
+          <p>El técnico descarga el Excel 24-001-A30_ completamente diligenciado y con cálculos resueltos. Listo para revisar, firmar y entregar. Todo el proceso: menos de 20 minutos.</p>
         </div>
       </div>
     </div>
@@ -196,19 +203,19 @@
     <div class="section-title"><div class="num">3</div> ¿Qué se construye exactamente?</div>
 
     <div class="card">
-      <div class="card-title">Registro de dispositivo de medición</div>
-      <p>Formulario para ingresar los datos del sonómetro utilizado en cada medición: marca, modelo, número de serie, fecha de calibración y entidad certificadora. Esta información se traslada automáticamente al informe.</p>
+      <div class="card-title">Plantilla de configuración (dispositivos y profesionales)</div>
+      <p>Un archivo Excel almacenado en S3 que contiene la lista de sonómetros disponibles (marca, modelo, serial, fecha de calibración) y los profesionales autorizados (nombre, tarjeta profesional). La aplicación lo lee al iniciar y carga los menús desplegables automáticamente. Para agregar o cambiar un equipo o profesional basta con actualizar ese archivo — sin tocar código.</p>
     </div>
 
     <div class="card">
-      <div class="card-title">Registro del profesional</div>
-      <p>Formulario para ingresar el nombre, número de tarjeta profesional y firma digitalizada del profesional responsable. Su información aparece en el documento final.</p>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Lector del Excel de mediciones</div>
-      <p>La aplicación lee el archivo Excel que exporta el sonómetro con los datos de <strong>fuente encendida</strong> y <strong>fuente apagada</strong>, interpreta la estructura del archivo y extrae los valores de medición por intervalo de tiempo.</p>
-      <div class="info-box">Se trabaja con el formato exacto del archivo que actualmente exporta el equipo de Conintegral. Si en el futuro se cambia de sonómetro o cambia el formato del archivo, se requiere un ajuste adicional.</div>
+      <div class="card-title">Lector de los 3 archivos del sonómetro</div>
+      <p>El sonómetro exporta un archivo Excel por tipo de medición. La aplicación permite subir los 3 archivos simultáneamente, detecta automáticamente las columnas de valores y los mapea a la plantilla de salida.</p>
+      <ul>
+        <li><strong>Fuente encendida (FE)</strong> — mediciones con la fuente activa</li>
+        <li><strong>Fuente apagada (FA)</strong> — mediciones de ruido de fondo</li>
+        <li><strong>Tercer archivo</strong> — según el tipo de medición del contrato</li>
+      </ul>
+      <div class="info-box">Se trabaja con el formato exacto que exporta el equipo de Conintegral. Si en el futuro se cambia de sonómetro o cambia el formato del archivo, se requiere un ajuste adicional.</div>
     </div>
 
     <div class="card">
@@ -259,12 +266,13 @@
     <div class="card">
       <div class="card-title">Flujo de datos</div>
       <div style="font-family:monospace;font-size:13px;line-height:1.8;color:var(--ink-m);background:var(--bg);border-radius:8px;padding:16px;margin-top:8px;overflow-x:auto;">
-        <div>① Browser lee Excel sonómetro <span style="color:var(--accent)">→</span> extrae mediciones (SheetJS)</div>
-        <div>② Técnico llena formulario + dibuja croquis</div>
-        <div>③ Frontend envía JSON <span style="color:var(--accent)">→</span> API Gateway <span style="color:var(--accent)">→</span> Lambda</div>
-        <div>④ Lambda descarga template de S3 <span style="color:var(--accent)">→</span> llena celdas (ExcelJS)</div>
-        <div>⑤ Lambda sube Excel generado a S3 <span style="color:var(--accent)">→</span> retorna URL firmada</div>
-        <div>⑥ Browser descarga el informe 24-001-A30_ listo</div>
+        <div>① Browser carga plantilla config de S3 <span style="color:var(--accent)">→</span> popula selects de dispositivos y profesionales</div>
+        <div>② Técnico sube 3 archivos del sonómetro <span style="color:var(--accent)">→</span> SheetJS extrae mediciones (FE, FA, 3ro)</div>
+        <div>③ Técnico completa datos del sitio + dibuja croquis</div>
+        <div>④ Frontend envía JSON <span style="color:var(--accent)">→</span> API Gateway <span style="color:var(--accent)">→</span> Lambda</div>
+        <div>⑤ Lambda descarga template 24-001-A30_ de S3 <span style="color:var(--accent)">→</span> llena celdas (ExcelJS)</div>
+        <div>⑥ Lambda sube Excel generado a S3 <span style="color:var(--accent)">→</span> retorna URL firmada</div>
+        <div>⑦ Browser descarga el informe 24-001-A30_ completo · &lt;20 min todo el proceso</div>
       </div>
     </div>
 
@@ -288,14 +296,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td>1</td><td>Setup del proyecto y estructura base de la aplicación</td><td style="text-align:center">2</td><td class="num-col">$700.000</td></tr>
-          <tr><td>2</td><td>Formulario de dispositivo de medición</td><td style="text-align:center">2</td><td class="num-col">$700.000</td></tr>
-          <tr><td>3</td><td>Formulario del profesional (con firma digitalizada)</td><td style="text-align:center">2</td><td class="num-col">$700.000</td></tr>
-          <tr><td>4</td><td>Lector del Excel del sonómetro (fuente encendida / apagada)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
-          <tr><td>5</td><td>Mapeo de datos al Excel oficial 24-001-A30_ (celda por celda)</td><td style="text-align:center">5</td><td class="num-col">$1.750.000</td></tr>
-          <tr><td>6</td><td>Constructor de maqueta / croquis interactivo</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
-          <tr><td>7</td><td>Formato de impresión final (PDF + Excel descargable)</td><td style="text-align:center">3</td><td class="num-col">$1.050.000</td></tr>
-          <tr><td>8</td><td>Integración completa y pruebas con datos reales</td><td style="text-align:center">3</td><td class="num-col">$1.050.000</td></tr>
+          <tr><td>1</td><td>Setup del proyecto, estructura base y configuración S3</td><td style="text-align:center">2</td><td class="num-col">$700.000</td></tr>
+          <tr><td>2</td><td>Plantilla de configuración: carga de dispositivos y profesionales desde S3</td><td style="text-align:center">2</td><td class="num-col">$700.000</td></tr>
+          <tr><td>3</td><td>Lector de los 3 archivos del sonómetro (FE, FA, tercero)</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>4</td><td>Formulario de datos del sitio (ubicación, fechas, horas, info general)</td><td style="text-align:center">2</td><td class="num-col">$700.000</td></tr>
+          <tr><td>5</td><td>Mapeo de todos los datos al Excel oficial 24-001-A30_ (celda por celda)</td><td style="text-align:center">5</td><td class="num-col">$1.750.000</td></tr>
+          <tr><td>6</td><td>Constructor de croquis interactivo del lugar</td><td style="text-align:center">4</td><td class="num-col">$1.400.000</td></tr>
+          <tr><td>7</td><td>Generación del Excel final y descarga (Lambda + ExcelJS)</td><td style="text-align:center">3</td><td class="num-col">$1.050.000</td></tr>
+          <tr><td>8</td><td>Integración completa y pruebas con datos reales del sonómetro</td><td style="text-align:center">3</td><td class="num-col">$1.050.000</td></tr>
         </tbody>
         <tfoot>
           <tr><td colspan="2"><strong>Total</strong></td><td style="text-align:center"><strong>25 días</strong></td><td class="num-col"><strong>$9.750.000</strong></td></tr>
@@ -397,8 +405,9 @@
     <div class="card">
       <div class="card-title">Lo que el cliente debe proveer</div>
       <ul>
-        <li>La plantilla Excel oficial <strong>24-001-A30_</strong> con sus fórmulas.</li>
-        <li>Un archivo de ejemplo del Excel que exporta el sonómetro con datos reales.</li>
+        <li>La plantilla Excel oficial <strong>24-001-A30_</strong> con sus fórmulas intactas.</li>
+        <li>Los 3 archivos de ejemplo que exporta el sonómetro con datos reales (FE, FA y tercero).</li>
+        <li>La lista de dispositivos de medición y profesionales (marca, modelo, serial, nombre, tarjeta).</li>
         <li>Un técnico disponible para validar que los datos mapeados sean correctos.</li>
       </ul>
     </div>
