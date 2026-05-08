@@ -139,12 +139,12 @@
     <div class="section-title"><div class="num">1</div> ¿Qué es Ruido App Lite?</div>
 
     <div class="card">
-      <p>Es una herramienta web liviana y enfocada en un solo objetivo: <strong>tomar los archivos que exporta el sonómetro, unirlos en la plantilla estándar y generar el informe oficial 24-001-A30_ listo para entregar</strong>, sin copiar datos a mano ni tocar fórmulas directamente.</p>
-      <p>No requiere base de datos propia. El Excel de salida es el registro oficial. La aplicación es el puente entre los archivos crudos del equipo y el documento final.</p>
+      <p>Es una herramienta web liviana y enfocada en un solo objetivo: <strong>tomar la plantilla estándar con los datos de medición ya consolidados y generar el informe oficial 24-001-A30_ listo para entregar</strong>, sin copiar datos a mano ni tocar fórmulas directamente.</p>
+      <p>No requiere base de datos propia. El Excel de salida es el registro oficial. La aplicación es el puente entre la plantilla de datos y el documento final.</p>
     </div>
 
     <div class="highlight">
-      <strong>¿Cuál es el problema que resuelve?</strong> Hoy el técnico exporta los datos del sonómetro en varios archivos, los copia manualmente al Excel de informe, verifica las fórmulas y arma el documento final. Con esta herramienta ese proceso se reduce a: subir los 3 archivos del sonómetro → revisar → descargar el informe listo. Todo en menos de 20 minutos.
+      <strong>¿Cuál es el problema que resuelve?</strong> Hoy el técnico consolida los datos de medición en un Excel y luego los copia manualmente al informe oficial, verificando las fórmulas una por una. Con esta herramienta ese proceso se reduce a: subir la plantilla consolidada → revisar → descargar el informe listo. Todo en menos de 20 minutos.
     </div>
   </section>
 
@@ -163,8 +163,8 @@
       <div class="flow-item">
         <div class="flow-left"><div class="flow-dot">2</div><div class="flow-line"></div></div>
         <div class="flow-body">
-          <div class="flow-title">Sube los 3 archivos del sonómetro</div>
-          <p>El sonómetro exporta un archivo Excel por cada tipo de medición. El técnico sube los 3: <strong>fuente encendida</strong>, <strong>fuente apagada</strong> y el tercero según el tipo de medición. La aplicación lee las columnas automáticamente.</p>
+          <div class="flow-title">Sube la plantilla estándar con las mediciones</div>
+          <p>El técnico sube un único archivo Excel que contiene los datos consolidados: mediciones de <strong>fuente encendida</strong>, <strong>fuente apagada</strong> y el tipo de medición correspondiente. La aplicación lo lee automáticamente.</p>
         </div>
       </div>
       <div class="flow-item">
@@ -208,14 +208,9 @@
     </div>
 
     <div class="card">
-      <div class="card-title">Lector de los 3 archivos del sonómetro</div>
-      <p>El sonómetro exporta un archivo Excel por tipo de medición. La aplicación permite subir los 3 archivos simultáneamente, detecta automáticamente las columnas de valores y los mapea a la plantilla de salida.</p>
-      <ul>
-        <li><strong>Fuente encendida (FE)</strong> — mediciones con la fuente activa</li>
-        <li><strong>Fuente apagada (FA)</strong> — mediciones de ruido de fondo</li>
-        <li><strong>Tercer archivo</strong> — según el tipo de medición del contrato</li>
-      </ul>
-      <div class="info-box">Se trabaja con el formato exacto que exporta el equipo de Conintegral. Si en el futuro se cambia de sonómetro o cambia el formato del archivo, se requiere un ajuste adicional.</div>
+      <div class="card-title">Lector de la plantilla estándar de mediciones</div>
+      <p>El técnico sube un único archivo Excel con los datos ya consolidados (fuente encendida, fuente apagada y el tercer tipo de medición). La aplicación detecta automáticamente las columnas, extrae los valores y los mapea a la plantilla de salida.</p>
+      <div class="info-box">La consolidación de los archivos del sonómetro en la plantilla estándar se realiza por separado, con una herramienta complementaria que se desarrollará en una fase posterior.</div>
     </div>
 
     <div class="card">
@@ -267,7 +262,7 @@
       <div class="card-title">Flujo de datos</div>
       <div style="font-family:monospace;font-size:13px;line-height:1.8;color:var(--ink-m);background:var(--bg);border-radius:8px;padding:16px;margin-top:8px;overflow-x:auto;">
         <div>① Browser carga plantilla config de S3 <span style="color:var(--accent)">→</span> popula selects de dispositivos y profesionales</div>
-        <div>② Técnico sube 3 archivos del sonómetro <span style="color:var(--accent)">→</span> SheetJS extrae mediciones (FE, FA, 3ro)</div>
+        <div>② Técnico sube plantilla estándar unificada <span style="color:var(--accent)">→</span> SheetJS extrae mediciones (FE, FA, 3ro)</div>
         <div>③ Técnico completa datos del sitio + dibuja croquis</div>
         <div>④ Frontend envía JSON <span style="color:var(--accent)">→</span> API Gateway <span style="color:var(--accent)">→</span> Lambda</div>
         <div>⑤ Lambda descarga template 24-001-A30_ de S3 <span style="color:var(--accent)">→</span> llena celdas (ExcelJS)</div>
@@ -406,7 +401,7 @@
       <div class="card-title">Lo que el cliente debe proveer</div>
       <ul>
         <li>La plantilla Excel oficial <strong>24-001-A30_</strong> con sus fórmulas intactas.</li>
-        <li>Los 3 archivos de ejemplo que exporta el sonómetro con datos reales (FE, FA y tercero).</li>
+        <li>Un archivo de ejemplo de la plantilla estándar consolidada con datos reales (FE, FA y tercero).</li>
         <li>La lista de dispositivos de medición y profesionales (marca, modelo, serial, nombre, tarjeta).</li>
         <li>Un técnico disponible para validar que los datos mapeados sean correctos.</li>
       </ul>
